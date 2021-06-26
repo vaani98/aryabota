@@ -1,0 +1,14 @@
+.grid {
+    position: relative;
+    top: 10px;
+    width: 50%;
+}
+.pre-flex {
+    display: flex;
+    flex: 200px 0
+}
+
+.python {
+    /* width: 700px; */
+    margin-right: 200px;
+}
