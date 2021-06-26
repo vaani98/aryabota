@@ -1,7 +1,7 @@
 # CoinSweeper
 A visual tool for teaching introduction to programming, that slowly allows students to transition from using commands similar to natural language, to more Pythonic constructs.   
 The experience is gamified through a visual component called CoinSweeper - a bot in a grid that detects and picks up coins while navigating its way around obstacles.
-This tool is still under development; you can track the progress via the [changelog]().
+This tool is still under development; you can track the progress via the [changelog](https://github.com/vaani98/coinsweeper/blob/flask-branch/changelog.md).
 
 ## Set-Up
 ### Virtual Environment
