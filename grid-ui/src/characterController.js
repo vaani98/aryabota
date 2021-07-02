@@ -19,29 +19,6 @@ export default function Controller() {
      * @const
      */
     const [mazeData, setMazeData] = useContext(MazeState);
-    
-    /**
-     * local state to store interval id / game loop id
-     * @const
-     */
-    const [control, setControl] = useState({
-        gameInterval: null
-    });
-
-    /**
-     * Controller's useLayoutEffect 
-     * This checks winning condition
-     * ( if food item array is smaller than 1 )
-     * @public
-     */
-    useLayoutEffect(() => {
-        if( mazeData.randomFoods.length < 1){
-            //clear interval /game loop
-            clearInterval(control.gameInterval);
-            //alert result
-            alert("You did it in " + mazeData.score + " Steps");
-        }
-    }, [mazeData, control]);
 
 
     /**
@@ -52,7 +29,6 @@ export default function Controller() {
      * @public
      */
     useEffect(() => {
-        
         const found = mazeData.randomFoods.indexOf(mazeData.marioLoc);
         if(found !==-1){
             const updatedFood = mazeData.randomFoods.filter((item) => item!== (mazeData.marioLoc));
@@ -60,11 +36,7 @@ export default function Controller() {
                 ...prev,
                 randomFoods: updatedFood
             }));
-        }
-
-        //check if character is overflowing maze
-        isBoundary();
-    
+        }   
     }, [mazeData, setMazeData]);
 
     /**
@@ -125,30 +97,6 @@ export default function Controller() {
             currentDirection: 'down',
             score: prev.score +1
         }));
-    }
-
-    /**
-     * Function to check if boundaries character is gonna
-     * overflow boundary, if so then move it in opposite direction
-     * LOGIC: IT CHECKS IF CHARACTER LOCATION IS NEAR BOUNDARY "AND"
-     * IF CURRENT DIRECTION OF MOVEMENT IS GOING OUT BOUNDARY ONLY
-     * THEN IT CHANGES THE DIRECTION TO OPPOSITE SIDE
-     * @public
-     */
-    const isBoundary = () => {
-        if(mazeData.marioLoc + mazeData.inputX > mazeData.inputX * mazeData.inputY && mazeData.currentDirection==='down'){
-            gameLoop(moveUp);    
-            return;
-        }else if(mazeData.marioLoc - mazeData.inputX < 0 && mazeData.currentDirection==='up'){
-            gameLoop(moveDown);    
-            return;
-        }else if((mazeData.marioLoc - 1)%mazeData.inputX === 0 && mazeData.currentDirection==='left'){
-            gameLoop(moveRight);    
-            return;
-        }else if((mazeData.marioLoc)%mazeData.inputX === 0 && mazeData.currentDirection==='right'){
-            gameLoop(moveLeft);    
-            return;
-        }
     }
 
     return (

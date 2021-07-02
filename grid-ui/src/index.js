@@ -38,23 +38,23 @@ const centreMario = 1;
 function Game() {
 
   /**
-   * Global state to initialize.
+   * mazeData contains the entire state of the maze
    * @const
    */
   const [mazeData, setMazeData] = useState({});
 
   /**
-   * Game's useEffect 
-   * This initialize all global state variables
+   * Game's useEffect:
+   * this initializes mazeData
    * @public
    */
   useLayoutEffect(() => {
     setMazeData(mazeData => ({
-      ...mazeData, 
-      randomFoods: randomFoods,
+      ...mazeData,
       marioLoc: centreMario,
       inputX: parseInt(input.x),
       inputY: parseInt(input.y),
+      randomFoods: randomFoods,
       currentDirection: null,
       score: 0
     }));
@@ -75,9 +75,21 @@ function Game() {
     maze = <p>Loading</p>
   }
 
+  const submitCode = function(e) {
+    e.preventDefault()
+    console.log(e.target[0].value)
+  }
+
   return (
-    <div className="game">
-      <div className="game-maze">
+    <div className = "game">
+      <div className = "game-info">
+        <form onSubmit = {submitCode}>
+          <input type = "textarea" rows="5" cols="50"/>
+          <input type = "submit" value = "Run"/>
+        </form>
+      </div>
+      <div className = "separator"></div>
+      <div className = "game-maze">
         {maze}
       </div>
     </div>
