@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
 from controller import do
-from model import CoinSweeper
+from CoinSweeper import CoinSweeper
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
@@ -26,5 +26,4 @@ def coinSweeper():
         commands = request.json
         # print("!!", request)
         response = do(commands)
-        response.headers.add('Access-Control-Allow-Origin', '*')
         return jsonify(response)
