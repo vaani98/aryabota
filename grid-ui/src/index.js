@@ -52,14 +52,15 @@ function Game() {
       inputX: parseInt(input.x),
       inputY: parseInt(input.y),
       randomFoods: randomFoods,
-      currentDirection: "down"
+      currentDirection: "down",
+      positionsSeen: [1]
     }));
 
   }, []);
 
   //check if player location is generated
   let maze;
-  if(mazeData.marioLoc){
+  if(mazeData.marioLoc) {
     //set maze and controller component with required props
     maze = (
         <div className = "game">
@@ -70,7 +71,9 @@ function Game() {
               y = {input.y} 
               foodLoc = {mazeData.randomFoods} 
               marioLoc = {mazeData.marioLoc} 
-              currentDirection = {mazeData.currentDirection} />
+              currentDirection = {mazeData.currentDirection}
+              positionsSeen = {mazeData.positionsSeen}
+              />
           </MazeState.Provider>
         </div>
     );

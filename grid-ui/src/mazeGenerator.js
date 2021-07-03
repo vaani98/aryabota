@@ -64,11 +64,17 @@ export default function Maze(props) {
    * @param {number} blockCount unique id for each block
    */
   const renderBlock = (blockCount) => {
-    // if (props.foodLoc.indexOf(blockCount) !== -1) {
-    //   return <Block value={blockCount} image={`url(${coin_img})`} />;
+    let styles = {
+      backgroundColor: 'white'
+    };
+    if (props?.positionsSeen?.indexOf(blockCount) >= 0
+      && props?.positionsSeen?.indexOf(blockCount) !== -1) {
+      styles = {
+        backgroundColor: 'yellow',
+      }
+    }
     if (props.marioLoc === blockCount) {
       let rotation;
-      console.log(props)
       switch (props.currentDirection) {
         case 'up': rotation = '180'; break;
         case 'down': rotation = '0'; break;
@@ -76,9 +82,19 @@ export default function Maze(props) {
         case 'right': rotation = '270'; break;
         default: rotation = '0'; break;
       }
-      return <Block value = {blockCount} rotation = {rotation} image = {`url(${coinsweeper_img})`} />;
+      return <Block 
+        value = {blockCount} 
+        rotation = {rotation} 
+        image = {`url(${coinsweeper_img})`}
+        style = {styles}
+        />;
     } else {
-      return <Block value = {blockCount} rotation = '0' image = {'none'} />;
+      return <Block 
+        value = {blockCount} 
+        rotation = '0' 
+        image = {'none'}
+        style = {styles}
+      />;
     }
 
   }  
@@ -113,6 +129,12 @@ function Block(props) {
     transform: 'rotate(' + props.rotation + 'deg)'
   };
   
-  return <button style={ blockStyle } className="block" id={"block_" + props.value}>
+  return <button  style={{
+    ...blockStyle,
+    ...props.style,
+  }}
+  className={["block", props.className].join(' ')}
+  id={"block_" + props.value}
+  >
   </button>;
 }

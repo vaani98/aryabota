@@ -35,7 +35,6 @@ export default function Controller() {
         if (control.steps.length && control.changeInterval == null) {
             control.changeInterval = setInterval(doChange, 600)
         }
-        console.log(control)
     });
 
     function doChange() {
@@ -64,11 +63,12 @@ export default function Controller() {
     }
     
     function updateCoinSweeperBot(code) {
-        const steps = getSteps(code, mazeData)
+        const steps = getSteps(code, mazeData);
+        console.log(steps)
         setControl(prev => ({
             ...prev,
             steps: steps
-        }))
+        }));
     }
 
     function getSteps(code, currState) {
@@ -125,26 +125,46 @@ export default function Controller() {
                     }
                 ] 
             }
-        ]
-        let steps = []
+        ];
+        let steps = [];
         response.forEach(step => {
             let stepObj = {
                 python: step.python,
                 stateChanges: []
-            }
+            };
             step.stateChanges.forEach(change => {
-                const newPos = convert(change.x, change.y, currState.inputY);
+                const newPos = convertToContinuousNumbering(change.x, change.y, currState.inputY);
                 const newDir = change.dir;
+                const newPositionsSeen = convertPositions(newPos, currState.marioLoc, currState.inputY);
+                console.log(newPositionsSeen);
                 currState = {
                     ...currState,
                     marioLoc: newPos,
-                    currentDirection: newDir
-                }
+                    currentDirection: newDir,
+                    positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                };
                 stepObj.stateChanges.push(currState);
-            })
-            steps.push(stepObj)
+            });
+            steps.push(stepObj);
         })
         return steps;
+    }
+
+    function range(size, startAt = 0) {
+        return [...Array(size).keys()].map(i => i + startAt);
+    }
+
+    function convertPositions(newPos, oldPos, columns) {
+        let newPosCoordinates = convertToCoordinates(newPos, columns);
+        let oldPosCoordinates = convertToCoordinates(oldPos, columns);
+        if (oldPosCoordinates.y == newPosCoordinates.y) {
+            return range(newPos - oldPos + 1, oldPos)
+        } else if (oldPosCoordinates.x == newPosCoordinates.x) {
+            let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
+            return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
+        } else {
+            return []
+        }
     }
 
     function getPythonicCode() {
@@ -155,8 +175,15 @@ export default function Controller() {
         </div>
     }
 
-    function convert(x, y, columns) {
-        return x + columns * (y - 1);
+    function convertToCoordinates(blockCount, columns) {
+        const y = 1 + Math.floor(blockCount / columns);
+        const x = blockCount % columns;
+        return { x, y }
+    }
+
+    function convertToContinuousNumbering(x, y, columns) {
+        let conv = (x + columns * (y - 1));
+        return conv
     }
 
     const submitCode = function(e) {
