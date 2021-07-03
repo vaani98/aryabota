@@ -104,5 +104,6 @@ parser = yacc.yacc()
 
 
 def do(commands):
+    commandStack.clear()
     parser.parse(commands)
     return commandStack

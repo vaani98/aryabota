@@ -63,91 +63,47 @@ export default function Controller() {
     }
     
     function updateCoinSweeperBot(code) {
-        const steps = getSteps(code, mazeData);
-        console.log(steps)
-        setControl(prev => ({
-            ...prev,
-            steps: steps
-        }));
+        getSteps(code, mazeData);
     }
 
     function getSteps(code, currState) {
-        // TODO replace below with API call to get response
-        const response = 
-        [
-            {
-                "python": "move(3)",
-                "stateChanges": [
-                    {
-                        "x": 1,
-                        "y": 4,
-                        "dir": "down"
-                    }
-                ]   
-            },
-            {
-                "python": "turnLeft()",
-                "stateChanges": [
-                    {
-                        "x": 1,
-                        "y": 4,
-                        "dir": "left"
-                    }
-                ]
-            },
-            {
-                "python": "turnLeft()",
-                "stateChanges": [
-                    {
-                        "x": 1,
-                        "y": 4,
-                        "dir": "up"
-                    }
-                ]
-            },
-            {
-                "python": "turnLeft()",
-                "stateChanges": [
-                    {
-                        "x": 1,
-                        "y": 4,
-                        "dir": "right"
-                    }
-                ]
-            },
-            {
-                "python": "move(5)",
-                "stateChanges": [
-                    {
-                        "x": 6,
-                        "y": 4,
-                        "dir": "right"
-                    }
-                ] 
+        fetch('http://localhost:5000/coinSweeper', {
+            crossDomain: true,
+            method: 'POST',
+            body: JSON.stringify(code),
+            headers: {
+                'Content-type': 'application/json'
             }
-        ];
-        let steps = [];
-        response.forEach(step => {
-            let stepObj = {
-                python: step.python,
-                stateChanges: []
-            };
-            step.stateChanges.forEach(change => {
-                const newPos = convertToContinuousNumbering(change.x, change.y, currState.inputY);
-                const newDir = change.dir;
-                const newPositionsSeen = convertPositions(newPos, currState.marioLoc, currState.inputY);
-                console.log(newPositionsSeen);
-                currState = {
-                    ...currState,
-                    marioLoc: newPos,
-                    currentDirection: newDir,
-                    positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
-                };
-                stepObj.stateChanges.push(currState);
-            });
-            steps.push(stepObj);
         })
-        return steps;
+        .then(response => response.json())
+        .then(response => {
+            let steps = [];
+            console.log("response", response)
+            response.forEach(step => {
+                let stepObj = {
+                    python: step.python,
+                    stateChanges: []
+                };
+                step.stateChanges.forEach(change => {
+                    const newPos = convertToContinuousNumbering(change.x, change.y, currState.inputY);
+                    const newDir = change.dir;
+                    const newPositionsSeen = convertPositions(newPos, currState.marioLoc, currState.inputY);
+                    currState = {
+                        ...currState,
+                        marioLoc: newPos,
+                        currentDirection: newDir,
+                        positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                    };
+                    stepObj.stateChanges.push(currState);
+                });
+                steps.push(stepObj);
+            })
+            console.log(steps);
+            setControl(prev => ({
+                ...prev,
+                steps: steps
+            }));
+        });
     }
 
     function range(size, startAt = 0) {
@@ -157,9 +113,9 @@ export default function Controller() {
     function convertPositions(newPos, oldPos, columns) {
         let newPosCoordinates = convertToCoordinates(newPos, columns);
         let oldPosCoordinates = convertToCoordinates(oldPos, columns);
-        if (oldPosCoordinates.y == newPosCoordinates.y) {
+        if (oldPosCoordinates.y === newPosCoordinates.y) {
             return range(newPos - oldPos + 1, oldPos)
-        } else if (oldPosCoordinates.x == newPosCoordinates.x) {
+        } else if (oldPosCoordinates.x === newPosCoordinates.x) {
             let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
             return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
         } else {
