@@ -20,7 +20,7 @@ export default function Maze(props) {
    * status/title for maze game
    * @const
    */
-  const status = 'MAZE RUNNER';
+  const status = 'CoinSweeper';
 
   /**
    * addRows function to generate a array of row 
@@ -63,8 +63,7 @@ export default function Maze(props) {
    * STEP 3: else set none to image parameter
    * @param {number} blockCount unique id for each block
    */
-  const renderBlock = (blockCount)=> {
-
+  const renderBlock = (blockCount) => {
     if(props.foodLoc.indexOf(blockCount) !== -1){
       return <Block value={blockCount} image={`url(${food_img})`} />;
     }else if(props.marioLoc === blockCount){

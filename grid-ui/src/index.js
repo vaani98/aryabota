@@ -8,8 +8,7 @@ import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
 import Controller from './characterController';
 //GLOBAL CONTEXT / STATE
-import { MazeState } from './globalStates';
-
+import { MazeState, PythonicCodeState } from './globalStates';
 
 let input = {
   x: 10,
@@ -36,55 +35,59 @@ const centreMario = 1;
  * <Game />
  */
 function Game() {
-
   /**
-   * Global state to initialize.
+   * mazeData contains the entire state of the maze
    * @const
    */
   const [mazeData, setMazeData] = useState({});
 
   /**
-   * Game's useEffect 
-   * This initialize all global state variables
+   * Game's useEffect:
+   * this initializes mazeData
    * @public
    */
   useLayoutEffect(() => {
     setMazeData(mazeData => ({
-      ...mazeData, 
-      randomFoods: randomFoods,
-      marioLoc: centreMario,
+      ...mazeData,
+      marioLoc: 1,
       inputX: parseInt(input.x),
       inputY: parseInt(input.y),
-      currentDirection: null,
-      score: 0
+      randomFoods: randomFoods,
+      currentDirection: "right"
     }));
 
   }, []);
 
   //check if player location is generated
-  let maze, score = mazeData.score;
+  let maze;
   if(mazeData.marioLoc){
     //set maze and controller component with required props
-    maze =(
-      <MazeState.Provider value={[mazeData, setMazeData]}>
-        <Maze x={input.x} y={input.y} foodLoc={mazeData.randomFoods} marioLoc={mazeData.marioLoc} />
-        <Controller />
-      </MazeState.Provider>
+    console.log(mazeData)
+    maze = (
+        <div className = "game">
+          <MazeState.Provider value={[mazeData, setMazeData]}>
+            <Controller />
+            <Maze x={input.x} y={input.y} foodLoc={mazeData.randomFoods} marioLoc={mazeData.marioLoc} />
+          </MazeState.Provider>
+        </div>
     );
+    // pythonicCodeBlock = (
+    //   <PythonicCodeState.Provider value={[pythonicCode, setPythonicCode]}>
+    //     {/* {pythonicCode.forEach(codeLine => <p>{codeLine}</p>
+    //     )} */}
+    //     gratz
+    //   </PythonicCodeState.Provider>
+    // )
   } else {
-    maze = <p>Loading</p>
+    maze = <p>Loading...</p>
   }
 
   return (
-    <div className="game">
-      <div className="game-maze">
-        {maze}
-      </div>
-    </div>
+    <>
+        { maze }
+    </>
   );
 }
-
-
 ReactDOM.render(
   <Game />,
   document.getElementById('root')
