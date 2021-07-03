@@ -20,7 +20,7 @@ export default function Maze(props) {
    * status/title for maze game
    * @const
    */
-  const status = 'MAZE RUNNER';
+  const status = 'CoinSweeper';
 
   /**
    * addRows function to generate a array of row 

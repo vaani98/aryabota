@@ -8,8 +8,7 @@ import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
 import Controller from './characterController';
 //GLOBAL CONTEXT / STATE
-import { MazeState } from './globalStates';
-
+import { MazeState, PythonicCodeState } from './globalStates';
 
 let input = {
   x: 10,
@@ -36,7 +35,6 @@ const centreMario = 1;
  * <Game />
  */
 function Game() {
-
   /**
    * mazeData contains the entire state of the maze
    * @const
@@ -51,52 +49,45 @@ function Game() {
   useLayoutEffect(() => {
     setMazeData(mazeData => ({
       ...mazeData,
-      marioLoc: centreMario,
+      marioLoc: 1,
       inputX: parseInt(input.x),
       inputY: parseInt(input.y),
       randomFoods: randomFoods,
-      currentDirection: null,
-      score: 0
+      currentDirection: "right"
     }));
 
   }, []);
 
   //check if player location is generated
-  let maze, score = mazeData.score;
+  let maze;
   if(mazeData.marioLoc){
     //set maze and controller component with required props
-    maze =(
-      <MazeState.Provider value={[mazeData, setMazeData]}>
-        <Maze x={input.x} y={input.y} foodLoc={mazeData.randomFoods} marioLoc={mazeData.marioLoc} />
-        <Controller />
-      </MazeState.Provider>
+    console.log(mazeData)
+    maze = (
+        <div className = "game">
+          <MazeState.Provider value={[mazeData, setMazeData]}>
+            <Controller />
+            <Maze x={input.x} y={input.y} foodLoc={mazeData.randomFoods} marioLoc={mazeData.marioLoc} />
+          </MazeState.Provider>
+        </div>
     );
+    // pythonicCodeBlock = (
+    //   <PythonicCodeState.Provider value={[pythonicCode, setPythonicCode]}>
+    //     {/* {pythonicCode.forEach(codeLine => <p>{codeLine}</p>
+    //     )} */}
+    //     gratz
+    //   </PythonicCodeState.Provider>
+    // )
   } else {
-    maze = <p>Loading</p>
-  }
-
-  const submitCode = function(e) {
-    e.preventDefault()
-    console.log(e.target[0].value)
+    maze = <p>Loading...</p>
   }
 
   return (
-    <div className = "game">
-      <div className = "game-info">
-        <form onSubmit = {submitCode}>
-          <input type = "textarea" rows="5" cols="50"/>
-          <input type = "submit" value = "Run"/>
-        </form>
-      </div>
-      <div className = "separator"></div>
-      <div className = "game-maze">
-        {maze}
-      </div>
-    </div>
+    <>
+        { maze }
+    </>
   );
 }
-
-
 ReactDOM.render(
   <Game />,
   document.getElementById('root')
