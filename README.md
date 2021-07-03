@@ -6,7 +6,7 @@ This tool is still under development; you can track the progress via the [change
 ## Set-Up
 ### Virtual Environment
 1. Create the virtual environment called `venv` by running `virtualenv venv`, it should create a directory called `venv` at the root-level
-1. On Linux-based OS, run `source venv/bin/activate`
+1. On Linux-based OS, run `source venv/bin/activate`; on Windows, run `.\env\Scripts\activate`
 2. To deactivate, run `deactivate`
 ### Dependencies
 1. Python3: install the required PyPi packages by running  

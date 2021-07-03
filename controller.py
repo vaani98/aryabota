@@ -1,7 +1,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
 
-from model import CoinSweeper
+from CoinSweeper import CoinSweeper
 
 # utilities
 
@@ -99,11 +99,10 @@ def p_command(p):
 def p_error(p):
     print("Syntax error in input!")
 
-
 parser = yacc.yacc()
-
 
 def do(commands):
     commandStack.clear()
     parser.parse(commands)
+    print("Command stack",commandStack)
     return commandStack
