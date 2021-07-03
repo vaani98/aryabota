@@ -1,7 +1,7 @@
 import React from 'react';
 //IMPORT SPRITES
-import food_img from './assets/food.svg';
-import mario_img from './assets/mario.svg';
+import coin_img from './assets/coin.png';
+import coinsweeper_img from './assets/coinsweeper.png';
 
 /**
  * Component to draw dynamic maze, food and 
@@ -64,12 +64,21 @@ export default function Maze(props) {
    * @param {number} blockCount unique id for each block
    */
   const renderBlock = (blockCount) => {
-    if(props.foodLoc.indexOf(blockCount) !== -1){
-      return <Block value={blockCount} image={`url(${food_img})`} />;
-    }else if(props.marioLoc === blockCount){
-      return <Block value={blockCount} image={`url(${mario_img})`} />;
-    }else{
-      return <Block value={blockCount} image={'none'} />;
+    // if (props.foodLoc.indexOf(blockCount) !== -1) {
+    //   return <Block value={blockCount} image={`url(${coin_img})`} />;
+    if (props.marioLoc === blockCount) {
+      let rotation;
+      console.log(props)
+      switch (props.currentDirection) {
+        case 'up': rotation = '180'; break;
+        case 'down': rotation = '0'; break;
+        case 'left': rotation = '90'; break;
+        case 'right': rotation = '270'; break;
+        default: rotation = '0'; break;
+      }
+      return <Block value = {blockCount} rotation = {rotation} image = {`url(${coinsweeper_img})`} />;
+    } else {
+      return <Block value = {blockCount} rotation = '0' image = {'none'} />;
     }
 
   }  
@@ -100,7 +109,8 @@ function Block(props) {
     backgroundSize: "20px",
     backgroundRepeat  : 'no-repeat',
     backgroundPosition: 'center',
-    backgroundImage: props.image
+    backgroundImage: props.image,
+    transform: 'rotate(' + props.rotation + 'deg)'
   };
   
   return <button style={ blockStyle } className="block" id={"block_" + props.value}>

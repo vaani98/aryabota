@@ -27,13 +27,15 @@ export default function Controller() {
      */
     const [control, setControl] = useState({
         changeInterval: null,
+        pythonicCode: [],
         steps: []
     });
 
     useEffect(() => {
         if (control.steps.length && control.changeInterval == null) {
-            control.changeInterval = setInterval(doChange,500)
+            control.changeInterval = setInterval(doChange, 600)
         }
+        console.log(control)
     });
 
     function doChange() {
@@ -42,18 +44,21 @@ export default function Controller() {
             const currStep = control.steps[0]
             if (currStep.stateChanges.length > 0) {
                 const change = currStep.stateChanges[0]
-                console.log(change)
                 setMazeData(prev => ({
                     ...prev,
                     ...change
                 }))
                 currStep.stateChanges.shift()
             } else {
-                console.log(currStep.python)
+                control.pythonicCode.push(currStep.python)
                 control.steps.shift()
             }
         } else {
             clearInterval(control.changeInterval)
+            setControl(prev => ({
+                ...prev,
+                changeInterval: null
+            }))
         }
         
     }
@@ -71,11 +76,21 @@ export default function Controller() {
         const response = 
         [
             {
-                "python": "move(1)",
+                "python": "move(3)",
                 "stateChanges": [
                     {
                         "x": 1,
-                        "y": 1,
+                        "y": 4,
+                        "dir": "down"
+                    }
+                ]   
+            },
+            {
+                "python": "turnLeft()",
+                "stateChanges": [
+                    {
+                        "x": 1,
+                        "y": 4,
                         "dir": "left"
                     }
                 ]
@@ -85,27 +100,27 @@ export default function Controller() {
                 "stateChanges": [
                     {
                         "x": 1,
-                        "y": 1,
+                        "y": 4,
+                        "dir": "up"
+                    }
+                ]
+            },
+            {
+                "python": "turnLeft()",
+                "stateChanges": [
+                    {
+                        "x": 1,
+                        "y": 4,
                         "dir": "right"
                     }
                 ]
             },
             {
-                "python": "move(3)",
-                "stateChanges": [
-                    {
-                        "x": 4,
-                        "y": 1,
-                        "dir": "right"
-                    }
-                ]   
-            },
-            {
                 "python": "move(5)",
                 "stateChanges": [
                     {
-                        "x": 4,
-                        "y": 6,
+                        "x": 6,
+                        "y": 4,
                         "dir": "right"
                     }
                 ] 
@@ -132,6 +147,14 @@ export default function Controller() {
         return steps;
     }
 
+    function getPythonicCode() {
+        return <div><br/>
+           {control.pythonicCode.map(codeLine => {
+               return <p> {codeLine} </p>
+           })}
+        </div>
+    }
+
     function convert(x, y, columns) {
         return x + columns * (y - 1);
     }
@@ -146,40 +169,23 @@ export default function Controller() {
         <>
             <div className = "game-info">
                 <form onSubmit = {submitCode}>
-                    <input type = "textarea" rows="5" cols="50"/>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '50px'
+                    }}>
+                        <textarea rows="20" cols="50" />
+                    </div>
                     <input type = "submit" value = "Run"/>
                 </form>
             </div>
             <div className = "separator"></div>
             <div className = "game-info">
                 <h3>Translated Code: Python</h3>
+                { getPythonicCode() }
             </div>
             <div className = "separator"></div>
             <div className="controller"></div>
       </>
     );
 }
-
-/**
-     * Function to check if boundaries character is gonna
-     * overflow boundary, if so then move it in opposite direction
-     * LOGIC: IT CHECKS IF CHARACTER LOCATION IS NEAR BOUNDARY "AND"
-     * IF CURRENT DIRECTION OF MOVEMENT IS GOING OUT BOUNDARY ONLY
-     * THEN IT CHANGES THE DIRECTION TO OPPOSITE SIDE
-     * @public
-     */
-    // const isBoundary = () => {
-    //     if(mazeData.marioLoc + mazeData.inputX > mazeData.inputX * mazeData.inputY && mazeData.currentDirection==='down'){
-    //         gameLoop(moveUp);    
-    //         return;
-    //     }else if(mazeData.marioLoc - mazeData.inputX < 0 && mazeData.currentDirection==='up'){
-    //         gameLoop(moveDown);    
-    //         return;
-    //     }else if((mazeData.marioLoc - 1)%mazeData.inputX === 0 && mazeData.currentDirection==='left'){
-    //         gameLoop(moveRight);    
-    //         return;
-    //     }else if((mazeData.marioLoc)%mazeData.inputX === 0 && mazeData.currentDirection==='right'){
-    //         gameLoop(moveLeft);    
-    //         return;
-    //     }
-    // }
