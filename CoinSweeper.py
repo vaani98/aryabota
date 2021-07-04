@@ -65,3 +65,13 @@ class CoinSweeper:
             self.dir = "up"
         else:
             self.dir = "down"
+
+    def turnRight(self):
+        if self.dir == "up":
+            self.dir = "rightt"
+        elif self.dir == "down":
+            self.dir = "left"
+        elif self.dir == "right":
+            self.dir = "down"
+        else:
+            self.dir = "up"
