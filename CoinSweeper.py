@@ -23,9 +23,9 @@ class CoinSweeper:
             raise Exception("This class is a singleton!")
         else:
             CoinSweeper.__instance = self
-        self.x = 0
-        self.y = 0
-        self.dir = "right"
+        self.x = 1
+        self.y = 1
+        self.dir = "down"
     
     # utility
     def getDir(self):
@@ -48,9 +48,9 @@ class CoinSweeper:
     # affect
     def move(self, steps):
         if self.dir == "up":
-            self.y += steps
-        elif self.dir == "down":
             self.y -= steps
+        elif self.dir == "down":
+            self.y += steps
         elif self.dir == "right":
             self.x += steps
         else:
@@ -65,3 +65,13 @@ class CoinSweeper:
             self.dir = "up"
         else:
             self.dir = "down"
+
+    def turnRight(self):
+        if self.dir == "up":
+            self.dir = "rightt"
+        elif self.dir == "down":
+            self.dir = "left"
+        elif self.dir == "right":
+            self.dir = "down"
+        else:
+            self.dir = "up"

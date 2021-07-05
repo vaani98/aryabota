@@ -4,6 +4,7 @@ from flask_cors import CORS, cross_origin
 
 from controller import do
 from CoinSweeper import CoinSweeper
+from Grid import Grid
 
 app = Flask(__name__)
 CORS(app)
