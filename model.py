@@ -1,13 +1,6 @@
-# TODO 1: fix newline issues in input, currently giving syntax error
 """
-og state: (2, 3, up)
-inp: move 2\nturn left
-op: [
-    (move(2), [(2, 5, up)]),
-    (turnLeft(), [(2, 5, left)])
-]
+CoinSweeper robot class
 """
-
 class CoinSweeper:
     __instance = None
     @staticmethod
