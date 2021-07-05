@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 
@@ -19,139 +19,156 @@ export default function Controller() {
      * @const
      */
     const [mazeData, setMazeData] = useContext(MazeState);
+    // const [pythonicCode, setPythonicCode] = useContext(PythonicCodeState);
     
     /**
      * local state to store interval id / game loop id
      * @const
      */
     const [control, setControl] = useState({
-        gameInterval: null
+        changeInterval: null,
+        pythonicCode: [],
+        steps: []
     });
 
-    /**
-     * Controller's useLayoutEffect 
-     * This checks winning condition
-     * ( if food item array is smaller than 1 )
-     * @public
-     */
-    useLayoutEffect(() => {
-        if( mazeData.randomFoods.length < 1){
-            //clear interval /game loop
-            clearInterval(control.gameInterval);
-            //alert result
-            alert("You did it in " + mazeData.score + " Steps");
-        }
-    }, [mazeData, control]);
-
-
-    /**
-     * Controller's useEffect
-     * Step 1: This checks if character is at food location and 
-     * if so then eat it(remove from food array).
-     * Step 2: Check if character is overflowing out of maze boundary.
-     * @public
-     */
     useEffect(() => {
-        
-        const found = mazeData.randomFoods.indexOf(mazeData.marioLoc);
-        if(found !==-1){
-            const updatedFood = mazeData.randomFoods.filter((item) => item!== (mazeData.marioLoc));
-            setMazeData(prev => ({
+        if (control.steps.length && control.changeInterval == null) {
+            control.changeInterval = setInterval(doChange, 600)
+        }
+    });
+
+    function doChange() {
+        if (control.steps.length > 0)
+        {
+            const currStep = control.steps[0]
+            if (currStep.stateChanges.length > 0) {
+                const change = currStep.stateChanges[0]
+                setMazeData(prev => ({
+                    ...prev,
+                    ...change
+                }))
+                currStep.stateChanges.shift()
+            } else {
+                control.pythonicCode.push(currStep.python)
+                control.steps.shift()
+            }
+        } else {
+            clearInterval(control.changeInterval)
+            setControl(prev => ({
                 ...prev,
-                randomFoods: updatedFood
+                changeInterval: null
+            }))
+        }
+        
+    }
+    
+    function updateCoinSweeperBot(code) {
+        getSteps(code, mazeData);
+    }
+
+    function getSteps(code, currState) {
+        fetch('http://localhost:5000/coinSweeper', {
+            crossDomain: true,
+            method: 'POST',
+            body: JSON.stringify(code),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(response => {
+            let steps = [];
+            console.log("response", response)
+            response.forEach(step => {
+                let stepObj = {
+                    python: step.python,
+                    stateChanges: []
+                };
+                step.stateChanges.forEach(change => {
+                    const newPos = convertToContinuousNumbering(change.x, change.y, currState.inputY);
+                    const newDir = change.dir;
+                    const newPositionsSeen = convertPositions(newPos, currState.marioLoc, currState.inputY);
+                    currState = {
+                        ...currState,
+                        marioLoc: newPos,
+                        currentDirection: newDir,
+                        positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                    };
+                    stepObj.stateChanges.push(currState);
+                });
+                steps.push(stepObj);
+            })
+            console.log(steps);
+            setControl(prev => ({
+                ...prev,
+                steps: steps
             }));
+        });
+    }
+
+    function range(size, startAt = 0) {
+        return [...Array(size).keys()].map(i => i + startAt);
+    }
+
+    function convertPositions(newPos, oldPos, columns) {
+        let newPosCoordinates = convertToCoordinates(newPos, columns);
+        let oldPosCoordinates = convertToCoordinates(oldPos, columns);
+        if (oldPosCoordinates.y === newPosCoordinates.y) {
+            return range(newPos - oldPos + 1, oldPos)
+        } else if (oldPosCoordinates.x === newPosCoordinates.x) {
+            let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
+            return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
+        } else {
+            return []
         }
-
-        //check if character is overflowing maze
-        isBoundary();
-    
-    }, [mazeData, setMazeData]);
-
-    /**
-     * function to move player one step RIGHT
-     * and increase score/ total steps by one
-     * @public
-     */
-    const moveRight = () => {
-        setMazeData(prev => ({
-            ...prev,
-            marioLoc: prev.marioLoc + 1,
-            currentDirection: 'right',
-            score: prev.score +1
-        }));
-    }
-  
-    /**
-     * function to move player one step LEFT
-     * and increase score/ total steps by one
-     * @public
-     */
-    const moveLeft = () => {
-        setMazeData(prev => ({
-            ...prev,
-            marioLoc: prev.marioLoc - 1,
-            currentDirection: 'left',
-            score: prev.score +1
-        }));
     }
 
-    /**
-     * function to move player one step UP
-     * and increase score/ total steps by one
-     * LOGIC: WE ARE SUBTRACTING 1 ROW FROM CURRENT
-     * POSITION OF CHARACTER TO SIMULATE ONE STEP UP
-     * @public
-     */
-    const moveUp = () => {
-        setMazeData(prev => ({
-            ...prev,
-            marioLoc: prev.marioLoc - prev.inputX,
-            currentDirection: 'up',
-            score: prev.score +1
-        }));
-    }
-    
-    /**
-     * function to move player one step DOWN
-     * and increase score/ total steps by one
-     * LOGIC: WE ARE ADDING 1 ROW IN CURRENT
-     * POSITION OF CHARACTER TO SIMULATE ONE STEP DOWN
-     * @public
-     */
-    const moveDown = () => {
-        setMazeData(prev => ({
-            ...prev,
-            marioLoc: prev.marioLoc + prev.inputX,
-            currentDirection: 'down',
-            score: prev.score +1
-        }));
+    function getPythonicCode() {
+        return <div><br/>
+           {control.pythonicCode.map(codeLine => {
+               return <p> {codeLine} </p>
+           })}
+        </div>
     }
 
-    /**
-     * Function to check if boundaries character is gonna
-     * overflow boundary, if so then move it in opposite direction
-     * LOGIC: IT CHECKS IF CHARACTER LOCATION IS NEAR BOUNDARY "AND"
-     * IF CURRENT DIRECTION OF MOVEMENT IS GOING OUT BOUNDARY ONLY
-     * THEN IT CHANGES THE DIRECTION TO OPPOSITE SIDE
-     * @public
-     */
-    const isBoundary = () => {
-        if(mazeData.marioLoc + mazeData.inputX > mazeData.inputX * mazeData.inputY && mazeData.currentDirection==='down'){
-            gameLoop(moveUp);    
-            return;
-        }else if(mazeData.marioLoc - mazeData.inputX < 0 && mazeData.currentDirection==='up'){
-            gameLoop(moveDown);    
-            return;
-        }else if((mazeData.marioLoc - 1)%mazeData.inputX === 0 && mazeData.currentDirection==='left'){
-            gameLoop(moveRight);    
-            return;
-        }else if((mazeData.marioLoc)%mazeData.inputX === 0 && mazeData.currentDirection==='right'){
-            gameLoop(moveLeft);    
-            return;
-        }
+    function convertToCoordinates(blockCount, columns) {
+        const y = 1 + Math.floor(blockCount / columns);
+        const x = blockCount % columns;
+        return { x, y }
+    }
+
+    function convertToContinuousNumbering(x, y, columns) {
+        let conv = (x + columns * (y - 1));
+        return conv
+    }
+
+    const submitCode = function(e) {
+        e.preventDefault();
+        const code = e.target[0].value;
+        updateCoinSweeperBot(code)
     }
 
     return (
-      <div className="controller"></div>
+        <>
+            <div className = "game-info">
+                <form onSubmit = {submitCode}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '50px'
+                    }}>
+                        <textarea rows="20" cols="50" />
+                    </div>
+                    <input type = "submit" value = "Run"/>
+                </form>
+            </div>
+            <div className = "separator"></div>
+            <div className = "game-info">
+                <h3>Translated Code: Python</h3>
+                { getPythonicCode() }
+            </div>
+            <div className = "separator"></div>
+            <div className="controller"></div>
+      </>
     );
 }
