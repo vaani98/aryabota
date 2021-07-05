@@ -102,6 +102,7 @@ def p_error(p):
 parser = yacc.yacc()
 
 def do(commands):
+    commandStack.clear()
     parser.parse(commands)
     print("Command stack",commandStack)
     return commandStack

@@ -27,12 +27,13 @@ export default function Controller() {
      */
     const [control, setControl] = useState({
         changeInterval: null,
+        pythonicCode: [],
         steps: []
     });
 
     useEffect(() => {
         if (control.steps.length && control.changeInterval == null) {
-            control.changeInterval = setInterval(doChange,500)
+            control.changeInterval = setInterval(doChange, 600)
         }
     });
 
@@ -42,98 +43,103 @@ export default function Controller() {
             const currStep = control.steps[0]
             if (currStep.stateChanges.length > 0) {
                 const change = currStep.stateChanges[0]
-                console.log(change)
                 setMazeData(prev => ({
                     ...prev,
                     ...change
                 }))
                 currStep.stateChanges.shift()
             } else {
-                console.log(currStep.python)
+                control.pythonicCode.push(currStep.python)
                 control.steps.shift()
             }
         } else {
             clearInterval(control.changeInterval)
+            setControl(prev => ({
+                ...prev,
+                changeInterval: null
+            }))
         }
         
     }
     
     function updateCoinSweeperBot(code) {
-        const steps = getSteps(code, mazeData)
-        setControl(prev => ({
-            ...prev,
-            steps: steps
-        }))
+        getSteps(code, mazeData);
     }
 
     function getSteps(code, currState) {
-        // TODO replace below with API call to get response
-        const response = 
-        [
-            {
-                "python": "move(1)",
-                "stateChanges": [
-                    {
-                        "x": 1,
-                        "y": 1,
-                        "dir": "left"
-                    }
-                ]
-            },
-            {
-                "python": "turnLeft()",
-                "stateChanges": [
-                    {
-                        "x": 1,
-                        "y": 1,
-                        "dir": "right"
-                    }
-                ]
-            },
-            {
-                "python": "move(3)",
-                "stateChanges": [
-                    {
-                        "x": 4,
-                        "y": 1,
-                        "dir": "right"
-                    }
-                ]   
-            },
-            {
-                "python": "move(5)",
-                "stateChanges": [
-                    {
-                        "x": 4,
-                        "y": 6,
-                        "dir": "right"
-                    }
-                ] 
+        fetch('http://localhost:5000/coinSweeper', {
+            crossDomain: true,
+            method: 'POST',
+            body: JSON.stringify(code),
+            headers: {
+                'Content-type': 'application/json'
             }
-        ]
-        let steps = []
-        response.forEach(step => {
-            let stepObj = {
-                python: step.python,
-                stateChanges: []
-            }
-            step.stateChanges.forEach(change => {
-                const newPos = convert(change.x, change.y, currState.inputY);
-                const newDir = change.dir;
-                currState = {
-                    ...currState,
-                    marioLoc: newPos,
-                    currentDirection: newDir
-                }
-                stepObj.stateChanges.push(currState);
-            })
-            steps.push(stepObj)
         })
-        return steps;
+        .then(response => response.json())
+        .then(response => {
+            let steps = [];
+            console.log("response", response)
+            response.forEach(step => {
+                let stepObj = {
+                    python: step.python,
+                    stateChanges: []
+                };
+                step.stateChanges.forEach(change => {
+                    const newPos = convertToContinuousNumbering(change.x, change.y, currState.inputY);
+                    const newDir = change.dir;
+                    const newPositionsSeen = convertPositions(newPos, currState.marioLoc, currState.inputY);
+                    currState = {
+                        ...currState,
+                        marioLoc: newPos,
+                        currentDirection: newDir,
+                        positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                    };
+                    stepObj.stateChanges.push(currState);
+                });
+                steps.push(stepObj);
+            })
+            console.log(steps);
+            setControl(prev => ({
+                ...prev,
+                steps: steps
+            }));
+        });
     }
 
-    function convert(x, y, columns) {
-        return x + columns * (y - 1);
+    function range(size, startAt = 0) {
+        return [...Array(size).keys()].map(i => i + startAt);
+    }
+
+    function convertPositions(newPos, oldPos, columns) {
+        let newPosCoordinates = convertToCoordinates(newPos, columns);
+        let oldPosCoordinates = convertToCoordinates(oldPos, columns);
+        if (oldPosCoordinates.y === newPosCoordinates.y) {
+            return range(newPos - oldPos + 1, oldPos)
+        } else if (oldPosCoordinates.x === newPosCoordinates.x) {
+            let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
+            return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
+        } else {
+            return []
+        }
+    }
+
+    function getPythonicCode() {
+        return <div><br/>
+           {control.pythonicCode.map(codeLine => {
+               return <p> {codeLine} </p>
+           })}
+        </div>
+    }
+
+    function convertToCoordinates(blockCount, columns) {
+        const y = 1 + Math.floor(blockCount / columns);
+        const x = blockCount % columns;
+        return { x, y }
+    }
+
+    function convertToContinuousNumbering(x, y, columns) {
+        let conv = (x + columns * (y - 1));
+        return conv
     }
 
     const submitCode = function(e) {
@@ -146,40 +152,23 @@ export default function Controller() {
         <>
             <div className = "game-info">
                 <form onSubmit = {submitCode}>
-                    <input type = "textarea" rows="5" cols="50"/>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginRight: '50px'
+                    }}>
+                        <textarea rows="20" cols="50" />
+                    </div>
                     <input type = "submit" value = "Run"/>
                 </form>
             </div>
             <div className = "separator"></div>
             <div className = "game-info">
                 <h3>Translated Code: Python</h3>
+                { getPythonicCode() }
             </div>
             <div className = "separator"></div>
             <div className="controller"></div>
       </>
     );
 }
-
-/**
-     * Function to check if boundaries character is gonna
-     * overflow boundary, if so then move it in opposite direction
-     * LOGIC: IT CHECKS IF CHARACTER LOCATION IS NEAR BOUNDARY "AND"
-     * IF CURRENT DIRECTION OF MOVEMENT IS GOING OUT BOUNDARY ONLY
-     * THEN IT CHANGES THE DIRECTION TO OPPOSITE SIDE
-     * @public
-     */
-    // const isBoundary = () => {
-    //     if(mazeData.marioLoc + mazeData.inputX > mazeData.inputX * mazeData.inputY && mazeData.currentDirection==='down'){
-    //         gameLoop(moveUp);    
-    //         return;
-    //     }else if(mazeData.marioLoc - mazeData.inputX < 0 && mazeData.currentDirection==='up'){
-    //         gameLoop(moveDown);    
-    //         return;
-    //     }else if((mazeData.marioLoc - 1)%mazeData.inputX === 0 && mazeData.currentDirection==='left'){
-    //         gameLoop(moveRight);    
-    //         return;
-    //     }else if((mazeData.marioLoc)%mazeData.inputX === 0 && mazeData.currentDirection==='right'){
-    //         gameLoop(moveLeft);    
-    //         return;
-    //     }
-    // }

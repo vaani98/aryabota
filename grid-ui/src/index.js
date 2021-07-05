@@ -8,7 +8,7 @@ import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
 import Controller from './characterController';
 //GLOBAL CONTEXT / STATE
-import { MazeState, PythonicCodeState } from './globalStates';
+import { MazeState } from './globalStates';
 
 let input = {
   x: 10,
@@ -21,7 +21,6 @@ let input = {
  * @returns [array of numbers], number 
  */
 const randomFoods = randomPositions(parseInt(input.x), parseInt(input.y));
-const centreMario = 1;
 
 
 /**
@@ -53,31 +52,31 @@ function Game() {
       inputX: parseInt(input.x),
       inputY: parseInt(input.y),
       randomFoods: randomFoods,
-      currentDirection: "right"
+      currentDirection: "down",
+      positionsSeen: [1]
     }));
 
   }, []);
 
   //check if player location is generated
   let maze;
-  if(mazeData.marioLoc){
+  if(mazeData.marioLoc) {
     //set maze and controller component with required props
-    console.log(mazeData)
     maze = (
         <div className = "game">
           <MazeState.Provider value={[mazeData, setMazeData]}>
             <Controller />
-            <Maze x={input.x} y={input.y} foodLoc={mazeData.randomFoods} marioLoc={mazeData.marioLoc} />
+            <Maze 
+              x = {input.x} 
+              y = {input.y} 
+              foodLoc = {mazeData.randomFoods} 
+              marioLoc = {mazeData.marioLoc} 
+              currentDirection = {mazeData.currentDirection}
+              positionsSeen = {mazeData.positionsSeen}
+              />
           </MazeState.Provider>
         </div>
     );
-    // pythonicCodeBlock = (
-    //   <PythonicCodeState.Provider value={[pythonicCode, setPythonicCode]}>
-    //     {/* {pythonicCode.forEach(codeLine => <p>{codeLine}</p>
-    //     )} */}
-    //     gratz
-    //   </PythonicCodeState.Provider>
-    // )
   } else {
     maze = <p>Loading...</p>
   }

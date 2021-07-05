@@ -1,13 +1,6 @@
-# TODO 1: fix newline issues in input, currently giving syntax error
 """
-og state: (2, 3, up)
-inp: move 2\nturn left
-op: [
-    (move(2), [(2, 5, up)]),
-    (turnLeft(), [(2, 5, left)])
-]
+CoinSweeper robot class
 """
-
 class CoinSweeper:
     __instance = None
     @staticmethod
@@ -23,9 +16,9 @@ class CoinSweeper:
             raise Exception("This class is a singleton!")
         else:
             CoinSweeper.__instance = self
-        self.x = 0
-        self.y = 0
-        self.dir = "right"
+        self.x = 1
+        self.y = 1
+        self.dir = "down"
     
     # utility
     def getDir(self):
@@ -48,9 +41,9 @@ class CoinSweeper:
     # affect
     def move(self, steps):
         if self.dir == "up":
-            self.y += steps
-        elif self.dir == "down":
             self.y -= steps
+        elif self.dir == "down":
+            self.y += steps
         elif self.dir == "right":
             self.x += steps
         else:

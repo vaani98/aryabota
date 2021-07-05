@@ -5,4 +5,3 @@ import React from 'react';
  * @exports
  */
 export const MazeState = React.createContext([{}, () => {}]);
-export const PythonicCodeState = React.createContext([{}, () => {}]);

@@ -6,10 +6,7 @@ from controller import do
 from CoinSweeper import CoinSweeper
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-cors = CORS(app, resources={r"/foo": {"origins": "http://localhost:3000"}})
+CORS(app)
 
 
 @app.route("/")
@@ -18,9 +15,12 @@ def index():
     return "Hello World!"
 
 
-@app.route('/coinSweeper', methods=(['POST']))
+@app.route('/coinSweeper', methods=(['POST', 'OPTIONS']))
+@cross_origin()
 def coinSweeper():
     print("@@", request)
+    if request.method == 'OPTIONS':
+        return ("", 200)
     if request.method == 'POST':
         # getting raw data in JSON format, needs header Content-Type = application/json
         commands = request.json
