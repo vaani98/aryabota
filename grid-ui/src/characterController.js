@@ -151,6 +151,7 @@ export default function Controller() {
     return (
         <>
             <div className = "game-info">
+            <h3>Enter your code here:</h3>
                 <form onSubmit = {submitCode}>
                     <div style={{
                         display: 'flex',

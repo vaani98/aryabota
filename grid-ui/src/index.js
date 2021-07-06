@@ -1,12 +1,13 @@
 import ReactDOM from 'react-dom';
 import './index.css';
-import React, { useState, useLayoutEffect} from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 //UTILITY FUNCTIONS SCRIPT
 import { randomPositions, convertToContinuousNumbering } from './utils';
 //MAZE GENERATOR COMPONENT
 import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
 import Controller from './characterController';
+import UiConfigs from './uiConfigurations';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 
@@ -70,7 +71,9 @@ function Game() {
     console.log(mazeData)
     //set maze and controller component with required props
     maze = (
-        <div className = "game">
+      <>
+        <UiConfigs />
+        <div className="game">
           <MazeState.Provider value={[mazeData, setMazeData]}>
             <Controller />
             <Maze 
@@ -83,6 +86,7 @@ function Game() {
               />
           </MazeState.Provider>
         </div>
+      </>
     );
   } else {
     maze = <p>Loading...</p>
@@ -90,7 +94,7 @@ function Game() {
 
   return (
     <>
-        { maze }
+      {maze}
     </>
   );
 }
