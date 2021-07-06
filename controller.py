@@ -3,8 +3,8 @@
 import ply.lex as lex
 import ply.yacc as yacc
 
-from coin_sweeper import CoinSweeper
 from grid import Grid
+from coin_sweeper import CoinSweeper
 
 # utilities
 # global command stack
