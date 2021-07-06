@@ -85,9 +85,10 @@ export default function Controller() {
                     stateChanges: []
                 };
                 step.stateChanges.forEach(change => {
-                    const newPos = convertToContinuousNumbering(change.x, change.y, currState.inputY);
+                    const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
                     const newDir = change.dir;
-                    const newPositionsSeen = convertPositions(newPos, currState.marioLoc, currState.inputY);
+                    const newPositionsSeen = []
+                    // convertPositions(newPos, currState.marioLoc, currState.inputY);
                     currState = {
                         ...currState,
                         marioLoc: newPos,
@@ -137,9 +138,8 @@ export default function Controller() {
         return { x, y }
     }
 
-    function convertToContinuousNumbering(x, y, columns) {
-        let conv = (x + columns * (y - 1));
-        return conv
+    function convertToContinuousNumbering(row, column, columns) {
+        return column + columns * (row - 1);
     }
 
     const submitCode = function(e) {

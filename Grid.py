@@ -1,41 +1,41 @@
-#Create grid singleton class
-#Take no of rows and columns as input( have default values )
-#Then initialize that to random values
+""" the Singleton Grid, its attributes and state"""
 import random
-
 class Grid:
+    """Properties:
+        rows: number of rows, default 10
+        columns: number of columns, default 10"""
     __instance = None
     @staticmethod
-    def getInstance():
-        # Static access method
-        if Grid.__instance == None:
+    def get_instance():
+        """Static access method"""
+        if Grid.__instance is None:
             Grid()
         return Grid.__instance
 
-    def __init__(self, rows=10, columns=10):
-        # Virtually private constructor
-        if Grid.__instance != None:
+    def __init__(self, rows = 10, columns = 10):
+        """Virtually private constructor"""
+        # TODO This class gets initialised twice, check why? On hot reload it happens only once, but on starting server
+        # it happens twice
+        if Grid.__instance is not None:
             raise Exception("This class is a singleton!")
-        else:
-            Grid.__instance = self
-        #self.total_value = 0
+        Grid.__instance = self
         self.rows = rows
         self.columns = columns
+        self.initialize_grid()
 
     def initialize_grid(self):
-        self.grid = [[random.randint(0,10) for i in range(self.columns)] for j in range(self.rows)]
-        print(self.grid)
+        """Initialise the grid with a random number of coins at each location"""
+        self.coins_allocated = [[random.randint(0,10) for i in range(self.columns)] for j in range(self.rows)]
+        # print(self.coins_allocated)
 
-    def getNumberOfCoins(self, x, y):
-        if(x < self.rows and y < self.columns):
-            '''print("Grid.py",self.grid[x][y])
-            self.value = self.grid[x][y]
-            print("Grid.py value",self.value)
-            self.total_value = self.total_value + self.value
-            print("Grid.py total value",self.total_value)'''
-            return self.grid[x][y]
-        else:
-            raise Exception("Input values out of range")
-
-    def getTotalValue(self):
-        return self.total_value
+    def get_number_of_coins(self, row, column):
+        """Get number of coins at a given position in the grid, ie, (row, column)"""
+        if self.coins_allocated is not None:
+            if row < self.rows and column < self.columns:
+                return self.coins_allocated[row][column]
+            raise Exception("This position does not exist on the grid!")
+        # TODO decide whether to just return 0 instead?
+        raise Exception("No coins are present in this grid!")
+    # def get_total_value(self):
+    #     """Get the total number of coins in the grid"""
+    #     return self.total_value
