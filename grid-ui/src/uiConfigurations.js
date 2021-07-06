@@ -75,14 +75,6 @@ function UiConfigs() {
     }
 
     const ToggleColor = () => {
-        // const useStyles = makeStyles((theme) => ({
-        //     button: {
-        //         // margin: theme.spacing(1),
-        //     },
-        // }));
-
-        // const classes = useStyles();
-
         var [tc, setTc] = useState(false);
         const onClick = () => {
             if (tc === false) setTc(true);
@@ -95,7 +87,6 @@ function UiConfigs() {
                     onClick={onClick}
                     variant="contained"
                     color="secondary"
-                    // className={classes.button}
                     startIcon={<PaletteTwoTone />}
                 >
                     Edit Color
@@ -145,9 +136,9 @@ function UiConfigs() {
                 {
                     'body { background-color: ' + color + '; color: ' + LightenDarkenColor(color, -85) + ';}'
                     + '.toolbar { background-color: ' + LightenDarkenColor(color, -35) + ';}'
-                    + (sizes === "Small" ? 'p { font-size: small;} h3 { font-size: large; } .status { font-size: 22px; }' :
-                        sizes === "Medium" ? 'p { font-size: medium;} h3 { font-size: larger; } .status { font-size: 25px; }' :
-                            sizes === "Large" ? 'p { font-size: larger;} h3 { font-size: x-large; } .status { font-size: 30px; }' :
+                    + (sizes === "Small" ? 'p { font-size: small;} h3 { font-size: large; } .status { font-size: 22px; } textarea { font-size: 13px;}' :
+                        sizes === "Medium" ? 'p { font-size: medium;} h3 { font-size: larger; } .status { font-size: 25px; } textarea { font-size: 15px;}' :
+                            sizes === "Large" ? 'p { font-size: larger;} h3 { font-size: x-large; } .status { font-size: 30px; } textarea { font-size: 17px;}' :
                                 null)
 
                 }

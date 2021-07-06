@@ -86,6 +86,11 @@ h3 {
   border: 0.5px solid;
 }
 
+textarea  
+{  
+  font-size: 15px;   
+}
+
 .grid-container {
   margin-top: 20px;
 }
