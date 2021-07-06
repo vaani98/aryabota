@@ -1,8 +1,10 @@
+"""Lexer and parser module for pseudo-code"""
+# pylint: disable=invalid-name,unused-argument,global-statement
 import ply.lex as lex
 import ply.yacc as yacc
 
-from CoinSweeper import CoinSweeper
-from Grid import Grid
+from grid import Grid
+from coin_sweeper import CoinSweeper
 
 # utilities
 # global command stack
@@ -10,40 +12,41 @@ commandStack = []
 variables = dict()
 total_var = dict()
 
-# wrap command in JSON response format
-def makeSingleCommand(command):
-    if(command == "getX()"):
+def make_single_command(command):
+    """Wrap command in JSON response format"""
+    if command == "getX()":
         return {
                 "python": command,
-                "state": bot.myX()
+                "state": bot.my_row()
                }
-    elif(command == "getY()"):
+    if command == "getY()":
         return {
                 "python": command,
-                "state": bot.myY()
+                "state": bot.my_column()
                }
     return {
             "python": command,
             "stateChanges": [
-                bot.getDetails()
+                bot.get_position_details()
             ]
         }
 
-def makeCommand(command, value):
-    if("getNumberOfCoins(bot.myX(), bot.myY())" in command):
+def make_command(command, value):
+    """Wrap command in JSON response format"""
+    if "getNumberOfCoins(bot.my_row(), bot.my_column())" in command:
         return {
                 "python": command,
                 "number of coins": value
                }
-    elif('+' in command or '-' in command or '*' in command or '/' in command or '=' in command):
+    if '+' in command or '-' in command or '*' in command or '/' in command or '=' in command:
         return {
                 "python": command,
                 "value": value
                }
+    return {}
 
-bot = CoinSweeper.getInstance()
-grid = Grid.getInstance()
-grid.initialize_grid()
+bot = CoinSweeper.get_instance()
+grid = Grid.get_instance()
 
 tokens = [
     'NUMBER',
@@ -54,8 +57,8 @@ tokens = [
     'LPAREN',
     'RPAREN',
     'EQUAL',
-    'MYX',
-    'MYY',
+    'MYROW',
+    'MYCOLUMN',
     'MOVE',
     'TURNLEFT',
     'TURNRIGHT',
@@ -107,15 +110,15 @@ def t_TURNRIGHT(t):
     return t
 
 
-def t_MYX(t):
-    r'my[ ]*x'
-    t.value = bot.myX()
+def t_MYROW(t):
+    r'my[ ]*row'
+    t.value = bot.my_row()
     return t
 
 
-def t_MYY(t):
-    r'my[ ]*y'
-    t.value = bot.myY()
+def t_MYCOLUMN(t):
+    r'my[ ]*column'
+    t.value = bot.my_column()
     return t
 
 
@@ -133,12 +136,12 @@ def t_ASSIGN(t):
 
 def t_COINS(t):
     r'number[ ]*of[ ]*coins'
-    t.value = 'COINS' 
+    t.value = 'COINS'
     return t
 
 def t_TOTALCOINS(t):
     r'total[ ]*number[ ]*of[ ]*coins'
-    t.value = 'TOTALCOINS' 
+    t.value = 'TOTALCOINS'
     return t
 
 def t_IDENTIFIER(t):
@@ -150,11 +153,10 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-
 def t_error(t):
+    """Error in lexing token"""
     print("Invalid Token: ", t.value[0])
     t.lexer.skip(1)
-
 
 lexer = lex.lex()
 
@@ -165,26 +167,26 @@ def p_commands(p):
 
 def p_command(p):
     '''
-    expr : MYX
-        | MYY
+    expr : MYROW
+        | MYCOLUMN
         | TURNLEFT
         | TURNRIGHT
         | MOVE NUMBER
         | assign_expr
     '''
     if len(p) == 2 and p[1] == 'TURNLEFT':
-        bot.turnLeft()
-        commandStack.append(makeSingleCommand("turnLeft()")) 
+        bot.turn_left()
+        commandStack.append(make_single_command("turnLeft()"))
     elif len(p) == 2 and p[1] == 'TURNRIGHT':
-        bot.turnRight()
-        commandStack.append(makeSingleCommand("turnRight()")) 
-    elif len(p) == 2 and p[1] == 'MYX':
-        commandStack.append(makeSingleCommand("getX()")) 
+        bot.turn_right()
+        commandStack.append(make_single_command("turnRight()"))
+    elif len(p) == 2 and p[1] == 'MYROW':
+        commandStack.append(make_single_command("get_row()"))
     elif len(p) == 2 and p[1] == 'MYY':
-        commandStack.append(makeSingleCommand("getY()")) 
+        commandStack.append(make_single_command("get_column()"))
     elif len(p) == 3:
         bot.move(p[2])
-        commandStack.append(makeSingleCommand("move(" + str(p[2]) + ")")) 
+        commandStack.append(make_single_command("move(" + str(p[2]) + ")"))
 
 def p_assign_expr(p):
     '''
@@ -197,14 +199,13 @@ def p_assign_expr(p):
                 | IDENTIFIER ASSIGN IDENTIFIER DIVIDE IDENTIFIER
     '''
     global variables, total_var
-    #print(p[1])
-    if(p[3] == 'COINS'):
+    if p[3] == 'COINS':
         var = p[1]
-        value = grid.getNumberOfCoins(bot.myX(), bot.myY())
+        value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
         variables[var] = value
         print("Variables = ", variables)
-        commandStack.append(makeCommand(var + " = getNumberOfCoins(bot.myX(), bot.myY())", value))
-    elif(p[3] == 'TOTALCOINS'):
+        commandStack.append(make_command(var + " = getNumberOfCoins(bot.my_row(), bot.my_column())", value))
+    elif p[3] == 'TOTALCOINS':
         var = p[1]
         value = 0
         for i in variables:
@@ -212,38 +213,40 @@ def p_assign_expr(p):
         total_var[var] = value
         print("Variables = ", variables)
         print("Total value = ", total_var)
-        commandStack.append(makeCommand(var + " = getTotalNumberOfCoins()", value))
-    elif(len(p) == 6):
+        commandStack.append(make_command(var + " = getTotalNumberOfCoins()", value))
+    elif len(p) == 6:
         var1 = p[1]
         var2 = p[3]
         var3 = p[5]
-        if(p[4] == 'PLUS'):
+        if p[4] == 'PLUS':
             variables[var1] = variables[var2] + variables[var3]
-            commandStack.append(makeCommand(var1 + " = " + var2 + '+' + var3, variables[var1]))
-        elif(p[4] == 'MINUS'):
+            commandStack.append(make_command(var1 + " = " + var2 + '+' + var3, variables[var1]))
+        elif p[4] == 'MINUS':
             variables[var1] = variables[var2] - variables[var3]
-            commandStack.append(makeCommand(var1 + " = " + var2 + '-' + var3, variables[var1]))
-        elif(p[4] == 'TIMES'):
+            commandStack.append(make_command(var1 + " = " + var2 + '-' + var3, variables[var1]))
+        elif p[4] == 'TIMES':
             variables[var1] = variables[var2] * variables[var3]
-            commandStack.append(makeCommand(var1 + " = " + var2 + '*' + var3, variables[var1]))
-        elif(p[4] == 'DIVIDE'):
+            commandStack.append(make_command(var1 + " = " + var2 + '*' + var3, variables[var1]))
+        elif p[4] == 'DIVIDE':
             variables[var1] = variables[var2] / variables[var3]
-            commandStack.append(makeCommand(var1 + " = " + var2 + '/' + var3, variables[var1]))
+            commandStack.append(make_command(var1 + " = " + var2 + '/' + var3, variables[var1]))
         print("Variables = ",variables)
     else:
         var = p[1]
         value = p[3]
         variables[var] = value
         print("Variables = ", variables)
-        commandStack.append(makeCommand(var + " = " + str(value), value))
+        commandStack.append(make_command(var + " = " + str(value), value))
 
 
 def p_error(p):
-    print("Syntax error in input!")
+    """Error in parsing command"""
+    print("Syntax error in input! You entered " + str(p))
 
 parser = yacc.yacc()
 
-def do(commands):
+def understand(commands):
+    """Understand pseudo-code"""
     commandStack.clear()
     parser.parse(commands)
     print("Command stack",commandStack)
