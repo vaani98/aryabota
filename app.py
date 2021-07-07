@@ -1,10 +1,34 @@
 """Flask App"""
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-from controller import understand
+import yaml
+import json
 
+from grid import Grid
+from coin_sweeper import CoinSweeper
+from controller import understand
+from utils import lint_problem_grid
+
+"""Opening config to read grid attributes"""
+with open('config.yaml') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
 app = Flask(__name__)
 CORS(app)
+
+@app.before_first_request
+def before_first_request():
+    """Reading and linting config, initialising the grid"""
+    bot = CoinSweeper.get_instance()
+    grid = Grid.get_instance()
+    with open("resources/problem-grids/" + config["app"]["problem_grid"]) as problem_grid_file:
+        problem_grid = json.loads(problem_grid_file.read())
+        linted_problem_grid = lint_problem_grid(problem_grid)
+        if linted_problem_grid:
+            grid.configure(linted_problem_grid["rows"], linted_problem_grid["columns"], linted_problem_grid["coins"])
+            coin_sweeper_start = linted_problem_grid["coin_sweeper_start"]
+            bot.configure(coin_sweeper_start["row"], coin_sweeper_start["column"], coin_sweeper_start["dir"])
+        else:
+            raise Exception("Couldn't initialise problem grid!")
 
 
 @app.route("/")

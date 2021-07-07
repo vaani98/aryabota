@@ -3,7 +3,8 @@
     "columns": 3,
     "coin_sweeper_start": {
         "row": 1,
-        "column": 1
+        "column": 1,
+        "dir": "down"
     },
     "coins": [
         {

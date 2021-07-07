@@ -21,6 +21,11 @@ class CoinSweeper:
         self.row = 1
         self.column = 1
         self.dir = "down"
+    def configure(self, row, column, dir):
+        """Configure attributes"""
+        self.row = row
+        self.column = column
+        self.dir = dir
     # utility
     def get_dir(self):
         """Get current direction the CoinSweeper robot is facing"""
