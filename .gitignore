@@ -5,3 +5,4 @@ venv/
 **/package-lock.json
 **/netlify.toml
 **/node_modules
+**/.vscode

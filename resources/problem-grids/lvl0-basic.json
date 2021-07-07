@@ -1,0 +1,21 @@
+{
+    "rows": 3,
+    "columns": 3,
+    "coin_sweeper_start": {
+        "row": 1,
+        "column": 1
+    },
+    "coins": [
+        {
+            "row": 1,
+            "column": 2,
+            "value": 5
+        },
+        {
+            "row": 2,
+            "column": 2,
+            "value": 2
+        }
+    ],
+    "obstacles": []
+}
