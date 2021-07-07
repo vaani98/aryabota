@@ -22,6 +22,7 @@ p, h3{
 }
 
 p {
+  font-family: Consolas, monaco, monospace; 
   font-size: medium;
 }
 
@@ -88,6 +89,7 @@ h3 {
 
 textarea  
 {  
+  font-family: Consolas, monaco, monospace; 
   font-size: 15px;   
 }
 
