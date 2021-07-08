@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { blueGrey } from '@material-ui/core/colors';
+import Button from '@material-ui/core/Button';
+import PlayArrowRounded from '@material-ui/icons/PlayArrowRounded';
 
 /**
  * Component for controlling character/player
@@ -20,7 +24,7 @@ export default function Controller() {
      */
     const [mazeData, setMazeData] = useContext(MazeState);
     // const [pythonicCode, setPythonicCode] = useContext(PythonicCodeState);
-    
+
     /**
      * local state to store interval id / game loop id
      * @const
@@ -38,8 +42,7 @@ export default function Controller() {
     });
 
     function doChange() {
-        if (control.steps.length > 0)
-        {
+        if (control.steps.length > 0) {
             const currStep = control.steps[0]
             if (currStep.stateChanges.length > 0) {
                 const change = currStep.stateChanges[0]
@@ -59,9 +62,9 @@ export default function Controller() {
                 changeInterval: null
             }))
         }
-        
+
     }
-    
+
     function updateCoinSweeperBot(code) {
         getSteps(code, mazeData);
     }
@@ -75,36 +78,36 @@ export default function Controller() {
                 'Content-type': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(response => {
-            let steps = [];
-            console.log("response", response)
-            response.forEach(step => {
-                let stepObj = {
-                    python: step.python,
-                    stateChanges: []
-                };
-                step.stateChanges.forEach(change => {
-                    const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
-                    const newDir = change.dir;
-                    const newPositionsSeen = []
-                    // convertPositions(newPos, currState.marioLoc, currState.inputY);
-                    currState = {
-                        ...currState,
-                        marioLoc: newPos,
-                        currentDirection: newDir,
-                        positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+            .then(response => response.json())
+            .then(response => {
+                let steps = [];
+                console.log("response", response)
+                response.forEach(step => {
+                    let stepObj = {
+                        python: step.python,
+                        stateChanges: []
                     };
-                    stepObj.stateChanges.push(currState);
-                });
-                steps.push(stepObj);
-            })
-            console.log(steps);
-            setControl(prev => ({
-                ...prev,
-                steps: steps
-            }));
-        });
+                    step.stateChanges.forEach(change => {
+                        const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
+                        const newDir = change.dir;
+                        const newPositionsSeen = []
+                        // convertPositions(newPos, currState.marioLoc, currState.inputY);
+                        currState = {
+                            ...currState,
+                            marioLoc: newPos,
+                            currentDirection: newDir,
+                            positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                        };
+                        stepObj.stateChanges.push(currState);
+                    });
+                    steps.push(stepObj);
+                })
+                console.log(steps);
+                setControl(prev => ({
+                    ...prev,
+                    steps: steps
+                }));
+            });
     }
 
     function range(size, startAt = 0) {
@@ -125,10 +128,10 @@ export default function Controller() {
     }
 
     function getPythonicCode() {
-        return <div><br/>
-           {control.pythonicCode.map(codeLine => {
-               return <p> {codeLine} </p>
-           })}
+        return <div><br />
+            {control.pythonicCode.map(codeLine => {
+                return <p> {codeLine} </p>
+            })}
         </div>
     }
 
@@ -142,17 +145,23 @@ export default function Controller() {
         return column + columns * (row - 1);
     }
 
-    const submitCode = function(e) {
+    const submitCode = function (e) {
         e.preventDefault();
         const code = e.target[0].value;
         updateCoinSweeperBot(code)
     }
 
+    const theme = createTheme({
+        palette: {
+            primary: blueGrey,
+        },
+    });
+
     return (
         <>
-            <div className = "game-info">
-            <h3>Enter your code here:</h3>
-                <form onSubmit = {submitCode}>
+            <div className="game-info">
+                <h3>Enter your code here:</h3>
+                <form onSubmit={submitCode}>
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -160,16 +169,26 @@ export default function Controller() {
                     }}>
                         <textarea rows="20" cols="50" />
                     </div>
-                    <input type = "submit" value = "Run"/>
+
+                    <ThemeProvider theme={theme}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            endIcon={<PlayArrowRounded />}
+                        >
+                            Run
+                        </Button>
+                    </ThemeProvider>
                 </form>
             </div>
-            <div className = "separator"></div>
-            <div className = "game-info">
+            <div className="separator"></div>
+            <div className="game-info">
                 <h3>Translated Code: Python</h3>
-                { getPythonicCode() }
+                {getPythonicCode()}
             </div>
-            <div className = "separator"></div>
+            <div className="separator"></div>
             <div className="controller"></div>
-      </>
+        </>
     );
 }

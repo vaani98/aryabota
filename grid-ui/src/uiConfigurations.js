@@ -4,14 +4,21 @@ import { GithubPicker } from 'react-color';
 import Button from '@material-ui/core/Button';
 import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
+import Create from '@material-ui/icons/Create';
 
 
 function UiConfigs() {
 
     var [color, setColor] = useState("");
+    var [sizes, setSizes] = useState("Medium");
+    var [penState, setPenState] = useState("yellow");
 
     var colorChange = e => {
         setColor(e.hex);
+    }
+
+    var sizeChange = e => {
+        setSizes(e.label);
     }
 
     var sizeValues = [
@@ -28,12 +35,6 @@ function UiConfigs() {
             label: "Large"
         }
     ];
-
-    var [sizes, setSizes] = useState("Medium");
-
-    var sizeChange = e => {
-        setSizes(e.label);
-    }
 
     // let x = 32;
     // let colors = [];
@@ -129,6 +130,27 @@ function UiConfigs() {
         )
     }
 
+    const TogglePen = () => {
+        // var [tp, setTp] = useState("penDown");
+        const onClick = () => {
+            if (penState === "yellow") setPenState("white");
+            else setPenState("yellow");
+        }
+
+        return (
+            <div className="penToggle">
+                <Button
+                    onClick={onClick}
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<Create />}
+                >
+                    Pen Up/Down
+                </Button>
+            </div>
+        )
+    }
+
     return (
         <div>
             {/* <h1 className={colors}>{x}</h1> */}
@@ -136,6 +158,8 @@ function UiConfigs() {
                 {
                     'body { background-color: ' + color + '; color: ' + LightenDarkenColor(color, -85) + ';}'
                     + '.toolbar { background-color: ' + LightenDarkenColor(color, -35) + ';}'
+                    // + '.penDown { background-color: ' + LightenDarkenColor(color, -25) + ';}'
+                    + '.penDown { background-color: ' + penState + ';}'
                     + (sizes === "Small" ? 'p { font-size: small;} h3 { font-size: large; } .status { font-size: 22px; } textarea { font-size: 13px;}' :
                         sizes === "Medium" ? 'p { font-size: medium;} h3 { font-size: larger; } .status { font-size: 25px; } textarea { font-size: 15px;}' :
                             sizes === "Large" ? 'p { font-size: larger;} h3 { font-size: x-large; } .status { font-size: 30px; } textarea { font-size: 17px;}' :
@@ -146,6 +170,7 @@ function UiConfigs() {
             <div className="toolbar" id="toolbar-div">
                 <ToggleSize />
                 <ToggleColor />
+                <TogglePen />
             </div>
         </div>
     )

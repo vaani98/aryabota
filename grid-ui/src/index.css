@@ -168,10 +168,10 @@ textarea
   /* position: fixed; */
 }
 
-.testColor {
-  color: white;
+.penUp {
+  background-color: white;
 }
 
-.test2 {
-  color: green;
+.penDown {
+  background-color: yellow;
 }
