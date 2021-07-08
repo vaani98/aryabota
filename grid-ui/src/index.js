@@ -7,6 +7,7 @@ import { randomPositions, convertToContinuousNumbering } from './utils';
 import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
 import Controller from './characterController';
+//UI CONFIGURATION COMPONENT
 import UiConfigs from './uiConfigurations';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';

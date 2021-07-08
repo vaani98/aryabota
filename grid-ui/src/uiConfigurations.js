@@ -1,26 +1,62 @@
 import React, { useState } from 'react';
+//BUTTON and DROPDOWN COMPONENTS
 import Select from 'react-select';
-import { GithubPicker } from 'react-color';
 import Button from '@material-ui/core/Button';
+//COLOUR PICKER
+import { GithubPicker } from 'react-color';
+//MATERIAL UI ICONS FOR CONFIG BUTTONS
 import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
 import Create from '@material-ui/icons/Create';
 
-
+/**
+ * UI Configuration Toolbar Component
+ * This component provides support for:
+ * 1. Adjusting font size (s/m/l) ranges
+ * 2. Changing webpage base colour
+ * 3. Toggling pen status (up/down)
+ * @component
+ * @example
+ * <UiConfigs />
+ */
 function UiConfigs() {
 
+    /**
+     * color sets the base color of the webpage
+     * @var
+     */
     var [color, setColor] = useState("");
+    /**
+     * sizes sets the size range of the text
+     * @var
+     */
     var [sizes, setSizes] = useState("Medium");
+    /**
+     * penState sets toggles colour trail visibility
+     * @var
+     */
     var [penState, setPenState] = useState("yellow");
 
+    /**
+     * Updates color
+     * @param {*} e 
+     */
     var colorChange = e => {
         setColor(e.hex);
     }
 
+    /**
+     * Updates sizes
+     * @param {*} e 
+     */
     var sizeChange = e => {
         setSizes(e.label);
     }
 
+    /**
+     * Contains option values for fontSize dropdown
+     * @var 
+     */
     var sizeValues = [
         {
             value: 1,
@@ -45,6 +81,12 @@ function UiConfigs() {
     //     colors.push('test2');
     // }
 
+    /**
+     * calculates colour values for highlights based on the base colour
+     * @param {*} col 
+     * @param {*} amt 
+     * @returns lightened or darkened colour
+     */
     function LightenDarkenColor(col, amt) {
 
         var colorValue = false;
@@ -75,6 +117,12 @@ function UiConfigs() {
 
     }
 
+    /**
+     * This component displays a button on the toolbar
+     * @returns ToggleColor component
+     * @example
+     * <ToggleColor />
+     */
     const ToggleColor = () => {
         var [tc, setTc] = useState(false);
         const onClick = () => {
@@ -101,6 +149,12 @@ function UiConfigs() {
         )
     }
 
+    /**
+     * This component displays a button on the toolbar
+     * @returns ToggleSize component
+     * @example
+     * <ToggleSize />
+     */
     const ToggleSize = () => {
         var [ts, setTs] = useState(false);
         const onClick = () => {
@@ -130,6 +184,12 @@ function UiConfigs() {
         )
     }
 
+    /**
+     * This component displays a button on the toolbar
+     * @returns TogglePen component
+     * @example
+     * <TogglePen />
+     */
     const TogglePen = () => {
         // var [tp, setTp] = useState("penDown");
         const onClick = () => {
