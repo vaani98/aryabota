@@ -23,3 +23,7 @@ Three Panes:
 3. Visual: visualization of grid with the *CoinSweeper* bot
 
 The command set remains the same as with *BotZero*, except the `Exit` command which is not required anymore.
+
+## Iteration 3: CoinSweeper v2
+Same as the previous, except adding functionality for the levels, along with problem grid and UI configuration. The grammar is expanded.
+Further details can be found at [this page](https://www.notion.so/Levels-0-1-2-2c107eb882b640d98d3cd877bdd64501).
