@@ -20,7 +20,7 @@ export default function Maze(props) {
    * status/title for maze game
    * @const
    */
-  const status = 'CoinSweeper';
+  // const status = 'CoinSweeper';
 
   /**
    * addRows function to generate a array of row 
@@ -64,14 +64,10 @@ export default function Maze(props) {
    * @param {number} blockCount unique id for each block
    */
   const renderBlock = (blockCount) => {
-    let styles = {
-      backgroundColor: 'white'
-    };
+    let classnames = "penUp";
     if (props?.positionsSeen?.indexOf(blockCount) >= 0
       && props?.positionsSeen?.indexOf(blockCount) !== -1) {
-      styles = {
-        backgroundColor: 'yellow',
-      }
+      classnames = "penDown";
     }
     if (props.marioLoc === blockCount) {
       let rotation;
@@ -86,22 +82,23 @@ export default function Maze(props) {
         value = {blockCount} 
         rotation = {rotation} 
         image = {`url(${coinsweeper_img})`}
-        style = {styles}
+        className={classnames}
         />;
     } else {
       return <Block 
         value = {blockCount} 
         rotation = '0' 
         image = {'none'}
-        style = {styles}
+        className={classnames}
       />;
     }
 
   }  
 
   return (
-    <div>
-      <div className="status">{status}</div>
+    <div className="grid-container">
+      {/* <div className="status">{status}</div> */}
+      <h3>CoinSweeper</h3>
       {addRows()}
     </div>
   );
