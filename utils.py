@@ -19,7 +19,7 @@ def lint_problem_grid(problem_grid):
         return False
     # convert coins list to the required format
     coins = problem_grid["coins"]
-    coins_allocated = [[0 for i in range(columns)] for j in range(rows)]
+    coins_per_position = [[0 for i in range(columns)] for j in range(rows)]
     for loc in coins:
         loc_row = loc["row"]
         loc_column = loc["column"]
@@ -28,6 +28,6 @@ def lint_problem_grid(problem_grid):
             return False
         if loc_column < 1 or loc_column > columns:
             return False
-        coins_allocated[loc_row - 1][loc_column - 1] = loc["value"]
-    problem_grid["coins"] = coins_allocated
+        coins_per_position[loc_row - 1][loc_column - 1] = loc["value"]
+    problem_grid["coins_per_position"] = coins_per_position
     return problem_grid

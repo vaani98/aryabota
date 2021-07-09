@@ -3,7 +3,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
 
-from grid import Grid
+from Grid import Grid
 from coin_sweeper import CoinSweeper
 
 # utilities
@@ -27,7 +27,7 @@ def make_single_command(command):
     return {
             "python": command,
             "stateChanges": [
-                bot.get_position_details()
+                bot.get_state()
             ]
         }
 
@@ -251,3 +251,9 @@ def understand(commands):
     parser.parse(commands)
     print("Command stack",commandStack)
     return commandStack
+
+def get_initial_state():
+    grid_state = grid.get_state()
+    coin_sweeper_state = bot.get_state()
+    grid_state.update(coin_sweeper_state)
+    return grid_state

@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import React, { useState, useLayoutEffect} from 'react';
 //UTILITY FUNCTIONS SCRIPT
-import { randomPositions } from './utils';
+import { randomPositions, convertToContinuousNumbering } from './utils';
 //MAZE GENERATOR COMPONENT
 import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
@@ -10,17 +10,12 @@ import Controller from './characterController';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 
-let input = {
-  x: 10,
-  y: 10
-}
-
 /**
  * generate a ~center location for character and 
  * random locations for food.
  * @returns [array of numbers], number 
  */
-const randomFoods = randomPositions(parseInt(input.x), parseInt(input.y));
+const randomFoods = randomPositions(3, 3);
 
 
 /**
@@ -46,29 +41,41 @@ function Game() {
    * @public
    */
   useLayoutEffect(() => {
-    setMazeData(mazeData => ({
-      ...mazeData,
-      marioLoc: 1,
-      inputX: parseInt(input.x),
-      inputY: parseInt(input.y),
-      randomFoods: randomFoods,
-      currentDirection: "down",
-      positionsSeen: [1]
-    }));
-
+    /**
+     * making request to get initial state of the grid and CoinSweeper robot 
+     */
+    fetch('http://localhost:5000/coinSweeper', {
+    crossDomain: true,
+    method: 'GET',
+    headers: {
+          'Content-type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      setMazeData(mazeData => ({
+        ...mazeData,
+        inputX: response.rows,
+        inputY: response.columns,
+        marioLoc: convertToContinuousNumbering(response.row, response.column, response.columns),
+        randomFoods: response.coins.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
+        positionsSeen: [1]
+      }))
+    });
   }, []);
 
   //check if player location is generated
   let maze;
   if(mazeData.marioLoc) {
+    console.log(mazeData)
     //set maze and controller component with required props
     maze = (
         <div className = "game">
           <MazeState.Provider value={[mazeData, setMazeData]}>
             <Controller />
             <Maze 
-              x = {input.x} 
-              y = {input.y} 
+              x = {mazeData.inputX} 
+              y = {mazeData.inputY}
               foodLoc = {mazeData.randomFoods} 
               marioLoc = {mazeData.marioLoc} 
               currentDirection = {mazeData.currentDirection}

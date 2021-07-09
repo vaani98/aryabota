@@ -13,6 +13,7 @@ class CoinSweeper:
         if CoinSweeper.__instance is None:
             CoinSweeper()
         return CoinSweeper.__instance
+
     def __init__(self):
         """Virtually private constructor"""
         if CoinSweeper.__instance is not None:
@@ -21,22 +22,37 @@ class CoinSweeper:
         self.row = 1
         self.column = 1
         self.dir = "down"
+        self.trail = []
+        self.append_current_position_to_trail()
+
     def configure(self, row, column, dir):
         """Configure attributes"""
         self.row = row
         self.column = column
         self.dir = dir
+        self.trail.clear()
+        self.append_current_position_to_trail()
+
     # utility
     def get_dir(self):
         """Get current direction the CoinSweeper robot is facing"""
         return self.dir
-    def get_position_details(self):
+
+    def get_state(self):
         """Get current state of the CoinSweeper robot's position wrapped in a dictionary"""
         return {
-            "row": self.my_row(),
-            "column": self.my_column(),
-            "dir": self.get_dir()
+            "row": self.row,
+            "column": self.column,
+            "dir": self.dir,
+            "trail": self.trail
         }
+
+    def append_current_position_to_trail(self):
+        self.trail.append({
+            "row": self.row,
+            "column": self.column
+        })
+
     # ask
     def my_row(self):
         """Get current row of the CoinSweeper robot"""
@@ -45,6 +61,7 @@ class CoinSweeper:
     def my_column(self):
         """Get current column of the CoinSweeper robot"""
         return self.column
+
     # affect
     def move(self, steps):
         """Move the CoinSweeper robot in the direction in which it is facing
@@ -57,6 +74,8 @@ class CoinSweeper:
             self.column += steps
         elif self.dir == "left":
             self.column -= steps
+        self.append_current_position_to_trail()
+
     def turn_left(self):
         """Turn the CoinSweeper robot to its left"""
         if self.dir == "up":
@@ -67,6 +86,7 @@ class CoinSweeper:
             self.dir = "up"
         elif self.dir == "left":
             self.dir = "down"
+            
     def turn_right(self):
         """Turn the CoinSweeper robot to its right"""
         if self.dir == "up":
