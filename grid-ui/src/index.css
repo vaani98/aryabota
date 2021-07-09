@@ -91,6 +91,8 @@ textarea
 {  
   font-family: Consolas, monaco, monospace; 
   font-size: 15px;   
+  height: 100px;
+  width: 116%;
 }
 
 .grid-container {
@@ -106,6 +108,18 @@ textarea
   /* border: 0.5px dotted #3f3e3e; */
   border-radius: 3px;
   user-select: none;
+}
+
+.input-div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+}
+
+.output-div {
+  height: 50%;
+  background-color: whitesmoke;
 }
 
 .score{

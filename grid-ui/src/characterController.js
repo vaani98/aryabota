@@ -128,7 +128,7 @@ export default function Controller() {
     }
 
     function getPythonicCode() {
-        return <div><br />
+        return <div>
             {control.pythonicCode.map(codeLine => {
                 return <p> {codeLine} </p>
             })}
@@ -161,30 +161,37 @@ export default function Controller() {
         <>
             <div className="game-info">
                 <h3>Enter your code here:</h3>
-                <form onSubmit={submitCode}>
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        marginRight: '50px'
-                    }}>
-                        <textarea rows="20" cols="50" />
-                    </div>
+                <div className="input-div">
+                    <form onSubmit={submitCode}>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            marginRight: '50px'
+                        }}>
+                            <textarea />
+                        </div>
 
-                    <ThemeProvider theme={theme}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            endIcon={<PlayArrowRounded />}
-                        >
-                            Run
-                        </Button>
-                    </ThemeProvider>
-                </form>
+                        <ThemeProvider theme={theme}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                endIcon={<PlayArrowRounded />}
+                            >
+                                Run
+                            </Button>
+                        </ThemeProvider>
+                    </form>
+                    <div className="output-div">
+                        <h3 className="output-title">Output:</h3>
+                        <div></div>
+                    </div>
+                </div>
             </div>
             <div className="separator"></div>
             <div className="game-info">
                 <h3>Translated Code: Python</h3>
+                <br />
                 {getPythonicCode()}
             </div>
             <div className="separator"></div>

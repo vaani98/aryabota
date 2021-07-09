@@ -205,7 +205,7 @@ function UiConfigs() {
                     color="secondary"
                     startIcon={<Create />}
                 >
-                    Pen Up/Down
+                    Show/Hide Trail
                 </Button>
             </div>
         )
@@ -218,6 +218,7 @@ function UiConfigs() {
                 {
                     'body { background-color: ' + color + '; color: ' + LightenDarkenColor(color, -85) + ';}'
                     + '.toolbar { background-color: ' + LightenDarkenColor(color, -35) + ';}'
+                    + '.output-title {background-color: ' + color + ';}'
                     // + '.penDown { background-color: ' + LightenDarkenColor(color, -25) + ';}'
                     + '.penDown { background-color: ' + penState + ';}'
                     + (sizes === "Small" ? 'p { font-size: small;} h3 { font-size: large; } .status { font-size: 22px; } textarea { font-size: 13px;}' :
