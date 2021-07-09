@@ -17,17 +17,29 @@ def lint_problem_grid(problem_grid):
         return False
     if start_dir not in ["up", "down", "left", "right"]:
         return False
-    # convert coins list to the required format
+    # convert coins and obstacles lists to the per-position format as well
+    # also ensure coins and obstacles are in range
     coins = problem_grid["coins"]
-    coins_per_position = [[0 for i in range(columns)] for j in range(rows)]
-    for loc in coins:
+    obstacles = problem_grid["obstacles"]
+    coins_per_position = get_for_every_position(coins, rows, columns, True)
+    obstacles_per_position = get_for_every_position(obstacles, rows, columns, False)
+    if coins_per_position is False or obstacles_per_position is False:
+        return False
+    problem_grid["coins_per_position"] = coins_per_position
+    problem_grid["obstacles_per_position"] = obstacles_per_position
+    return problem_grid
+
+def get_for_every_position(objects, rows, columns, coins = True):
+    per_position = [[0 for i in range(columns)] for j in range(rows)]
+    for loc in objects:
         loc_row = loc["row"]
         loc_column = loc["column"]
-        # ensure coins loc is in the grid
         if loc_row < 1 or loc_row > rows:
             return False
         if loc_column < 1 or loc_column > columns:
             return False
-        coins_per_position[loc_row - 1][loc_column - 1] = loc["value"]
-    problem_grid["coins_per_position"] = coins_per_position
-    return problem_grid
+        if coins:
+            per_position[loc_row - 1][loc_column - 1] = loc["value"]
+        else:
+            per_position[loc_row - 1][loc_column - 1] = -1
+    return per_position

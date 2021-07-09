@@ -20,11 +20,8 @@ class Grid:
         if Grid.__instance is not None:
             raise Exception("This class is a singleton!")
         Grid.__instance = self
-        self.rows = rows
-        self.columns = columns
-        self.initialize_grid()
 
-    def configure(self, rows, columns, coins = None, coins_per_position = None):
+    def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None):
         """Configure attributes"""
         self.rows = rows
         self.columns = columns
@@ -32,10 +29,10 @@ class Grid:
             self.coins = coins
         if coins_per_position is not None:
             self.coins_per_position = coins_per_position
-
-    def initialize_grid(self):
-        """Initialise the grid with a random number of coins at each location"""
-        self.coins_per_position = [[random.randint(0,10) for i in range(self.columns)] for j in range(self.rows)]
+        if obstacles is not None:
+            self.obstacles = obstacles
+        if obstacles_per_position is not None:
+            self.obstacles_per_position = obstacles_per_position
 
     def get_number_of_coins(self, row, column):
         print(row, column)
@@ -53,6 +50,8 @@ class Grid:
                 "rows": self.rows,
                 "columns": self.columns,
                 "coins": self.coins,
-                "coins_per_position": self.coins_per_position
+                "coins_per_position": self.coins_per_position,
+                "obstacles": self.obstacles,
+                "obstacles_per_position": self.obstacles_per_position
             }
         return {}
