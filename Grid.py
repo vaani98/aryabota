@@ -1,5 +1,6 @@
 """ the Singleton Grid, its attributes and state"""
 import random
+
 class Grid:
     """Properties:
         rows: number of rows, default 10
@@ -19,23 +20,38 @@ class Grid:
         if Grid.__instance is not None:
             raise Exception("This class is a singleton!")
         Grid.__instance = self
+
+    def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None):
+        """Configure attributes"""
         self.rows = rows
         self.columns = columns
-        self.initialize_grid()
-
-    def initialize_grid(self):
-        """Initialise the grid with a random number of coins at each location"""
-        self.coins_allocated = [[random.randint(0,10) for i in range(self.columns)] for j in range(self.rows)]
-        # print(self.coins_allocated)
+        if coins is not None:
+            self.coins = coins
+        if coins_per_position is not None:
+            self.coins_per_position = coins_per_position
+        if obstacles is not None:
+            self.obstacles = obstacles
+        if obstacles_per_position is not None:
+            self.obstacles_per_position = obstacles_per_position
 
     def get_number_of_coins(self, row, column):
+        print(row, column)
         """Get number of coins at a given position in the grid, ie, (row, column)"""
-        if self.coins_allocated is not None:
+        if self.coins_per_position is not None:
             if row < self.rows and column < self.columns:
-                return self.coins_allocated[row][column]
+                return self.coins_per_position[row - 1][column - 1]
             raise Exception("This position does not exist on the grid!")
         # TODO decide whether to just return 0 instead?
         raise Exception("No coins are present in this grid!")
-    # def get_total_value(self):
-    #     """Get the total number of coins in the grid"""
-    #     return self.total_value
+    
+    def get_state(self):
+        if self.__instance:
+            return {
+                "rows": self.rows,
+                "columns": self.columns,
+                "coins": self.coins,
+                "coins_per_position": self.coins_per_position,
+                "obstacles": self.obstacles,
+                "obstacles_per_position": self.obstacles_per_position
+            }
+        return {}

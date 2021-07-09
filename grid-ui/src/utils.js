@@ -17,3 +17,7 @@
   }
   return coinPositions;
 }
+
+export function convertToContinuousNumbering(row, column, columns) {
+  return column + columns * (row - 1);
+}
