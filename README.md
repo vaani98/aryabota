@@ -12,19 +12,17 @@ This tool is still under development; you can track the progress via the [change
 1. Python3: install the required PyPi packages by running  
  `python3 -m pip install -r requirements.txt`
 
-## Running the App
+## Running the Server
 1. Start the server in development mode by running  
 `FLASK_ENV=development flask run`
 
-### Environment
-The CoinSweeper bot is present in a grid that resembles the Cartesian plane. It has x and y coordinates. The direction it is facing can be `left`, `right`, `up` or `down`.
-
-### Initial Position
-`0, 0, left`
+## Setting up the React App
+1. In the `grid-ui` directory, run `npm install` to install the dependencies
+2. To start the web app UI, run `npm start`
 
 ### Commands
-1. `My X`: What is the bot's x-coordinate?
-2. `My Y`: What is the bot's y-coordinate?
+1. `My Row`: What row is the bot in?
+2. `My Column`: What column is the bot in?
 3. `Move 10`: Move the bot 10 steps in the direction it is facing.
 4. `Turn left`: Turn the bot towards its left (by 90 degrees).
 
