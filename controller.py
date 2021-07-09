@@ -11,38 +11,37 @@ from coin_sweeper import CoinSweeper
 commandStack = []
 variables = dict()
 total_var = dict()
+    
 
-def make_single_command(command):
+def make_command(command, value = None):
     """Wrap command in JSON response format"""
-    if command == "getX()":
+    if command == "get_row()":
         return {
                 "python": command,
-                "state": bot.my_row()
+                "value": bot.my_row()
                }
-    if command == "getY()":
+    elif command == "get_column()":
         return {
                 "python": command,
-                "state": bot.my_column()
+                "value": bot.my_column()
                }
-    return {
+    elif "get_number_of_coins(bot.my_row(), bot.my_column())" in command:
+        return {
+                "python": command,
+                "number of coins": value
+               }
+    elif '+' in command or '-' in command or '*' in command or '/' in command or '=' in command:
+        return {
+                "python": command,
+                #"value": value
+               }
+    else:
+        return {
             "python": command,
             "stateChanges": [
                 bot.get_state()
             ]
         }
-
-def make_command(command, value):
-    """Wrap command in JSON response format"""
-    if "getNumberOfCoins(bot.my_row(), bot.my_column())" in command:
-        return {
-                "python": command,
-                "number of coins": value
-               }
-    if '+' in command or '-' in command or '*' in command or '/' in command or '=' in command:
-        return {
-                "python": command,
-                "value": value
-               }
     return {}
 
 bot = CoinSweeper.get_instance()
@@ -54,24 +53,20 @@ tokens = [
     'MINUS',
     'TIMES',
     'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-    'EQUAL',
     'MYROW',
     'MYCOLUMN',
     'MOVE',
     'TURNLEFT',
     'TURNRIGHT',
     'COINS',
-    'TOTALCOINS',
     'IDENTIFIER',
-    'ASSIGN'
+    'ASSIGN',
+    'COMMA',
+    'IFCOINS',
+    'ANSWER'
 ]
 
 t_ignore = ' \t'
-t_LPAREN  = r'\('
-t_RPAREN  = r'\)'
-t_EQUAL = r'='
 
 def t_PLUS(t):
     r'\+'
@@ -91,6 +86,11 @@ def t_TIMES(t):
 def t_DIVIDE(t):
     r'\/'
     t.value = 'DIVIDE'
+    return t
+
+def t_COMMA(t):
+    r'\,'
+    t.value = 'COMMA'
     return t
 
 def t_MOVE(t):
@@ -134,14 +134,19 @@ def t_ASSIGN(t):
     t.value = 'ASSIGN'
     return t
 
+def t_IFCOINS(t):
+    r'if[ ]*there[ ]*are[ ]*coins'
+    t.value = 'IFCOINS'
+    return t
+
 def t_COINS(t):
     r'number[ ]*of[ ]*coins'
     t.value = 'COINS'
     return t
 
-def t_TOTALCOINS(t):
-    r'total[ ]*number[ ]*of[ ]*coins'
-    t.value = 'TOTALCOINS'
+def t_ANSWER(t):
+    r'answer'
+    t.type = 'ANSWER'
     return t
 
 def t_IDENTIFIER(t):
@@ -173,25 +178,41 @@ def p_command(p):
         | TURNRIGHT
         | MOVE NUMBER
         | assign_expr
+        | selection_expr
+        | answer_expr
     '''
     if len(p) == 2 and p[1] == 'TURNLEFT':
         bot.turn_left()
-        commandStack.append(make_single_command("turnLeft()"))
+        commandStack.append(make_command("turn_left()"))
     elif len(p) == 2 and p[1] == 'TURNRIGHT':
         bot.turn_right()
-        commandStack.append(make_single_command("turnRight()"))
+        commandStack.append(make_command("turn_right()"))
     elif len(p) == 2 and p[1] == 'MYROW':
-        commandStack.append(make_single_command("get_row()"))
-    elif len(p) == 2 and p[1] == 'MYY':
-        commandStack.append(make_single_command("get_column()"))
+        commandStack.append(make_command("get_row()"))
+    elif len(p) == 2 and p[1] == 'MYCOLUMN':
+        commandStack.append(make_command("get_column()"))
     elif len(p) == 3:
         bot.move(p[2])
-        commandStack.append(make_single_command("move(" + str(p[2]) + ")"))
+        commandStack.append(make_command("move(" + str(p[2]) + ")"))
+
+def p_answer_expr(p):
+    '''
+    answer_expr : ANSWER IDENTIFIER
+    '''
+    var = p[2]
+    value = variables[var]
+    commandStack.append(make_command(var + " = " + str(value), value))
+
+def p_selection_expr(p):
+    '''
+    selection_expr : IFCOINS COMMA assign_expr
+    '''
+    #value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
+    print("Variables = ", variables)
 
 def p_assign_expr(p):
     '''
     assign_expr : IDENTIFIER ASSIGN COINS
-                | IDENTIFIER ASSIGN TOTALCOINS
                 | IDENTIFIER ASSIGN NUMBER
                 | IDENTIFIER ASSIGN IDENTIFIER PLUS IDENTIFIER
                 | IDENTIFIER ASSIGN IDENTIFIER MINUS IDENTIFIER
@@ -204,16 +225,7 @@ def p_assign_expr(p):
         value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
         variables[var] = value
         print("Variables = ", variables)
-        commandStack.append(make_command(var + " = getNumberOfCoins(bot.my_row(), bot.my_column())", value))
-    elif p[3] == 'TOTALCOINS':
-        var = p[1]
-        value = 0
-        for i in variables:
-            value = value + variables[i]
-        total_var[var] = value
-        print("Variables = ", variables)
-        print("Total value = ", total_var)
-        commandStack.append(make_command(var + " = getTotalNumberOfCoins()", value))
+        commandStack.append(make_command(var + " = get_number_of_coins(bot.my_row(), bot.my_column())", value))
     elif len(p) == 6:
         var1 = p[1]
         var2 = p[3]

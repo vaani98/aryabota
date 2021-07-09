@@ -1,4 +1,8 @@
 """the Singleton CoinSweeper robot, its attributes and state"""
+from Grid import Grid
+
+grid = Grid.get_instance()
+
 class CoinSweeper:
     """CoinSweeper robot class
     Properties:
@@ -66,14 +70,40 @@ class CoinSweeper:
     def move(self, steps):
         """Move the CoinSweeper robot in the direction in which it is facing
         steps: specified number of steps to move it by"""
+        state = grid.get_state()
+        #print(state)
         if self.dir == "up":
-            self.row -= steps
+            if(self.row - steps >= 1):
+                for i in range(self.row,self.row-steps,-1):
+                    self.row -= 1
+                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+                        print("There's an obstacle, cannot move ahead")
+            else:
+                print("This position does not exist on the grid!")
         elif self.dir == "down":
-            self.row += steps
+            if(self.row + steps <= grid.rows ):
+                for i in range(self.row,self.row+steps):
+                    self.row += 1
+                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+                        print("There's an obstacle, cannot move ahead")
+            else:
+                print("This position does not exist on the grid!")
         elif self.dir == "right":
-            self.column += steps
+            if(self.column + steps <= grid.columns ):
+                for i in range(self.column,self.column+steps):
+                    self.column += 1
+                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+                        print("There's an obstacle, cannot move ahead")
+            else:
+                print("This position does not exist on the grid!")
         elif self.dir == "left":
-            self.column -= steps
+            if(self.column - steps >= 1 ):
+                for i in range(self.column,self.column-steps,-1):
+                    self.column -= 1
+                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+                        print("There's an obstacle, cannot move ahead")
+            else:
+                print("This position does not exist on the grid!")
         self.append_current_position_to_trail()
 
     def turn_left(self):
