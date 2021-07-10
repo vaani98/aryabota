@@ -35,6 +35,10 @@ def make_command(command, value = None):
                 "python": command,
                 #"value": value
                }
+    elif command == "error()":
+        return {
+            "error_message": value,
+        }
     else:
         return {
             "python": command,
@@ -196,7 +200,7 @@ def p_command(p):
         if success:
             commandStack.append(make_command("move(" + str(p[2]) + ")"))
         else:
-            commandStack.append(make_command("error(" + message + ")"))
+            commandStack.append(make_command("error()", message))
 
 def p_answer_expr(p):
     '''

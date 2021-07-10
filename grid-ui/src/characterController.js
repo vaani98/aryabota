@@ -86,7 +86,7 @@ export default function Controller() {
                         python: step.python,
                         stateChanges: []
                     };
-                    step.stateChanges.forEach(change => {
+                    step.stateChanges?.forEach(change => {
                         const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
                         const newDir = change.dir;
                         const newPositionsSeen = []
