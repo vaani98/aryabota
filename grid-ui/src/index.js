@@ -60,7 +60,8 @@ function Game() {
         inputX: response.rows,
         inputY: response.columns,
         marioLoc: convertToContinuousNumbering(response.row, response.column, response.columns),
-        randomFoods: response.coins.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
+        coinLoc: response.coins.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
+        obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
         positionsSeen: [1]
       }))
     });
@@ -69,7 +70,6 @@ function Game() {
   //check if player location is generated
   let maze;
   if(mazeData.marioLoc) {
-    console.log(mazeData)
     //set maze and controller component with required props
     maze = (
       <>
@@ -80,7 +80,8 @@ function Game() {
             <Maze 
               x = {mazeData.inputX} 
               y = {mazeData.inputY}
-              foodLoc = {mazeData.randomFoods} 
+              coinLoc = {mazeData.coinLoc}
+              obstacleLoc = {mazeData.obstacleLoc}
               marioLoc = {mazeData.marioLoc} 
               currentDirection = {mazeData.currentDirection}
               positionsSeen = {mazeData.positionsSeen}

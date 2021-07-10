@@ -1,7 +1,8 @@
 import React from 'react';
 //IMPORT SPRITES
-import coin_img from './assets/coin.png';
 import coinsweeper_img from './assets/coinsweeper.png';
+import obstacle_img from './assets/obstacle.png'
+import coin_stack from './assets/coin_stack.png'
 
 /**
  * Component to draw dynamic maze, food and 
@@ -65,12 +66,13 @@ export default function Maze(props) {
    */
   const renderBlock = (blockCount) => {
     let classnames = "penUp";
+    let blockImg = null;
+    let rotation = '0';
     if (props?.positionsSeen?.indexOf(blockCount) >= 0
       && props?.positionsSeen?.indexOf(blockCount) !== -1) {
       classnames = "penDown";
     }
     if (props.marioLoc === blockCount) {
-      let rotation;
       switch (props.currentDirection) {
         case 'up': rotation = '180'; break;
         case 'down': rotation = '0'; break;
@@ -78,21 +80,18 @@ export default function Maze(props) {
         case 'right': rotation = '270'; break;
         default: rotation = '0'; break;
       }
-      return <Block 
-        value = {blockCount} 
-        rotation = {rotation} 
-        image = {`url(${coinsweeper_img})`}
-        className={classnames}
-        />;
-    } else {
-      return <Block 
-        value = {blockCount} 
-        rotation = '0' 
-        image = {'none'}
-        className={classnames}
-      />;
+      blockImg = coinsweeper_img;
+    } else if (props.obstacleLoc.indexOf(blockCount) !== -1) {
+      blockImg = obstacle_img;
+    } else if (props.coinLoc.indexOf(blockCount) !== -1) {
+      blockImg = coin_stack;
     }
-
+    return <Block 
+      value = {blockCount} 
+      rotation = {rotation}
+      image = {`url(${blockImg})`}
+      className={classnames}
+    />;
   }  
 
   return (

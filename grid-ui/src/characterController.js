@@ -81,7 +81,6 @@ export default function Controller() {
             .then(response => response.json())
             .then(response => {
                 let steps = [];
-                console.log("response", response)
                 response.forEach(step => {
                     let stepObj = {
                         python: step.python,
@@ -102,7 +101,6 @@ export default function Controller() {
                     });
                     steps.push(stepObj);
                 })
-                console.log(steps);
                 setControl(prev => ({
                     ...prev,
                     steps: steps
