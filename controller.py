@@ -12,6 +12,7 @@ commandStack = []
 variables = dict()
 total_var = dict()
     
+class LexerError(Exception): pass
 
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
@@ -204,6 +205,7 @@ def p_command(p):
             commandStack.append(make_command("move(" + str(p[2]) + ")"))
         else:
             commandStack.append(make_command("error()", message))
+            raise LexerError('move error')
 
 def p_answer_expr(p):
     '''
@@ -270,7 +272,11 @@ parser = yacc.yacc()
 def understand(commands):
     """Understand pseudo-code"""
     commandStack.clear()
-    parser.parse(commands)
+    try:
+        parser.parse(commands)
+    except Exception as exception:
+        print(exception)
+        return commandStack
     print("Command stack",commandStack)
     return commandStack
 

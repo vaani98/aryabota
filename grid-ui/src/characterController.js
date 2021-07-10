@@ -44,13 +44,20 @@ export default function Controller() {
     function doChange() {
         if (control.steps.length > 0) {
             const currStep = control.steps[0]
-            if (currStep.stateChanges.length > 0) {
+            if (currStep?.stateChanges?.length > 0) {
                 const change = currStep.stateChanges[0]
                 setMazeData(prev => ({
                     ...prev,
-                    ...change
+                    ...change,
+                    error_message: null,
                 }))
                 currStep.stateChanges.shift()
+            } else if (currStep.error_message) {
+                setMazeData(prev => ({
+                    ...prev,
+                    error_message: currStep.error_message
+                }))
+                control.steps.shift();
             } else {
                 control.pythonicCode.push(currStep.python)
                 control.steps.shift()
@@ -84,6 +91,16 @@ export default function Controller() {
             let steps = [];
             response.forEach(step => {
                 console.log(step)
+                if(step.error_message) {
+                    steps.push({
+                        error_message: step.error_message
+                    });
+                    setControl(prev => ({
+                        ...prev,
+                        steps: steps
+                    }));
+                    throw "obstacle/boundary error";
+                }
                 if ("python" in step) {
                     if ("value" in step) {
                         // append to output pane here!
@@ -116,22 +133,22 @@ export default function Controller() {
         });
     }
 
-    function range(size, startAt = 0) {
-        return [...Array(size).keys()].map(i => i + startAt);
-    }
+    // function range(size, startAt = 0) {
+    //     return [...Array(size).keys()].map(i => i + startAt);
+    // }
 
-    function convertPositions(newPos, oldPos, columns) {
-        let newPosCoordinates = convertToCoordinates(newPos, columns);
-        let oldPosCoordinates = convertToCoordinates(oldPos, columns);
-        if (oldPosCoordinates.y === newPosCoordinates.y) {
-            return range(newPos - oldPos + 1, oldPos)
-        } else if (oldPosCoordinates.x === newPosCoordinates.x) {
-            let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
-            return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
-        } else {
-            return []
-        }
-    }
+    // function convertPositions(newPos, oldPos, columns) {
+    //     let newPosCoordinates = convertToCoordinates(newPos, columns);
+    //     let oldPosCoordinates = convertToCoordinates(oldPos, columns);
+    //     if (oldPosCoordinates.y === newPosCoordinates.y) {
+    //         return range(newPos - oldPos + 1, oldPos)
+    //     } else if (oldPosCoordinates.x === newPosCoordinates.x) {
+    //         let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
+    //         return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
+    //     } else {
+    //         return []
+    //     }
+    // }
 
     function getPythonicCode() {
         return <div>
