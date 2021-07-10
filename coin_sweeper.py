@@ -86,6 +86,9 @@ class CoinSweeper:
                     curr_row -= 1
                     if({'row': curr_row, 'column': self.column} in state['obstacles']):
                         return [False, obstacle_message]
+                for i in range(self.row, self.row - steps, -1):
+                    self.append_position_to_trail(i, self.column)
+                print(self.trail)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
@@ -96,6 +99,9 @@ class CoinSweeper:
                     curr_row += 1
                     if({'row': curr_row, 'column': self.column} in state['obstacles']):
                         return [False, obstacle_message]
+                for i in range(self.row, self.row + steps):
+                    self.append_position_to_trail(i, self.column)
+                print(self.trail)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
@@ -106,6 +112,9 @@ class CoinSweeper:
                     curr_column += 1
                     if({'row': self.row, 'column': curr_column} in state['obstacles']):
                         return [False, obstacle_message]
+                for i in range(self.column, self.column + steps):
+                    self.append_position_to_trail(self.row, i)
+                print(self.trail)
                 self.column = curr_column
             else:
                 return [False, boundary_message]
@@ -116,6 +125,9 @@ class CoinSweeper:
                     curr_column -= 1
                     if({'row': self.row, 'column': curr_column} in state['obstacles']):
                        return [False, obstacle_message]
+                for i in range(self.column, self.column - steps, -1):
+                    self.append_position_to_trail(self.row, i)
+                print(self.trail)
                 self.column = curr_column
             else:
                 return [False, boundary_message]

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
+import { convertToContinuousNumbering } from './utils';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
@@ -95,8 +96,7 @@ export default function Controller() {
                         step.stateChanges?.forEach(change => {
                             const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
                             const newDir = change.dir;
-                            const newPositionsSeen = []
-                            // convertPositions(newPos, currState.marioLoc, currState.inputY);
+                            const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
                             currState = {
                                 ...currState,
                                 marioLoc: newPos,
@@ -116,39 +116,12 @@ export default function Controller() {
         });
     }
 
-    function range(size, startAt = 0) {
-        return [...Array(size).keys()].map(i => i + startAt);
-    }
-
-    function convertPositions(newPos, oldPos, columns) {
-        let newPosCoordinates = convertToCoordinates(newPos, columns);
-        let oldPosCoordinates = convertToCoordinates(oldPos, columns);
-        if (oldPosCoordinates.y === newPosCoordinates.y) {
-            return range(newPos - oldPos + 1, oldPos)
-        } else if (oldPosCoordinates.x === newPosCoordinates.x) {
-            let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
-            return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
-        } else {
-            return []
-        }
-    }
-
     function getPythonicCode() {
         return <div>
             {control.pythonicCode.map(codeLine => {
                 return <p> {codeLine} </p>
             })}
         </div>
-    }
-
-    function convertToCoordinates(blockCount, columns) {
-        const y = 1 + Math.floor(blockCount / columns);
-        const x = blockCount % columns;
-        return { x, y }
-    }
-
-    function convertToContinuousNumbering(row, column, columns) {
-        return column + columns * (row - 1);
     }
 
     const submitCode = function (e) {
