@@ -27,7 +27,7 @@ class CoinSweeper:
         self.column = 1
         self.dir = "down"
         self.trail = []
-        self.append_current_position_to_trail()
+        self.append_position_to_trail()
 
     def configure(self, row, column, dir):
         """Configure attributes"""
@@ -35,7 +35,7 @@ class CoinSweeper:
         self.column = column
         self.dir = dir
         self.trail.clear()
-        self.append_current_position_to_trail()
+        self.append_position_to_trail()
 
     # utility
     def get_dir(self):
@@ -51,11 +51,17 @@ class CoinSweeper:
             "trail": self.trail
         }
 
-    def append_current_position_to_trail(self):
-        self.trail.append({
-            "row": self.row,
-            "column": self.column
-        })
+    def append_position_to_trail(self, row = None, column = None):
+        if row is None and column is None:
+            self.trail.append({
+                "row": self.row,
+                "column": self.column
+            })
+        else:
+            self.trail.append({
+                "row": row,
+                "column": column
+            })
 
     # ask
     def my_row(self):
@@ -71,43 +77,49 @@ class CoinSweeper:
         """Move the CoinSweeper robot in the direction in which it is facing
         steps: specified number of steps to move it by"""
         state = grid.get_state()
-        #print(state)
         obstacle_message = "There's an obstacle, cannot move ahead"
         boundary_message = "This position does not exist on the grid!"
         if self.dir == "up":
-            if(self.row - steps >= 1):
-                for i in range(self.row,self.row-steps,-1):
-                    self.row -= 1
-                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+            curr_row = self.row
+            if(curr_row - steps >= 1):
+                for i in range(curr_row, curr_row - steps, -1):
+                    curr_row -= 1
+                    if({'row': curr_row, 'column': self.column} in state['obstacles']):
                         return [False, obstacle_message]
+                self.row = curr_row
             else:
                 return [False, boundary_message]
         elif self.dir == "down":
-            if(self.row + steps <= grid.rows ):
-                for i in range(self.row,self.row+steps):
-                    self.row += 1
-                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+            curr_row = self.row
+            if(curr_row + steps <= grid.rows ):
+                for i in range(curr_row, curr_row + steps):
+                    curr_row += 1
+                    if({'row': curr_row, 'column': self.column} in state['obstacles']):
                         return [False, obstacle_message]
+                self.row = curr_row
             else:
                 return [False, boundary_message]
         elif self.dir == "right":
-            if(self.column + steps <= grid.columns ):
-                for i in range(self.column,self.column+steps):
-                    self.column += 1
-                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+            curr_column = self.column
+            if(curr_column + steps <= grid.columns ):
+                for i in range(curr_column, curr_column + steps):
+                    curr_column += 1
+                    if({'row': self.row, 'column': curr_column} in state['obstacles']):
                         return [False, obstacle_message]
+                self.column = curr_column
             else:
-                message = "This position does not exist on the grid!"
                 return [False, boundary_message]
         elif self.dir == "left":
             if(self.column - steps >= 1 ):
-                for i in range(self.column,self.column-steps,-1):
-                    self.column -= 1
-                    if({'row': self.row, 'column': self.column} in state['obstacles']):
+                curr_column = self.column
+                for i in range(curr_column, curr_column - steps, -1):
+                    curr_column -= 1
+                    if({'row': self.row, 'column': curr_column} in state['obstacles']):
                        return [False, obstacle_message]
+                self.column = curr_column
             else:
                 return [False, boundary_message]
-        self.append_current_position_to_trail()
+        self.append_position_to_trail()
         return [True, "moved!"]
 
     def turn_left(self):

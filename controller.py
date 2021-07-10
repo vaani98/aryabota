@@ -16,6 +16,7 @@ total_var = dict()
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
     if command == "get_row()":
+        print("row row row")
         return {
                 "python": command,
                 "value": bot.my_row()
@@ -116,13 +117,13 @@ def t_TURNRIGHT(t):
 
 def t_MYROW(t):
     r'my[ ]*row'
-    t.value = bot.my_row()
+    t.value = "MYROW"
     return t
 
 
 def t_MYCOLUMN(t):
     r'my[ ]*column'
-    t.value = bot.my_column()
+    t.value = "MYCOLUMN"
     return t
 
 
@@ -185,6 +186,7 @@ def p_command(p):
         | selection_expr
         | answer_expr
     '''
+    print(list(p))
     if len(p) == 2 and p[1] == 'TURNLEFT':
         bot.turn_left()
         commandStack.append(make_command("turn_left()"))
@@ -192,6 +194,7 @@ def p_command(p):
         bot.turn_right()
         commandStack.append(make_command("turn_right()"))
     elif len(p) == 2 and p[1] == 'MYROW':
+        print("my row found?")
         commandStack.append(make_command("get_row()"))
     elif len(p) == 2 and p[1] == 'MYCOLUMN':
         commandStack.append(make_command("get_column()"))

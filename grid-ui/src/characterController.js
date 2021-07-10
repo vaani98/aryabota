@@ -78,34 +78,42 @@ export default function Controller() {
                 'Content-type': 'application/json'
             }
         })
-            .then(response => response.json())
-            .then(response => {
-                let steps = [];
-                response.forEach(step => {
-                    let stepObj = {
-                        python: step.python,
-                        stateChanges: []
-                    };
-                    step.stateChanges?.forEach(change => {
-                        const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
-                        const newDir = change.dir;
-                        const newPositionsSeen = []
-                        // convertPositions(newPos, currState.marioLoc, currState.inputY);
-                        currState = {
-                            ...currState,
-                            marioLoc: newPos,
-                            currentDirection: newDir,
-                            positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            let steps = [];
+            response.forEach(step => {
+                console.log(step)
+                if ("python" in step) {
+                    if ("value" in step) {
+                        // append to output pane here!
+                    } else if ("stateChanges" in step) {
+                        let stepObj = {
+                            python: step.python,
+                            stateChanges: []
                         };
-                        stepObj.stateChanges.push(currState);
-                    });
-                    steps.push(stepObj);
-                })
-                setControl(prev => ({
-                    ...prev,
-                    steps: steps
-                }));
-            });
+                        step.stateChanges?.forEach(change => {
+                            const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
+                            const newDir = change.dir;
+                            const newPositionsSeen = []
+                            // convertPositions(newPos, currState.marioLoc, currState.inputY);
+                            currState = {
+                                ...currState,
+                                marioLoc: newPos,
+                                currentDirection: newDir,
+                                positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                            };
+                            stepObj.stateChanges.push(currState);
+                        });
+                        steps.push(stepObj);
+                        setControl(prev => ({
+                            ...prev,
+                            steps: steps
+                        }));
+                    }
+                }
+            })
+        });
     }
 
     function range(size, startAt = 0) {
