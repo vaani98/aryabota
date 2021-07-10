@@ -25,7 +25,7 @@ def make_command(command, value = None):
                 "python": command,
                 "value": bot.my_column()
                }
-    elif "get_number_of_coins(bot.my_row(), bot.my_column())" in command:
+    elif "get_number_of_coins()" in command:
         return {
                 "python": command,
                 "number of coins": value
@@ -232,7 +232,7 @@ def p_assign_expr(p):
         value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
         variables[var] = value
         print("Variables = ", variables)
-        commandStack.append(make_command(var + " = get_number_of_coins(bot.my_row(), bot.my_column())", value))
+        commandStack.append(make_command(var + " = get_number_of_coins()", value))
     elif len(p) == 6:
         var1 = p[1]
         var2 = p[3]
