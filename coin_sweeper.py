@@ -72,39 +72,43 @@ class CoinSweeper:
         steps: specified number of steps to move it by"""
         state = grid.get_state()
         #print(state)
+        obstacle_message = "There's an obstacle, cannot move ahead"
+        boundary_message = "This position does not exist on the grid!"
         if self.dir == "up":
             if(self.row - steps >= 1):
                 for i in range(self.row,self.row-steps,-1):
                     self.row -= 1
                     if({'row': self.row, 'column': self.column} in state['obstacles']):
-                        print("There's an obstacle, cannot move ahead")
+                        return [False, obstacle_message]
             else:
-                print("This position does not exist on the grid!")
+                return [False, boundary_message]
         elif self.dir == "down":
             if(self.row + steps <= grid.rows ):
                 for i in range(self.row,self.row+steps):
                     self.row += 1
                     if({'row': self.row, 'column': self.column} in state['obstacles']):
-                        print("There's an obstacle, cannot move ahead")
+                        return [False, obstacle_message]
             else:
-                print("This position does not exist on the grid!")
+                return [False, boundary_message]
         elif self.dir == "right":
             if(self.column + steps <= grid.columns ):
                 for i in range(self.column,self.column+steps):
                     self.column += 1
                     if({'row': self.row, 'column': self.column} in state['obstacles']):
-                        print("There's an obstacle, cannot move ahead")
+                        return [False, obstacle_message]
             else:
-                print("This position does not exist on the grid!")
+                message = "This position does not exist on the grid!"
+                return [False, boundary_message]
         elif self.dir == "left":
             if(self.column - steps >= 1 ):
                 for i in range(self.column,self.column-steps,-1):
                     self.column -= 1
                     if({'row': self.row, 'column': self.column} in state['obstacles']):
-                        print("There's an obstacle, cannot move ahead")
+                       return [False, obstacle_message]
             else:
-                print("This position does not exist on the grid!")
+                return [False, boundary_message]
         self.append_current_position_to_trail()
+        return [True, "moved!"]
 
     def turn_left(self):
         """Turn the CoinSweeper robot to its left"""

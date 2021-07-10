@@ -192,8 +192,11 @@ def p_command(p):
     elif len(p) == 2 and p[1] == 'MYCOLUMN':
         commandStack.append(make_command("get_column()"))
     elif len(p) == 3:
-        bot.move(p[2])
-        commandStack.append(make_command("move(" + str(p[2]) + ")"))
+        [success, message] = bot.move(p[2])
+        if success:
+            commandStack.append(make_command("move(" + str(p[2]) + ")"))
+        else:
+            commandStack.append(make_command("error(" + message + ")"))
 
 def p_answer_expr(p):
     '''
