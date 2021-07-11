@@ -45,13 +45,20 @@ export default function Controller() {
     function doChange() {
         if (control.steps.length > 0) {
             const currStep = control.steps[0]
-            if (currStep.stateChanges.length > 0) {
+            if (currStep?.stateChanges?.length > 0) {
                 const change = currStep.stateChanges[0]
                 setMazeData(prev => ({
                     ...prev,
-                    ...change
+                    ...change,
+                    error_message: null,
                 }))
                 currStep.stateChanges.shift()
+            } else if (currStep.error_message) {
+                setMazeData(prev => ({
+                    ...prev,
+                    error_message: currStep.error_message
+                }))
+                control.steps.shift();
             } else {
                 control.pythonicCode.push(currStep.python)
                 control.steps.shift()
@@ -85,6 +92,16 @@ export default function Controller() {
             let steps = [];
             response.forEach(step => {
                 console.log(step)
+                if(step.error_message) {
+                    steps.push({
+                        error_message: step.error_message
+                    });
+                    setControl(prev => ({
+                        ...prev,
+                        steps: steps
+                    }));
+                    throw "obstacle/boundary error";
+                }
                 if ("python" in step) {
                     if ("value" in step) {
                         // append to output pane here!
