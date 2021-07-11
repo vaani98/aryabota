@@ -1,8 +1,8 @@
 """Flask App"""
+import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import yaml
-import json
 
 from Grid import Grid
 from coin_sweeper import CoinSweeper
@@ -29,12 +29,21 @@ def before_first_request():
             bot.configure(coin_sweeper_start["row"], coin_sweeper_start["column"], coin_sweeper_start["dir"])
         else:
             raise Exception("Couldn't initialise problem grid!")
+    #state = grid.get_state()
+    #print(state)
 
 @app.route("/")
 @cross_origin()
 def index():
     """Hello World"""
     return "Hello World!"
+
+@app.route('/reset', methods=(['POST']))
+@cross_origin()
+def reset():
+    """To reset the given problem - Yet to add the reset button in UI"""
+    before_first_request()
+    return "RESET successful"
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))
 @cross_origin()

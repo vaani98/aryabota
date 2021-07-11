@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
+import { convertToContinuousNumbering } from './utils';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
@@ -44,13 +45,20 @@ export default function Controller() {
     function doChange() {
         if (control.steps.length > 0) {
             const currStep = control.steps[0]
-            if (currStep.stateChanges.length > 0) {
+            if (currStep?.stateChanges?.length > 0) {
                 const change = currStep.stateChanges[0]
                 setMazeData(prev => ({
                     ...prev,
-                    ...change
+                    ...change,
+                    error_message: null,
                 }))
                 currStep.stateChanges.shift()
+            } else if (currStep.error_message) {
+                setMazeData(prev => ({
+                    ...prev,
+                    error_message: currStep.error_message
+                }))
+                control.steps.shift();
             } else {
                 control.pythonicCode.push(currStep.python)
                 control.steps.shift()
@@ -78,51 +86,51 @@ export default function Controller() {
                 'Content-type': 'application/json'
             }
         })
-            .then(response => response.json())
-            .then(response => {
-                let steps = [];
-                response.forEach(step => {
-                    let stepObj = {
-                        python: step.python,
-                        stateChanges: []
-                    };
-                    step.stateChanges.forEach(change => {
-                        const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
-                        const newDir = change.dir;
-                        const newPositionsSeen = []
-                        // convertPositions(newPos, currState.marioLoc, currState.inputY);
-                        currState = {
-                            ...currState,
-                            marioLoc: newPos,
-                            currentDirection: newDir,
-                            positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
-                        };
-                        stepObj.stateChanges.push(currState);
+        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            let steps = [];
+            response.forEach(step => {
+                console.log(step)
+                if(step.error_message) {
+                    steps.push({
+                        error_message: step.error_message
                     });
-                    steps.push(stepObj);
-                })
-                setControl(prev => ({
-                    ...prev,
-                    steps: steps
-                }));
-            });
-    }
-
-    function range(size, startAt = 0) {
-        return [...Array(size).keys()].map(i => i + startAt);
-    }
-
-    function convertPositions(newPos, oldPos, columns) {
-        let newPosCoordinates = convertToCoordinates(newPos, columns);
-        let oldPosCoordinates = convertToCoordinates(oldPos, columns);
-        if (oldPosCoordinates.y === newPosCoordinates.y) {
-            return range(newPos - oldPos + 1, oldPos)
-        } else if (oldPosCoordinates.x === newPosCoordinates.x) {
-            let yrange = range(newPosCoordinates.y - oldPosCoordinates.y + 1, oldPosCoordinates.y)
-            return yrange.map(yvalue => convertToContinuousNumbering(oldPosCoordinates.x, yvalue, columns))
-        } else {
-            return []
-        }
+                    setControl(prev => ({
+                        ...prev,
+                        steps: steps
+                    }));
+                    throw "obstacle/boundary error";
+                }
+                if ("python" in step) {
+                    if ("value" in step) {
+                        // append to output pane here!
+                    } else if ("stateChanges" in step) {
+                        let stepObj = {
+                            python: step.python,
+                            stateChanges: []
+                        };
+                        step.stateChanges?.forEach(change => {
+                            const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
+                            const newDir = change.dir;
+                            const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
+                            currState = {
+                                ...currState,
+                                marioLoc: newPos,
+                                currentDirection: newDir,
+                                positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                            };
+                            stepObj.stateChanges.push(currState);
+                        });
+                        steps.push(stepObj);
+                        setControl(prev => ({
+                            ...prev,
+                            steps: steps
+                        }));
+                    }
+                }
+            })
+        });
     }
 
     function getPythonicCode() {
@@ -131,16 +139,6 @@ export default function Controller() {
                 return <p> {codeLine} </p>
             })}
         </div>
-    }
-
-    function convertToCoordinates(blockCount, columns) {
-        const y = 1 + Math.floor(blockCount / columns);
-        const x = blockCount % columns;
-        return { x, y }
-    }
-
-    function convertToContinuousNumbering(row, column, columns) {
-        return column + columns * (row - 1);
     }
 
     const submitCode = function (e) {
