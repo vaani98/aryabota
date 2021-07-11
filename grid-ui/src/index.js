@@ -63,7 +63,8 @@ function Game() {
         marioLoc: convertToContinuousNumbering(response.row, response.column, response.columns),
         coinLoc: response.coins.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
         obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
-        positionsSeen: [1]
+        positionsSeen: response.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, response.columns)),
+        currentDirection: response.dir
       }))
     });
   }, []);

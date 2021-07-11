@@ -59,6 +59,10 @@ h3 {
   font-size: 25px;
 }
 
+.output-title {
+  background-color: #fcc663;
+}
+
 .block {
   background: #fff;
   border: 1px solid #999;

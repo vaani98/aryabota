@@ -33,6 +33,7 @@ export default function Controller() {
     const [control, setControl] = useState({
         changeInterval: null,
         pythonicCode: [],
+        outputValue: [],
         steps: []
     });
 
@@ -61,6 +62,7 @@ export default function Controller() {
                 control.steps.shift();
             } else {
                 control.pythonicCode.push(currStep.python)
+                control.outputValue.push(currStep.outputValue)
                 control.steps.shift()
             }
         } else {
@@ -104,7 +106,15 @@ export default function Controller() {
                 }
                 if ("python" in step) {
                     if ("value" in step) {
-                        // append to output pane here!
+                        let stepObj = {
+                            python: step.python,
+                            outputValue: step.value
+                        };
+                        steps.push(stepObj)
+                        setControl(prev => ({
+                            ...prev,
+                            steps: steps
+                        }));
                     } else if ("stateChanges" in step) {
                         let stepObj = {
                             python: step.python,
@@ -138,6 +148,14 @@ export default function Controller() {
             {control.pythonicCode.map(codeLine => {
                 return <p> {codeLine} </p>
             })}
+        </div>
+    }
+
+    function getOutputValue() {
+        return <div>
+            {control.outputValue.map(codeLine => {
+            return <p> {codeLine} </p>
+        })}
         </div>
     }
 
@@ -180,7 +198,7 @@ export default function Controller() {
                     </form>
                     <div className="output-div">
                         <h3 className="output-title">Output:</h3>
-                        <div></div>
+                        {getOutputValue()}
                     </div>
                 </div>
             </div>
