@@ -187,7 +187,6 @@ def p_command(p):
         | selection_expr
         | answer_expr
     '''
-    print(list(p))
     if len(p) == 2 and p[1] == 'TURNLEFT':
         bot.turn_left()
         commandStack.append(make_command("turn_left()"))
@@ -195,7 +194,6 @@ def p_command(p):
         bot.turn_right()
         commandStack.append(make_command("turn_right()"))
     elif len(p) == 2 and p[1] == 'MYROW':
-        print("my row found?")
         commandStack.append(make_command("get_row()"))
     elif len(p) == 2 and p[1] == 'MYCOLUMN':
         commandStack.append(make_command("get_column()"))
