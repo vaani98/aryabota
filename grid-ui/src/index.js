@@ -9,6 +9,7 @@ import Maze from './mazeGenerator';
 import Controller from './characterController';
 //UI CONFIGURATION COMPONENT
 import UiConfigs from './uiConfigurations';
+import ErrorModal from './ErrorModal';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 
@@ -69,6 +70,10 @@ function Game() {
 
   //check if player location is generated
   let maze;
+  let errorModal = null;
+  if(mazeData.error_message) {
+    errorModal = <ErrorModal error_message={mazeData.error_message}/>;
+  }
   if(mazeData.marioLoc) {
     //set maze and controller component with required props
     maze = (
@@ -76,6 +81,7 @@ function Game() {
         <UiConfigs />
         <div className="game">
           <MazeState.Provider value={[mazeData, setMazeData]}>
+            {errorModal}
             <Controller />
             <Maze 
               x = {mazeData.inputX} 

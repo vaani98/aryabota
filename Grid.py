@@ -1,6 +1,4 @@
 """ the Singleton Grid, its attributes and state"""
-import random
-
 class Grid:
     """Properties:
         rows: number of rows, default 10
@@ -13,7 +11,7 @@ class Grid:
             Grid()
         return Grid.__instance
 
-    def __init__(self, rows = 10, columns = 10):
+    def __init__(self):
         """Virtually private constructor"""
         # TODO This class gets initialised twice, check why? On hot reload it happens only once, but on starting server
         # it happens twice
