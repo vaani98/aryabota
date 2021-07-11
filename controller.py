@@ -241,17 +241,21 @@ def p_assign_expr(p):
         var2 = p[3]
         var3 = p[5]
         if p[4] == 'PLUS':
-            variables[var1] = variables[var2] + variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '+' + var3, variables[var1]))
+            if variables[var3] > 0:
+                variables[var1] = variables[var2] + variables[var3]
+                commandStack.append(make_command(var1 + " = " + var2 + '+' + var3, variables[var1]))
         elif p[4] == 'MINUS':
-            variables[var1] = variables[var2] - variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '-' + var3, variables[var1]))
+            if variables[var3] > 0:
+                variables[var1] = variables[var2] - variables[var3]
+                commandStack.append(make_command(var1 + " = " + var2 + '-' + var3, variables[var1]))
         elif p[4] == 'TIMES':
-            variables[var1] = variables[var2] * variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '*' + var3, variables[var1]))
+            if variables[var3] > 0:
+                variables[var1] = variables[var2] * variables[var3]
+                commandStack.append(make_command(var1 + " = " + var2 + '*' + var3, variables[var1]))
         elif p[4] == 'DIVIDE':
-            variables[var1] = variables[var2] / variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '/' + var3, variables[var1]))
+            if variables[var3] > 0:
+                variables[var1] = variables[var2] / variables[var3]
+                commandStack.append(make_command(var1 + " = " + var2 + '/' + var3, variables[var1]))
         print("Variables = ",variables)
     else:
         var = p[1]
