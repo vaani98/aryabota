@@ -2,11 +2,17 @@
 # pylint: disable=invalid-name,unused-argument,global-statement
 import ply.lex as lex
 import ply.yacc as yacc
+import yaml
+import json
+
 from utils import convert_pseudocode_to_python
 from control_hub import *
-
 from grid import Grid
 from coin_sweeper import CoinSweeper
+
+"""Opening config to read grid attributes"""
+with open('../config.yaml') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
 
 # utilities
 # global command stack
@@ -190,22 +196,7 @@ def p_command(p):
         python_code = convert_pseudocode_to_python(p[1])
     elif len(p) == 3:
         python_code = convert_pseudocode_to_python(p[1], steps = p[2])
-    result_type, result = eval(python_code)
-    if result_type == "value":
-        commandStack.append({
-            "python": python_code,
-            "value": result
-        })
-    elif result_type == "state":
-        commandStack.append({
-            "python": python_code,
-            "stateChanges": result
-        })
-    elif result_type == "error":
-        commandStack.append({
-            "error_message": result
-        })
-        raise(LexerError, "Error while executing command")
+    commandStack.append(python_code)
 
 def p_answer_expr(p):
     '''
@@ -213,7 +204,7 @@ def p_answer_expr(p):
     '''
     var = p[2]
     value = variables[var]
-    commandStack.append(make_command(var + " = " + str(value), value))
+    # commandStack.append(make_command(var + " = " + str(value), value))
 
 def p_selection_expr(p):
     '''
@@ -269,15 +260,26 @@ def p_error(p):
 parser = yacc.yacc()
 
 def understand(commands):
-    """Understand pseudo-code"""
+    """Convert pseudo-code to Python code to execute"""
+    # reinitialize response file
+    with open(config["app"]["results"], "w") as results_file:
+        results_file.write(json.dumps([]))
     commandStack.clear()
     try:
         parser.parse(commands)
     except Exception as exception:
         print(exception)
         return commandStack
-    print("Command stack", commandStack)
-    return commandStack
+    python_program = "\n".join(commandStack)
+    exec(python_program)
+    with open(config["app"]["results"]) as results_file:
+        response = json.loads(results_file.read())
+    response_and_python_program = {
+        "python": python_program,
+        "response": response
+    }
+    print(response_and_python_program)
+    return response_and_python_program
 
 def get_initial_state():
     grid_state = grid.get_state()

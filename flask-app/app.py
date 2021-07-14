@@ -20,7 +20,7 @@ def before_first_request():
     """Reading and linting config, initialising the grid"""
     bot = CoinSweeper.get_instance()
     grid = Grid.get_instance()
-    with open("../resources/problem-grids/" + config["app"]["problem_grid"]) as problem_grid_file:
+    with open("../" + config["app"]["problem_grid"]) as problem_grid_file:
         problem_grid = json.loads(problem_grid_file.read())
         linted_problem_grid = lint_problem_grid(problem_grid)
         if linted_problem_grid:

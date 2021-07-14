@@ -1,0 +1,1 @@
+[{"value": 1}, {"value": 1}, {"error_message": "There's an obstacle, cannot move ahead"}, {"stateChanges": {"row": 1, "column": 1, "dir": "right", "trail": [{"row": 1, "column": 1}]}}, {"stateChanges": {"row": 1, "column": 2, "dir": "right", "trail": [{"row": 1, "column": 1}, {"row": 1, "column": 1}, {"row": 1, "column": 2}]}}]
