@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { MazeState } from './globalStates';
 import Button from '@material-ui/core/Button';
-import "./ErrorModal.css"
+import "./styles/ErrorModal.css"
 
 /**
  * UI Configuration Toolbar Component

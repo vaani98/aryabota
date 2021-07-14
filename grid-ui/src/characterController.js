@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 import { convertToContinuousNumbering } from './utils';
+import UiConfigs from './uiConfigurations';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
@@ -25,6 +26,8 @@ export default function Controller() {
      */
     const [mazeData, setMazeData] = useContext(MazeState);
     // const [pythonicCode, setPythonicCode] = useContext(PythonicCodeState);
+
+    const [penState, setPenState] = useState("penDown");
 
     /**
      * local state to store interval id / game loop id
@@ -88,59 +91,61 @@ export default function Controller() {
                 'Content-type': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-            let steps = [];
-            response.forEach(step => {
-                console.log(step)
-                if(step.error_message) {
-                    steps.push({
-                        error_message: step.error_message
-                    });
-                    setControl(prev => ({
-                        ...prev,
-                        steps: steps
-                    }));
-                    throw "obstacle/boundary error";
-                }
-                if ("python" in step) {
-                    if ("value" in step) {
-                        let stepObj = {
-                            python: step.python,
-                            outputValue: step.value
-                        };
-                        steps.push(stepObj)
-                        setControl(prev => ({
-                            ...prev,
-                            steps: steps
-                        }));
-                    } else if ("stateChanges" in step) {
-                        let stepObj = {
-                            python: step.python,
-                            stateChanges: []
-                        };
-                        step.stateChanges?.forEach(change => {
-                            const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
-                            const newDir = change.dir;
-                            const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
-                            currState = {
-                                ...currState,
-                                marioLoc: newPos,
-                                currentDirection: newDir,
-                                positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
-                            };
-                            stepObj.stateChanges.push(currState);
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+                let steps = [];
+                response.forEach(step => {
+                    console.log(step)
+                    if (step.error_message) {
+                        steps.push({
+                            error_message: step.error_message
                         });
-                        steps.push(stepObj);
                         setControl(prev => ({
                             ...prev,
                             steps: steps
                         }));
+                        throw "obstacle/boundary error";
                     }
-                }
-            })
-        });
+                    if ("python" in step) {
+                        if ("value" in step) {
+                            let stepObj = {
+                                python: step.python,
+                                outputValue: step.value
+                            };
+                            steps.push(stepObj)
+                            setControl(prev => ({
+                                ...prev,
+                                steps: steps
+                            }));
+                        } else if ("stateChanges" in step) {
+                            let stepObj = {
+                                python: step.python,
+                                stateChanges: []
+                            };
+                            step.stateChanges?.forEach(change => {
+                                const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
+                                const newDir = change.dir;
+                                const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
+                                currState = {
+                                    ...currState,
+                                    marioLoc: newPos,
+                                    currentDirection: newDir,
+                                    positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                                    penLoc: penState === "penDown" ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps)) : currState.penLoc,
+                                    prevSteps: newPositionsSeen.length
+                                };
+                                stepObj.stateChanges.push(currState);
+                            });
+                            steps.push(stepObj);
+                            setControl(prev => ({
+                                ...prev,
+                                steps: steps
+                            }));
+                        }
+                    }
+                })
+            });
     }
 
     function getPythonicCode() {
@@ -154,8 +159,8 @@ export default function Controller() {
     function getOutputValue() {
         return <div>
             {control.outputValue.map(codeLine => {
-            return <p> {codeLine} </p>
-        })}
+                return <p> {codeLine} </p>
+            })}
         </div>
     }
 
@@ -173,6 +178,11 @@ export default function Controller() {
 
     return (
         <>
+            <UiConfigs
+                penLoc={mazeData.penLoc}
+                onPenChange={setPenState}
+            />
+
             <div className="game-info">
                 <h3>Enter your code here:</h3>
                 <div className="input-div">

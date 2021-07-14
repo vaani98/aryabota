@@ -19,23 +19,23 @@ import Create from '@material-ui/icons/Create';
  * @example
  * <UiConfigs />
  */
-function UiConfigs() {
+function UiConfigs(props) {
 
     /**
      * color sets the base color of the webpage
      * @var
      */
-    var [color, setColor] = useState("");
+    let [color, setColor] = useState("");
     /**
      * sizes sets the size range of the text
      * @var
      */
-    var [sizes, setSizes] = useState("Medium");
+    let [sizes, setSizes] = useState("Medium");
     /**
      * penState sets toggles colour trail visibility
      * @var
      */
-    var [penState, setPenState] = useState("yellow");
+    let [penState, setPenState] = useState("yellow");
 
     /**
      * Updates color
@@ -193,8 +193,14 @@ function UiConfigs() {
     const TogglePen = () => {
         // var [tp, setTp] = useState("penDown");
         const onClick = () => {
-            if (penState === "yellow") setPenState("white");
-            else setPenState("yellow");
+            if (penState === "yellow") {
+                setPenState("white");
+                props.onPenChange("penUp");
+            }
+            else {
+                setPenState("yellow");
+                props.onPenChange("penDown");
+            }
         }
 
         return (

@@ -185,10 +185,10 @@ textarea
   width: 210px;
   /* position: fixed; */
 }
-
+/* 
 .penUp {
   background-color: white;
-}
+} */
 
 .penDown {
   background-color: yellow;
