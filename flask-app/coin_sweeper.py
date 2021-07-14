@@ -91,7 +91,7 @@ class CoinSweeper:
                 print(self.trail)
                 self.row = curr_row
             else:
-                return [False, boundary_message]
+                return (False, boundary_message)
         elif self.dir == "down":
             curr_row = self.row
             if(curr_row + steps <= grid.rows ):
@@ -104,7 +104,7 @@ class CoinSweeper:
                 print(self.trail)
                 self.row = curr_row
             else:
-                return [False, boundary_message]
+                return (False, boundary_message)
         elif self.dir == "right":
             curr_column = self.column
             if(curr_column + steps <= grid.columns ):
@@ -117,7 +117,7 @@ class CoinSweeper:
                 print(self.trail)
                 self.column = curr_column
             else:
-                return [False, boundary_message]
+                return (False, boundary_message)
         elif self.dir == "left":
             if(self.column - steps >= 1 ):
                 curr_column = self.column
@@ -130,9 +130,9 @@ class CoinSweeper:
                 print(self.trail)
                 self.column = curr_column
             else:
-                return [False, boundary_message]
+                return (False, boundary_message)
         self.append_position_to_trail()
-        return [True, "moved!"]
+        return (True, "Moved!")
 
     def turn_left(self):
         """Turn the CoinSweeper robot to its left"""

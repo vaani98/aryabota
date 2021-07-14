@@ -2,9 +2,7 @@
 # pylint: disable=invalid-name,unused-argument,global-statement
 import ply.lex as lex
 import ply.yacc as yacc
-
-from Grid import Grid
-from coin_sweeper import CoinSweeper
+from control_hub import *
 
 # utilities
 # global command stack
@@ -132,7 +130,6 @@ def t_NUMBER(t):
     r'[0-9]+'
     t.value = int(t.value)
     t.type = 'NUMBER'
-    #print(t.value)
     return t
 
 def t_ASSIGN(t):
@@ -198,7 +195,7 @@ def p_command(p):
     elif len(p) == 2 and p[1] == 'MYCOLUMN':
         commandStack.append(make_command("get_column()"))
     elif len(p) == 3:
-        [success, message] = bot.move(p[2])
+        (success, message) = bot.move(p[2])
         if success:
             commandStack.append(make_command("move(" + str(p[2]) + ")"))
         else:
@@ -275,7 +272,7 @@ def understand(commands):
     except Exception as exception:
         print(exception)
         return commandStack
-    print("Command stack",commandStack)
+    print("Command stack", commandStack)
     return commandStack
 
 def get_initial_state():
