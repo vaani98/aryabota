@@ -2,7 +2,11 @@
 # pylint: disable=invalid-name,unused-argument,global-statement
 import ply.lex as lex
 import ply.yacc as yacc
+from utils import convert_pseudocode_to_python
 from control_hub import *
+
+from grid import Grid
+from coin_sweeper import CoinSweeper
 
 # utilities
 # global command stack
@@ -15,7 +19,6 @@ class LexerError(Exception): pass
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
     if command == "get_row()":
-        print("row row row")
         return {
                 "python": command,
                 "value": bot.my_row()
@@ -32,8 +35,7 @@ def make_command(command, value = None):
                }
     elif '+' in command or '-' in command or '*' in command or '/' in command or '=' in command:
         return {
-                "python": command,
-                #"value": value
+                "python": command
                }
     elif command == "error()":
         return {
@@ -184,23 +186,26 @@ def p_command(p):
         | selection_expr
         | answer_expr
     '''
-    if len(p) == 2 and p[1] == 'TURNLEFT':
-        bot.turn_left()
-        commandStack.append(make_command("turn_left()"))
-    elif len(p) == 2 and p[1] == 'TURNRIGHT':
-        bot.turn_right()
-        commandStack.append(make_command("turn_right()"))
-    elif len(p) == 2 and p[1] == 'MYROW':
-        commandStack.append(make_command("get_row()"))
-    elif len(p) == 2 and p[1] == 'MYCOLUMN':
-        commandStack.append(make_command("get_column()"))
+    if len(p) == 2:
+        python_code = convert_pseudocode_to_python(p[1])
     elif len(p) == 3:
-        (success, message) = bot.move(p[2])
-        if success:
-            commandStack.append(make_command("move(" + str(p[2]) + ")"))
-        else:
-            commandStack.append(make_command("error()", message))
-            raise LexerError('move error')
+        python_code = convert_pseudocode_to_python(p[1], steps = p[2])
+    result_type, result = eval(python_code)
+    if result_type == "value":
+        commandStack.append({
+            "python": python_code,
+            "value": result
+        })
+    elif result_type == "state":
+        commandStack.append({
+            "python": python_code,
+            "stateChanges": result
+        })
+    elif result_type == "error":
+        commandStack.append({
+            "error_message": result
+        })
+        raise(LexerError, "Error while executing command")
 
 def p_answer_expr(p):
     '''
@@ -214,7 +219,6 @@ def p_selection_expr(p):
     '''
     selection_expr : IFCOINS COMMA assign_expr
     '''
-    #value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
     print("Variables = ", variables)
 
 def p_assign_expr(p):

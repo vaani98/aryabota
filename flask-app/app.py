@@ -10,7 +10,7 @@ from lexer_parser import understand, get_initial_state
 from utils import lint_problem_grid
 
 """Opening config to read grid attributes"""
-with open('config.yaml') as f:
+with open('../config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 app = Flask(__name__)
 CORS(app)

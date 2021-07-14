@@ -43,3 +43,14 @@ def get_for_every_position(objects, rows, columns, coins = True):
         else:
             per_position[loc_row - 1][loc_column - 1] = -1
     return per_position
+
+def convert_pseudocode_to_python(command, **params):
+    # TODO move this table to a JSON/YAML configuration file?
+    conversion_table = {
+        "MYROW": "get_my_row()",
+        "MYCOLUMN": "get_my_column()",
+        "TURNLEFT": "turn()",
+        "TURNRIGHT": "turn(direction='right')",
+        "MOVE": "move({steps})"
+    }
+    return conversion_table[command].format(**params)
