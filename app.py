@@ -43,7 +43,8 @@ def index():
 def reset():
     """To reset the given problem - Yet to add the reset button in UI"""
     before_first_request()
-    return "RESET successful"
+    #return "RESET successful"
+    return jsonify(get_initial_state())
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))
 @cross_origin()
@@ -58,5 +59,6 @@ def coin_sweeper():
         # getting raw data in JSON format, needs header Content-Type = application/json
         commands = request.json
         response = understand(commands)
+        print(response)
         return jsonify(response)
     return ("", 405)

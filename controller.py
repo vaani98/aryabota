@@ -11,18 +11,19 @@ from coin_sweeper import CoinSweeper
 commandStack = []
 variables = dict()
 total_var = dict()
-    
-class LexerError(Exception): pass
+
+class LexerError(Exception): 
+    pass
 
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
-    if command == "get_row()":
+    if command == "print(get_row())":
         print("row row row")
         return {
                 "python": command,
                 "value": bot.my_row()
                }
-    elif command == "get_column()":
+    elif command == "print(get_column())":
         return {
                 "python": command,
                 "value": bot.my_column()
@@ -32,7 +33,8 @@ def make_command(command, value = None):
                 "python": command,
                 "number of coins": value
                }
-    elif '+' in command or '-' in command or '*' in command or '/' in command or '=' in command:
+    elif '+' in command or '-' in command or '*' in command or '/' in command or '=' in command or 'if(coins):' in command or \
+        'if(obstacle):' in command:
         return {
                 "python": command,
                 #"value": value
@@ -54,6 +56,7 @@ bot = CoinSweeper.get_instance()
 grid = Grid.get_instance()
 
 tokens = [
+    'PRINT',
     'NUMBER',
     'PLUS',
     'MINUS',
@@ -69,10 +72,16 @@ tokens = [
     'ASSIGN',
     'COMMA',
     'IFCOINS',
+    'IFOBSTACLE',
     'ANSWER'
 ]
 
 t_ignore = ' \t'
+
+def t_PRINT(t):
+    r'print'
+    t.value = 'PRINT'
+    return t
 
 def t_PLUS(t):
     r'\+'
@@ -141,8 +150,13 @@ def t_ASSIGN(t):
     return t
 
 def t_IFCOINS(t):
-    r'if[ ]*there[ ]*are[ ]*coins'
+    r'if[ ]*coins'
     t.value = 'IFCOINS'
+    return t
+
+def t_IFOBSTACLE(t):
+    r'if[ ]*obstacle'
+    t.value = 'IFOBSTACLE'
     return t
 
 def t_COINS(t):
@@ -178,8 +192,8 @@ def p_commands(p):
 
 def p_command(p):
     '''
-    expr : MYROW
-        | MYCOLUMN
+    expr : PRINT MYROW
+        | PRINT MYCOLUMN
         | TURNLEFT
         | TURNRIGHT
         | MOVE NUMBER
@@ -193,10 +207,10 @@ def p_command(p):
     elif len(p) == 2 and p[1] == 'TURNRIGHT':
         bot.turn_right()
         commandStack.append(make_command("turn_right()"))
-    elif len(p) == 2 and p[1] == 'MYROW':
-        commandStack.append(make_command("get_row()"))
-    elif len(p) == 2 and p[1] == 'MYCOLUMN':
-        commandStack.append(make_command("get_column()"))
+    elif len(p) == 3 and p[2] == 'MYROW':
+        commandStack.append(make_command("print(get_row())"))
+    elif len(p) == 3 and p[2] == 'MYCOLUMN':
+        commandStack.append(make_command("print(get_column())"))
     elif len(p) == 3:
         [success, message] = bot.move(p[2])
         if success:
@@ -216,9 +230,39 @@ def p_answer_expr(p):
 def p_selection_expr(p):
     '''
     selection_expr : IFCOINS COMMA assign_expr
+                   | IFOBSTACLE COMMA assign_expr
     '''
-    #value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
-    print("Variables = ", variables)
+    if p[1] == 'IFCOINS':
+        value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
+        temp = commandStack.pop()
+        if value > 0:
+            commandStack.append(make_command("if(coins):"))
+            commandStack.append(temp)
+    elif p[1] == 'IFOBSTACLE':
+        state = grid.get_state()
+        dir = bot.get_dir()
+        obstacle_flag = 0
+        if dir == "down":
+            if bot.my_row()+1 <= grid.rows:
+                if({'row': bot.my_row()+1, 'column': bot.my_column()} in state['obstacles']):
+                    obstacle_flag = 1
+        elif dir == "up":
+            if bot.my_row()-1 > 0:
+                if({'row': bot.my_row()-1, 'column': bot.my_column()} in state['obstacles']):
+                    obstacle_flag = 1
+        elif dir == "right":
+            if bot.my_column()+1 <= grid.columns:
+                if({'row': bot.my_row(), 'column': bot.my_column()+1} in state['obstacles']):
+                    obstacle_flag = 1
+        elif dir == "left":
+            if bot.my_column()-1 > 0:
+                if({'row': bot.my_row(), 'column': bot.my_column()-1} in state['obstacles']):
+                    obstacle_flag = 1
+        temp = commandStack.pop()
+        if obstacle_flag == 0:
+            #print("Obstacle")
+            commandStack.append(make_command("if(obstacle):"))
+            commandStack.append(temp)
 
 def p_assign_expr(p):
     '''
@@ -229,7 +273,6 @@ def p_assign_expr(p):
                 | IDENTIFIER ASSIGN IDENTIFIER TIMES IDENTIFIER
                 | IDENTIFIER ASSIGN IDENTIFIER DIVIDE IDENTIFIER
     '''
-    global variables, total_var
     if p[3] == 'COINS':
         var = p[1]
         value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
@@ -241,21 +284,17 @@ def p_assign_expr(p):
         var2 = p[3]
         var3 = p[5]
         if p[4] == 'PLUS':
-            if variables[var3] > 0:
-                variables[var1] = variables[var2] + variables[var3]
-                commandStack.append(make_command(var1 + " = " + var2 + '+' + var3, variables[var1]))
+            variables[var1] = variables[var2] + variables[var3]
+            commandStack.append(make_command(var1 + " = " + var2 + '+' + var3, variables[var1]))
         elif p[4] == 'MINUS':
-            if variables[var3] > 0:
-                variables[var1] = variables[var2] - variables[var3]
-                commandStack.append(make_command(var1 + " = " + var2 + '-' + var3, variables[var1]))
+            variables[var1] = variables[var2] - variables[var3]
+            commandStack.append(make_command(var1 + " = " + var2 + '-' + var3, variables[var1]))
         elif p[4] == 'TIMES':
-            if variables[var3] > 0:
-                variables[var1] = variables[var2] * variables[var3]
-                commandStack.append(make_command(var1 + " = " + var2 + '*' + var3, variables[var1]))
+            variables[var1] = variables[var2] * variables[var3]
+            commandStack.append(make_command(var1 + " = " + var2 + '*' + var3, variables[var1]))
         elif p[4] == 'DIVIDE':
-            if variables[var3] > 0:
-                variables[var1] = variables[var2] / variables[var3]
-                commandStack.append(make_command(var1 + " = " + var2 + '/' + var3, variables[var1]))
+            variables[var1] = variables[var2] / variables[var3]
+            commandStack.append(make_command(var1 + " = " + var2 + '/' + var3, variables[var1]))
         print("Variables = ",variables)
     else:
         var = p[1]

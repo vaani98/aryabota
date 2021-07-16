@@ -138,6 +138,16 @@ export default function Controller() {
                             steps: steps
                         }));
                     }
+                    else {
+                        let stepObj = {
+                            python: step.python,
+                        };
+                        steps.push(stepObj)
+                        setControl(prev => ({
+                            ...prev,
+                            steps: steps
+                        }));
+                    }
                 }
             })
         });

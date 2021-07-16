@@ -73,6 +73,7 @@ class CoinSweeper:
         return self.column
 
     # affect
+    '''
     def move(self, steps):
         """Move the CoinSweeper robot in the direction in which it is facing
         steps: specified number of steps to move it by"""
@@ -126,6 +127,53 @@ class CoinSweeper:
                     if({'row': self.row, 'column': curr_column} in state['obstacles']):
                        return [False, obstacle_message]
                 for i in range(self.column, self.column - steps, -1):
+                    self.append_position_to_trail(self.row, i)
+                print(self.trail)
+                self.column = curr_column
+            else:
+                return [False, boundary_message]
+        self.append_position_to_trail()
+        return [True, "moved!"]'''
+
+    def move(self, steps):
+        """Move the CoinSweeper robot in the direction in which it is facing
+        steps: specified number of steps to move it by"""
+        state = grid.get_state()
+        obstacle_message = "There's an obstacle, cannot move ahead"
+        boundary_message = "This position does not exist on the grid!"
+        if self.dir == "up" or self.dir == "down":
+            curr_row = self.row
+            if self.dir == "up":
+                to_move = curr_row - steps
+                offset = -1
+            else:
+                to_move = curr_row + steps
+                offset = 1
+            if to_move >=1 and to_move <= grid.rows:
+                for i in range(curr_row, to_move, offset):
+                    curr_row  = curr_row + offset
+                    if({'row': curr_row, 'column': self.column} in state['obstacles']):
+                        return [False, obstacle_message]
+                for i in range(self.row, to_move, offset):
+                    self.append_position_to_trail(i, self.column)
+                print(self.trail)
+                self.row = curr_row
+            else:
+                return [False, boundary_message]
+        elif self.dir == "left" or self.dir == "right":
+            curr_column = self.column
+            if self.dir == "right":
+                to_move = curr_column + steps
+                offset = 1
+            else:
+                to_move = curr_column - steps
+                offset = -1
+            if to_move >=1 and to_move <= grid.columns:
+                for i in range(curr_column, to_move, offset):
+                    curr_column = curr_column + offset
+                    if({'row': self.row, 'column': curr_column} in state['obstacles']):
+                        return [False, obstacle_message]
+                for i in range(self.column, to_move, offset):
                     self.append_position_to_trail(self.row, i)
                 print(self.trail)
                 self.column = curr_column
