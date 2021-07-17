@@ -34,7 +34,7 @@ def make_command(command, value = None):
                 "number of coins": value
                }
     elif '+' in command or '-' in command or '*' in command or '/' in command or '=' in command or 'if(coins):' in command or \
-        'if(obstacle):' in command:
+        'if(no obstacle):' in command:
         return {
                 "python": command,
                 #"value": value
@@ -237,7 +237,6 @@ def p_selection_expr(p):
         temp = commandStack.pop()
         if value > 0:
             commandStack.append(make_command("if(coins):"))
-            temp['python'] = "    "+temp['python']
             commandStack.append(temp)
     elif p[1] == 'IFNOOBSTACLE':
         state = grid.get_state()
@@ -262,8 +261,7 @@ def p_selection_expr(p):
         temp = commandStack.pop()
         if obstacle_flag == 0:
             #print("Obstacle")
-            commandStack.append(make_command("if(obstacle):"))
-            temp['python'] = "    "+temp['python']
+            commandStack.append(make_command("if(no obstacle):"))
             commandStack.append(temp)
 
 def p_assign_expr(p):
