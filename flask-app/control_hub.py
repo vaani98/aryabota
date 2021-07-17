@@ -21,7 +21,7 @@ def make_response(response_type, response):
         }
     elif response_type == "state":
         return {
-            "stateChanges": response
+            "stateChanges": [response]
         }
     elif response_type == "error":
         return {

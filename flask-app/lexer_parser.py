@@ -271,9 +271,18 @@ def understand(commands):
         print(exception)
         return commandStack
     python_program = "\n".join(commandStack)
-    exec(python_program)
+    exception_raised = None
+    try:
+        exec(python_program)
+    except Exception as e:
+        exception_raised = e
+        print("Exception raised while parsing: ", e)
     with open(config["app"]["results"]) as results_file:
         response = json.loads(results_file.read())
+    if exception_raised is not None:
+        response.append({
+            "error_message": str(exception_raised)
+        })
     response_and_python_program = {
         "python": python_program,
         "response": response
