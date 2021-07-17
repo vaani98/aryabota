@@ -132,7 +132,7 @@ export default function Controller() {
                                     marioLoc: newPos,
                                     currentDirection: newDir,
                                     positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
-                                    penLoc: penState === "penDown" ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps)) : currState.penLoc,
+                                    penLoc: penState === "penDown" ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps+1)) : currState.penLoc,
                                     prevSteps: newPositionsSeen.length
                                 };
                                 stepObj.stateChanges.push(currState);
