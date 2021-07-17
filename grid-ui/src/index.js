@@ -63,7 +63,7 @@ function Game() {
         obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
         positionsSeen: response.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, response.columns)),
         currentDirection: response.dir,
-        // penLoc: [convertToContinuousNumbering(response.row, response.column, response.columns)],
+        //TODO: Might want to set these two values from backend
         penLoc: [1],
         prevSteps: 1
       }))

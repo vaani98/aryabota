@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './styles/uiConfigurations.css';
 //BUTTON and DROPDOWN COMPONENTS
 import Select from 'react-select';
 import Button from '@material-ui/core/Button';
@@ -35,7 +36,7 @@ function UiConfigs(props) {
      * penState sets toggles colour trail visibility
      * @var
      */
-    let [penState, setPenState] = useState("yellow");
+    let [penState, setPenState] = useState("penDown");
 
     /**
      * Updates color
@@ -71,15 +72,6 @@ function UiConfigs(props) {
             label: "Large"
         }
     ];
-
-    // let x = 32;
-    // let colors = [];
-    // if (x <= 50) {
-    //     colors.push('testColor');
-    // }
-    // else {
-    //     colors.push('test2');
-    // }
 
     /**
      * calculates colour values for highlights based on the base colour
@@ -191,14 +183,13 @@ function UiConfigs(props) {
      * <TogglePen />
      */
     const TogglePen = () => {
-        // var [tp, setTp] = useState("penDown");
         const onClick = () => {
-            if (penState === "yellow") {
-                setPenState("white");
+            if (penState === "penDown") {
+                setPenState("penUp");
                 props.onPenChange("penUp");
             }
             else {
-                setPenState("yellow");
+                setPenState("penDown");
                 props.onPenChange("penDown");
             }
         }
@@ -211,7 +202,7 @@ function UiConfigs(props) {
                     color="secondary"
                     startIcon={<Create />}
                 >
-                    Show/Hide Trail
+                    {penState === "penUp" ? "Pen Down" : "Pen Up"}
                 </Button>
             </div>
         )
@@ -219,14 +210,11 @@ function UiConfigs(props) {
 
     return (
         <div>
-            {/* <h1 className={colors}>{x}</h1> */}
             <style>
                 {
                     'body { background-color: ' + color + '; color: ' + LightenDarkenColor(color, -85) + ';}'
                     + '.toolbar { background-color: ' + LightenDarkenColor(color, -35) + ';}'
                     + '.output-title {background-color: ' + color + ';}'
-                    // + '.penDown { background-color: ' + LightenDarkenColor(color, -25) + ';}'
-                    + '.penDown { background-color: ' + penState + ';}'
                     + (sizes === "Small" ? 'p { font-size: small;} h3 { font-size: large; } .status { font-size: 22px; } textarea { font-size: 13px;}' :
                         sizes === "Medium" ? 'p { font-size: medium;} h3 { font-size: larger; } .status { font-size: 25px; } textarea { font-size: 15px;}' :
                             sizes === "Large" ? 'p { font-size: larger;} h3 { font-size: x-large; } .status { font-size: 30px; } textarea { font-size: 17px;}' :

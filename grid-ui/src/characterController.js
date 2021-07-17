@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import './styles/characterController.css';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 import { convertToContinuousNumbering } from './utils';

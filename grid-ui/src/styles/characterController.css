@@ -1,0 +1,32 @@
+.game-info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 25vw;
+    height: 70vh;
+    /* border: 0.5px dotted #3f3e3e; */
+    border-radius: 3px;
+    user-select: none;
+  }
+
+  .input-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+  }
+  
+  .output-div {
+    height: 50%;
+    background-color: whitesmoke;
+  }
+
+  .output-title {
+    background-color: #fcc663;
+  }
+
+  .separator{
+    height: 80vh;
+    border: 0.5px solid;
+  }
+  
