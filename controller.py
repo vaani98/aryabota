@@ -72,7 +72,7 @@ tokens = [
     'ASSIGN',
     'COMMA',
     'IFCOINS',
-    'IFOBSTACLE',
+    'IFNOOBSTACLE',
     'ANSWER'
 ]
 
@@ -154,9 +154,9 @@ def t_IFCOINS(t):
     t.value = 'IFCOINS'
     return t
 
-def t_IFOBSTACLE(t):
-    r'if[ ]*obstacle'
-    t.value = 'IFOBSTACLE'
+def t_IFNOOBSTACLE(t):
+    r'if[ ]*no[ ]*obstacle'
+    t.value = 'IFNOOBSTACLE'
     return t
 
 def t_COINS(t):
@@ -230,15 +230,16 @@ def p_answer_expr(p):
 def p_selection_expr(p):
     '''
     selection_expr : IFCOINS COMMA assign_expr
-                   | IFOBSTACLE COMMA assign_expr
+                   | IFNOOBSTACLE COMMA assign_expr
     '''
     if p[1] == 'IFCOINS':
         value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
         temp = commandStack.pop()
         if value > 0:
             commandStack.append(make_command("if(coins):"))
+            temp['python'] = "    "+temp['python']
             commandStack.append(temp)
-    elif p[1] == 'IFOBSTACLE':
+    elif p[1] == 'IFNOOBSTACLE':
         state = grid.get_state()
         dir = bot.get_dir()
         obstacle_flag = 0
@@ -262,6 +263,7 @@ def p_selection_expr(p):
         if obstacle_flag == 0:
             #print("Obstacle")
             commandStack.append(make_command("if(obstacle):"))
+            temp['python'] = "    "+temp['python']
             commandStack.append(temp)
 
 def p_assign_expr(p):
