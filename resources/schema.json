@@ -1,0 +1,79 @@
+{
+    "type": "object",
+    "properties": {
+      "rows": {
+        "type": "integer",
+        "maximum": 10,
+        "minimum": 0
+      },
+      "columns": {
+        "type": "integer",
+        "maximum": 10,
+        "minimum": 0
+      },
+      "coin_sweeper_start": {
+        "type": "object",
+        "properties": {
+          "row": {
+            "type": "integer",
+            "maximum": 10,
+            "minimum": 0
+          },
+          "column": {
+            "type": "integer",
+            "maximum": 10,
+            "minimum": 0
+          },
+          "dir": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "left",
+              "right"
+            ]
+          }
+        }
+      },
+      "coins": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "row": {
+              "type": "integer",
+              "maximum": 15,
+              "minimum": 0
+            },
+            "column": {
+              "type": "integer",
+              "maximum": 15,
+              "minimum": 0
+            },
+            "value": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "obstacles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "row": {
+              "type": "integer",
+              "maximum": 15,
+              "minimum": 0
+            },
+            "column": {
+              "type": "integer",
+              "maximum": 15,
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
