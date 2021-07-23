@@ -87,7 +87,7 @@ function Game() {
           <MazeState.Provider value={[mazeData, setMazeData]}>
             {errorModal}
             <Controller />
-            <Maze 
+            {/* <Maze 
               x = {mazeData.inputX} 
               y = {mazeData.inputY}
               coinLoc = {mazeData.coinLoc}
@@ -97,7 +97,7 @@ function Game() {
               positionsSeen = {mazeData.positionsSeen}
               penLoc = {mazeData.penLoc}
               prevSteps = {mazeData.prevSteps}
-              />
+              /> */}
           </MazeState.Provider>
         </div>
       </>

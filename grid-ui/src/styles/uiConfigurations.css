@@ -8,9 +8,10 @@
     background-color: #d68b00;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     padding: 20px 20px;
+    z-index: 5;
   }
   
   .colorSelector button, .sizeSelector button, .penToggle button{
@@ -23,4 +24,11 @@
   
   .penDown {
     background-color: yellow;
+  }
+
+  .configs {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: space-around;
   }

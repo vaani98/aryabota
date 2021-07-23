@@ -9,6 +9,7 @@ import { GithubPicker } from 'react-color';
 import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
 import Create from '@material-ui/icons/Create';
+import Refresh from '@material-ui/icons/Refresh';
 
 /**
  * UI Configuration Toolbar Component
@@ -208,6 +209,27 @@ function UiConfigs(props) {
         )
     }
 
+    /**
+     * This component displays a reset button on the toolbar
+     * @returns ResetButton component
+     * @example
+     * <ResetButton />
+     */
+    const ResetButton = () => {
+        const onClick = () => {
+            //TODO: Add reset logic
+        }
+
+        return (
+            <div className="resetButton">
+                <Button
+                    onClick={onClick}
+                    startIcon={<Refresh />}
+                />
+            </div>
+        )
+    }
+
     return (
         <div>
             <style>
@@ -223,9 +245,14 @@ function UiConfigs(props) {
                 }
             </style>
             <div className="toolbar" id="toolbar-div">
-                <ToggleSize />
-                <ToggleColor />
-                <TogglePen />
+                <>
+                    <ResetButton />
+                </>
+                <div className="configs">
+                    <ToggleSize />
+                    <ToggleColor />
+                    <TogglePen />
+                </div>
             </div>
         </div>
     )

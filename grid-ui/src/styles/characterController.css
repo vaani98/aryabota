@@ -9,15 +9,22 @@
     user-select: none;
   }
 
+  textarea, .editor {  
+  font-family: Consolas, monaco, monospace; 
+  font-size: 15px;   
+  height: 200px;
+  width: 116%;
+  }
+
   .input-div {
-    display: flex;
-    flex-direction: column;
+    /* display: flex; */
+    /* flex-direction: column; */
     height: 100%;
-    justify-content: space-around;
+    /* justify-content: space-around; */
   }
   
   .output-div {
-    height: 50%;
+    height: 20%;
     background-color: whitesmoke;
   }
 
@@ -26,7 +33,7 @@
   }
 
   .separator{
-    height: 80vh;
+    height: 90vh;
     border: 0.5px solid;
   }
   
