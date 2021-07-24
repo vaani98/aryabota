@@ -41,7 +41,6 @@ def index():
 def reset():
     """To reset the given problem - Yet to add the reset button in UI"""
     before_first_request()
-    #return "RESET successful"
     return jsonify(get_initial_state())
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))

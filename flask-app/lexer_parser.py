@@ -114,7 +114,6 @@ def t_TURNLEFT(t):
     t.value = 'TURNLEFT'
     return t
 
-
 def t_MYROW(t):
     r'my[ ]*row'
     t.value = "MYROW"
@@ -249,7 +248,7 @@ def p_assign_expr(p):
     '''
     python_code = convert_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
     p[0] = python_code + "\n"
-
+    
 def p_error(p):
     """Error in parsing command"""
     print("Syntax error in input! You entered " + str(p))
