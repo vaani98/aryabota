@@ -16,6 +16,10 @@
   width: 116%;
   }
 
+  .submit-area {
+    display: flex;
+  }
+
   .input-div {
     /* display: flex; */
     /* flex-direction: column; */

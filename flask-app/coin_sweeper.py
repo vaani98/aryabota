@@ -90,11 +90,11 @@ class CoinSweeper:
             if to_move >=1 and to_move <= grid.rows:
                 for i in range(curr_row, to_move, offset):
                     curr_row  = curr_row + offset
-                    if {'row': curr_row, 'column': self.column} in state['obstacles']:
+                    pos_obj = {'position': {'row': curr_row, 'column': self.column}}
+                    if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.row, to_move, offset):
                     self.append_position_to_trail(i, self.column)
-                print(self.trail)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
@@ -109,11 +109,11 @@ class CoinSweeper:
             if to_move >=1 and to_move <= grid.columns:
                 for i in range(curr_column, to_move, offset):
                     curr_column = curr_column + offset
-                    if {'row': self.row, 'column': curr_column} in state['obstacles']:
+                    pos_obj = {'position': {'row': self.row, 'column': curr_column}}
+                    if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.column, to_move, offset):
                     self.append_position_to_trail(self.row, i)
-                print(self.trail)
                 self.column = curr_column
             else:
                 return [False, boundary_message]
