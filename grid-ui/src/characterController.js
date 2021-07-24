@@ -151,6 +151,28 @@ export default function Controller() {
         getSteps(code, mazeData);
     }
 
+    const submitAnswer = () => {
+        if (mazeData.levelType === 'text_submit') {
+            const text_answer = document.getElementById("coinsweeper-answer").value;
+            fetch('http://localhost:5000/submitAnswer', {
+                crossDomain: true,
+                method: 'POST',
+                body: JSON.stringify({ text_answer : text_answer }),
+                headers: {
+                      'Content-type': 'application/json'
+                  }
+                })
+                .then(response => response.json())
+                .then(response => {
+                    setMazeData(prev => ({
+                        ...prev,
+                        ...response,
+                    }))
+                }
+            )
+        }
+    }
+
     function getSteps(code, currState) {
         fetch('http://localhost:5000/coinSweeper', {
             crossDomain: true,
@@ -196,6 +218,13 @@ export default function Controller() {
     let [editorValue, setEditorValue] = useState('');
     function onChange(newValue) {
         setEditorValue(newValue);
+    }
+    const submitButtonStyle = {
+        marginTop: '30px',
+        width: '110px',
+        marginLeft: mazeData.levelType === 'text_submit'
+        ? '90px'
+        : '65%'
     }
 
     return (
@@ -296,19 +325,24 @@ export default function Controller() {
                     editorProps={{ $blockScrolling: true }}
                 />
                 <ThemeProvider theme={theme}>
-                    <Button
-                        style={{
-                            marginTop: '30px',
-                            width: '110px',
-                            marginLeft: '65%'
-                        }}
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        endIcon={<PlayArrowRounded />}
-                    >
-                        Submit
-                    </Button>
+                    <div className="submit-area">
+                        {mazeData.levelType === 'text_submit' ? <input
+                            style = {{
+                                marginTop: '30px'
+                            }}
+                            id = "coinsweeper-answer"
+                            placeholder="answer" /> : null}
+                        <Button
+                                onClick = {submitAnswer}
+                                style={submitButtonStyle}
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                endIcon={<PlayArrowRounded />}
+                            >
+                                Submit
+                            </Button>
+                    </div>
                 </ThemeProvider>
             </div>
             <div className="controller"></div>
