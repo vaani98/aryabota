@@ -1,0 +1,58 @@
+{
+    "$id": "problem_state.json",
+    "type": "object",
+    "properties": {
+      "grid": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+              "$ref": "position.json#"
+          },
+          "coins": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "$ref": "position.json#"
+                },
+                "number": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "obstacles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "$ref": "position.json#"
+                }
+              }
+            }
+          }
+        }
+      },
+      "coin_sweeper": {
+        "type": "object",
+        "properties": {
+            "position": {
+                "$ref": "position.json#"
+            },
+            "dir": {
+                "type": "string",
+                "enum": [
+                    "up", "down", "left", "right"
+                ]
+            }
+        }
+      }
+    },
+    "required": [
+      "grid",
+      "coin_sweeper"
+    ]
+}

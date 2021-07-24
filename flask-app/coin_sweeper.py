@@ -94,7 +94,6 @@ class CoinSweeper:
                         return [False, obstacle_message]
                 for i in range(self.row, to_move, offset):
                     self.append_position_to_trail(i, self.column)
-                print(self.trail)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
@@ -113,7 +112,6 @@ class CoinSweeper:
                         return [False, obstacle_message]
                 for i in range(self.column, to_move, offset):
                     self.append_position_to_trail(self.row, i)
-                print(self.trail)
                 self.column = curr_column
             else:
                 return [False, boundary_message]
