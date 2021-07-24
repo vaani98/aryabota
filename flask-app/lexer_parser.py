@@ -2,22 +2,25 @@
 # pylint: disable=invalid-name,unused-argument,global-statement
 import ply.lex as lex
 import ply.yacc as yacc
+import yaml
+import json
 
+from utils import convert_pseudocode_to_python
+from control_hub import *
 from grid import Grid
 from coin_sweeper import CoinSweeper
 
+"""Opening config to read grid attributes"""
+with open('../config.yaml') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
 # utilities
-# global command stack
-commandStack = []
-variables = dict()
-total_var = dict()
     
 class LexerError(Exception): pass
 
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
     if command == "get_row()":
-        print("row row row")
         return {
                 "python": command,
                 "value": bot.my_row()
@@ -34,8 +37,7 @@ def make_command(command, value = None):
                }
     elif '+' in command or '-' in command or '*' in command or '/' in command or '=' in command:
         return {
-                "python": command,
-                #"value": value
+                "python": command
                }
     elif command == "error()":
         return {
@@ -63,13 +65,13 @@ tokens = [
     'MYCOLUMN',
     'MOVE',
     'TURNLEFT',
-    'TURNRIGHT',
     'COINS',
     'IDENTIFIER',
     'ASSIGN',
     'COMMA',
     'IFCOINS',
-    'ANSWER'
+    'IFNOOBSTACLE',
+    'PRINT'
 ]
 
 t_ignore = ' \t'
@@ -110,12 +112,6 @@ def t_TURNLEFT(t):
     t.value = 'TURNLEFT'
     return t
 
-def t_TURNRIGHT(t):
-    r'turn[ ]*right'
-    t.value = 'TURNRIGHT'
-    return t
-
-
 def t_MYROW(t):
     r'my[ ]*row'
     t.value = "MYROW"
@@ -132,7 +128,6 @@ def t_NUMBER(t):
     r'[0-9]+'
     t.value = int(t.value)
     t.type = 'NUMBER'
-    #print(t.value)
     return t
 
 def t_ASSIGN(t):
@@ -141,8 +136,13 @@ def t_ASSIGN(t):
     return t
 
 def t_IFCOINS(t):
-    r'if[ ]*there[ ]*are[ ]*coins'
+    r'if[ ]*coins'
     t.value = 'IFCOINS'
+    return t
+
+def t_IFNOOBSTACLE(t):
+    r'if[ ]*no[ ]*obstacle'
+    t.value = 'IFNOOBSTACLE'
     return t
 
 def t_COINS(t):
@@ -150,9 +150,9 @@ def t_COINS(t):
     t.value = 'COINS'
     return t
 
-def t_ANSWER(t):
-    r'answer'
-    t.type = 'ANSWER'
+def t_PRINT(t):
+    r'print'
+    t.value = 'PRINT'
     return t
 
 def t_IDENTIFIER(t):
@@ -175,92 +175,78 @@ def p_commands(p):
     '''
     expr : expr expr
     '''
+    p[0] = p[1] + "\n" + p[2]
 
 def p_command(p):
     '''
-    expr : MYROW
-        | MYCOLUMN
-        | TURNLEFT
-        | TURNRIGHT
+    expr : TURNLEFT
         | MOVE NUMBER
         | assign_expr
         | selection_expr
-        | answer_expr
+        | print_expr
     '''
-    if len(p) == 2 and p[1] == 'TURNLEFT':
-        bot.turn_left()
-        commandStack.append(make_command("turn_left()"))
-    elif len(p) == 2 and p[1] == 'TURNRIGHT':
-        bot.turn_right()
-        commandStack.append(make_command("turn_right()"))
-    elif len(p) == 2 and p[1] == 'MYROW':
-        commandStack.append(make_command("get_row()"))
-    elif len(p) == 2 and p[1] == 'MYCOLUMN':
-        commandStack.append(make_command("get_column()"))
+    if p[1] == 'TURNLEFT':
+        python_code = convert_pseudocode_to_python(p[1])
+        p[0] = python_code
+    elif len(p) == 2:
+        p[0] = p[1]
     elif len(p) == 3:
-        [success, message] = bot.move(p[2])
-        if success:
-            commandStack.append(make_command("move(" + str(p[2]) + ")"))
-        else:
-            commandStack.append(make_command("error()", message))
-            raise LexerError('move error')
+        python_code = convert_pseudocode_to_python(p[1], steps = p[2])
+        p[0] = python_code
+    return p[0]
 
-def p_answer_expr(p):
+def p_print_expr(p):
     '''
-    answer_expr : ANSWER IDENTIFIER
+    print_expr : PRINT value_expr
     '''
-    var = p[2]
-    value = variables[var]
-    commandStack.append(make_command(var + " = " + str(value), value))
+    python_code = convert_pseudocode_to_python("PRINT_VALUE", expr = p[2])
+    p[0] = python_code
+
+def p_value_expr(p):
+    '''
+    value_expr : MYROW
+               | MYCOLUMN
+               | IDENTIFIER
+               | NUMBER
+               | COINS
+               | value_expr PLUS value_expr
+               | value_expr MINUS value_expr
+               | value_expr TIMES value_expr
+               | value_expr DIVIDE value_expr
+    '''
+    if (p[1] == 'MYROW' or p[1] == 'MYCOLUMN'):
+        python_code = convert_pseudocode_to_python(p[1])
+    elif p[1] == 'IDENTIFIER':
+        python_code = convert_pseudocode_to_python("IDENTIFIER", variable = p[1])
+    elif p[1] == 'COINS':
+        python_code = convert_pseudocode_to_python("GET_COINS")
+    elif len(p) == 4:
+        var1 = p[1]
+        var2 = p[3]
+        python_code = convert_pseudocode_to_python(p[2], variable1 = var1, variable2 = var2)
+    else:
+        python_code = convert_pseudocode_to_python("NUMBER", value = p[1])
+    p[0] = python_code
 
 def p_selection_expr(p):
     '''
-    selection_expr : IFCOINS COMMA assign_expr
+    selection_expr : IFCOINS COMMA expr
+                   | IFNOOBSTACLE COMMA expr
     '''
-    #value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
-    print("Variables = ", variables)
+    if p[1] == 'IFCOINS':
+        python_code = convert_pseudocode_to_python("IFCOINS")
+        p[0] = python_code + " " + p[3]
+    elif p[1] == 'IFNOOBSTACLE':
+        python_code = convert_pseudocode_to_python("IFNOOBSTACLE")
+        p[0] = python_code + " " + p[3]
 
 def p_assign_expr(p):
     '''
-    assign_expr : IDENTIFIER ASSIGN COINS
-                | IDENTIFIER ASSIGN NUMBER
-                | IDENTIFIER ASSIGN IDENTIFIER PLUS IDENTIFIER
-                | IDENTIFIER ASSIGN IDENTIFIER MINUS IDENTIFIER
-                | IDENTIFIER ASSIGN IDENTIFIER TIMES IDENTIFIER
-                | IDENTIFIER ASSIGN IDENTIFIER DIVIDE IDENTIFIER
+    assign_expr : IDENTIFIER ASSIGN value_expr
     '''
-    global variables, total_var
-    if p[3] == 'COINS':
-        var = p[1]
-        value = grid.get_number_of_coins(bot.my_row(), bot.my_column())
-        variables[var] = value
-        print("Variables = ", variables)
-        commandStack.append(make_command(var + " = get_number_of_coins()", value))
-    elif len(p) == 6:
-        var1 = p[1]
-        var2 = p[3]
-        var3 = p[5]
-        if p[4] == 'PLUS':
-            variables[var1] = variables[var2] + variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '+' + var3, variables[var1]))
-        elif p[4] == 'MINUS':
-            variables[var1] = variables[var2] - variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '-' + var3, variables[var1]))
-        elif p[4] == 'TIMES':
-            variables[var1] = variables[var2] * variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '*' + var3, variables[var1]))
-        elif p[4] == 'DIVIDE':
-            variables[var1] = variables[var2] / variables[var3]
-            commandStack.append(make_command(var1 + " = " + var2 + '/' + var3, variables[var1]))
-        print("Variables = ",variables)
-    else:
-        var = p[1]
-        value = p[3]
-        variables[var] = value
-        print("Variables = ", variables)
-        commandStack.append(make_command(var + " = " + str(value), value))
-
-
+    python_code = convert_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
+    p[0] = python_code
+    
 def p_error(p):
     """Error in parsing command"""
     print("Syntax error in input! You entered " + str(p))
@@ -268,15 +254,34 @@ def p_error(p):
 parser = yacc.yacc()
 
 def understand(commands):
-    """Understand pseudo-code"""
-    commandStack.clear()
+    """Convert pseudo-code to Python code to execute"""
+    # reinitialize response file
+    with open(config["app"]["results"], "w") as results_file:
+        results_file.write(json.dumps([]))
     try:
-        parser.parse(commands)
+        python_program = parser.parse(commands)
     except Exception as exception:
         print(exception)
-        return commandStack
-    print("Command stack",commandStack)
-    return commandStack
+        return []
+    print("Python program: ", python_program)
+    exception_raised = None
+    try:
+        exec(python_program)
+    except Exception as e:
+        exception_raised = e
+        print("Exception raised while parsing: ", e)
+    with open(config["app"]["results"]) as results_file:
+        response = json.loads(results_file.read())
+    if exception_raised is not None:
+        response.append({
+            "error_message": str(exception_raised)
+        })
+    response_and_python_program = {
+        "python": python_program,
+        "response": response
+    }
+    print("Response and python program:", response_and_python_program)
+    return response_and_python_program
 
 def get_initial_state():
     grid_state = grid.get_state()

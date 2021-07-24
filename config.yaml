@@ -1,3 +1,4 @@
 app:
   level: 0
-  problem_grid: lvl0-basic.json
+  problem_grid: resources/problem-grids/lvl0-basic.json
+  results: temp/results.json
