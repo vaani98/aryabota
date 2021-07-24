@@ -81,53 +81,53 @@ class CoinSweeper:
         boundary_message = "This position does not exist on the grid!"
         if self.dir == "up":
             curr_row = self.row
-            if(curr_row - steps >= 1):
+            if curr_row - steps >= 1:
                 for i in range(curr_row, curr_row - steps, -1):
                     curr_row -= 1
-                    if({'row': curr_row, 'column': self.column} in state['obstacles']):
+                    pos_obj = {'position': {'row': curr_row, 'column': self.column}}
+                    if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.row, self.row - steps, -1):
                     self.append_position_to_trail(i, self.column)
-                print(self.trail)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
         elif self.dir == "down":
             curr_row = self.row
-            if(curr_row + steps <= grid.rows ):
+            if curr_row + steps <= grid.rows:
                 for i in range(curr_row, curr_row + steps):
                     curr_row += 1
-                    if({'row': curr_row, 'column': self.column} in state['obstacles']):
+                    pos_obj = {'position': {'row': curr_row, 'column': self.column}}
+                    if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.row, self.row + steps):
                     self.append_position_to_trail(i, self.column)
-                print(self.trail)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
         elif self.dir == "right":
             curr_column = self.column
-            if(curr_column + steps <= grid.columns ):
+            if curr_column + steps <= grid.columns:
                 for i in range(curr_column, curr_column + steps):
                     curr_column += 1
-                    if({'row': self.row, 'column': curr_column} in state['obstacles']):
+                    pos_obj = {'position': {'row': self.row, 'column': curr_column}}
+                    if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.column, self.column + steps):
                     self.append_position_to_trail(self.row, i)
-                print(self.trail)
                 self.column = curr_column
             else:
                 return [False, boundary_message]
         elif self.dir == "left":
-            if(self.column - steps >= 1 ):
+            if self.column - steps >= 1:
                 curr_column = self.column
                 for i in range(curr_column, curr_column - steps, -1):
                     curr_column -= 1
-                    if({'row': self.row, 'column': curr_column} in state['obstacles']):
+                    pos_obj = {'position': {'row': self.row, 'column': curr_column}}
+                    if pos_obj in state['obstacles']:
                        return [False, obstacle_message]
                 for i in range(self.column, self.column - steps, -1):
                     self.append_position_to_trail(self.row, i)
-                print(self.trail)
                 self.column = curr_column
             else:
                 return [False, boundary_message]

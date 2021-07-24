@@ -31,15 +31,16 @@ def lint_problem_grid(problem_grid):
 
 def get_for_every_position(objects, rows, columns, coins = True):
     per_position = [[0 for i in range(columns)] for j in range(rows)]
-    for loc in objects:
-        loc_row = loc["row"]
-        loc_column = loc["column"]
+    for object in objects:
+        print(object)
+        loc_row = object["position"]["row"]
+        loc_column = object["position"]["column"]
         if loc_row < 1 or loc_row > rows:
             return False
         if loc_column < 1 or loc_column > columns:
             return False
         if coins:
-            per_position[loc_row - 1][loc_column - 1] = loc["value"]
+            per_position[loc_row - 1][loc_column - 1] = object["number"]
         else:
             per_position[loc_row - 1][loc_column - 1] = -1
     return per_position

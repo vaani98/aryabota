@@ -17,7 +17,6 @@ class LexerError(Exception): pass
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
     if command == "get_row()":
-        print("row row row")
         return {
                 "python": command,
                 "value": bot.my_row()

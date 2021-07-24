@@ -59,8 +59,8 @@ function Game() {
         inputX: response.rows,
         inputY: response.columns,
         marioLoc: convertToContinuousNumbering(response.row, response.column, response.columns),
-        coinLoc: response.coins.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
-        obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
+        coinLoc: response.coins.map(obj => convertToContinuousNumbering(obj.position.row, obj.position.column, response.columns)),
+        obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.position.row, obj.position.column, response.columns)),
         positionsSeen: response.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, response.columns)),
         currentDirection: response.dir,
         //TODO: Might want to set these two values from backend
@@ -87,17 +87,6 @@ function Game() {
           <MazeState.Provider value={[mazeData, setMazeData]}>
             {errorModal}
             <Controller />
-            {/* <Maze 
-              x = {mazeData.inputX} 
-              y = {mazeData.inputY}
-              coinLoc = {mazeData.coinLoc}
-              obstacleLoc = {mazeData.obstacleLoc}
-              marioLoc = {mazeData.marioLoc} 
-              currentDirection = {mazeData.currentDirection}
-              positionsSeen = {mazeData.positionsSeen}
-              penLoc = {mazeData.penLoc}
-              prevSteps = {mazeData.prevSteps}
-              /> */}
           </MazeState.Provider>
         </div>
       </>
