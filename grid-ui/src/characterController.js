@@ -146,13 +146,8 @@ export default function Controller() {
 
     }
 
-
-    function updateCoinSweeperBot(code) {
-        getSteps(code, mazeData);
-    }
-
     const submitAnswer = () => {
-        if (mazeData.levelType === 'text_submit') {
+        if (mazeData.levelType === 'value_match') {
             const text_answer = document.getElementById("coinsweeper-answer").value;
             fetch('http://localhost:5000/submitAnswer', {
                 crossDomain: true,
@@ -222,7 +217,7 @@ export default function Controller() {
     const submitButtonStyle = {
         marginTop: '30px',
         width: '110px',
-        marginLeft: mazeData.levelType === 'text_submit'
+        marginLeft: mazeData.levelType === 'value_match'
         ? '90px'
         : '65%'
     }
@@ -326,7 +321,7 @@ export default function Controller() {
                 />
                 <ThemeProvider theme={theme}>
                     <div className="submit-area">
-                        {mazeData.levelType === 'text_submit' ? <input
+                        {mazeData.levelType === 'value_match' ? <input
                             style = {{
                                 marginTop: '30px'
                             }}

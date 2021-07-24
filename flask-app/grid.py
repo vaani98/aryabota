@@ -35,8 +35,6 @@ class Grid:
             self.obstacles = obstacles
         if obstacles_per_position is not None:
             self.obstacles_per_position = obstacles_per_position
-        print(self.obstacles_per_position)
-        print(self.coins_per_position)
 
     def get_number_of_coins(self, row, column):
         print(row, column)
@@ -51,7 +49,7 @@ class Grid:
     def check_answer(self, submitted_answer): 
         succeeded = None
         message = "not implemented yet!"
-        if self.type == "text_submit":
+        if self.type == "value_match":
             succeeded = str(self.answer).lower() == str(submitted_answer).lower()
             if succeeded: 
                 message = 'Correct answer!'
