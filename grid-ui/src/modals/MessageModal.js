@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import './styles/ErrorModal.css';
-import { MazeState } from './globalStates';
+import '../styles/ErrorModal.css';
+import { MazeState } from '../globalStates';
 import Button from '@material-ui/core/Button';
 
 /**
@@ -13,9 +13,8 @@ import Button from '@material-ui/core/Button';
  * @example
  * <UiConfigs />
  */
-function ErrorModal(props) {
+function MessageModal(props) {
     const [mazeData, setMazeData] = useContext(MazeState);
-    console.log(props);
     return (
         <div className="modal">
             <div className="modal-content">
@@ -29,6 +28,8 @@ function ErrorModal(props) {
                         setMazeData(prev => ({
                             ...prev,
                             error_message: null,
+                            message: null,
+                            succeeded: null,
                         }))
                 }}>OK</Button>
             </div>
@@ -36,4 +37,4 @@ function ErrorModal(props) {
     )
 }
 
-export default ErrorModal;
+export default MessageModal;

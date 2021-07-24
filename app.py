@@ -24,7 +24,7 @@ def before_first_request():
         problem_grid = json.loads(problem_grid_file.read())
         linted_problem_grid = lint_problem_grid(problem_grid)
         if linted_problem_grid:
-            grid.configure(linted_problem_grid["rows"], linted_problem_grid["columns"], linted_problem_grid["coins"], linted_problem_grid["coins_per_position"], linted_problem_grid["obstacles"], linted_problem_grid["obstacles_per_position"])
+            grid.configure(linted_problem_grid["rows"], linted_problem_grid["columns"], linted_problem_grid["coins"], linted_problem_grid["coins_per_position"], linted_problem_grid["obstacles"], linted_problem_grid["obstacles_per_position"], linted_problem_grid["type"], linted_problem_grid["answer"])
             coin_sweeper_start = linted_problem_grid["coin_sweeper_start"]
             bot.configure(coin_sweeper_start["row"], coin_sweeper_start["column"], coin_sweeper_start["dir"])
         else:
@@ -60,3 +60,12 @@ def coin_sweeper():
         response = understand(commands)
         return jsonify(response)
     return ("", 405)
+
+@app.route('/submitAnswer', methods=(['POST']))
+@cross_origin()
+def submit_answer():
+    print("@@", request, request.json)
+    commands = request.json
+    grid = Grid.get_instance()
+    response = grid.check_answer(commands['text_answer'])
+    return jsonify(response)

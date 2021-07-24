@@ -7,7 +7,7 @@ import { randomPositions, convertToContinuousNumbering } from './utils';
 import Maze from './mazeGenerator';
 //CHARACTER CONTROLLER COMPONENT
 import Controller from './characterController';
-import ErrorModal from './ErrorModal';
+import MessageModal from './modals/MessageModal';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
 
@@ -63,6 +63,7 @@ function Game() {
         obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.row, obj.column, response.columns)),
         positionsSeen: response.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, response.columns)),
         currentDirection: response.dir,
+        levelType: response.type,
         //TODO: Might want to set these two values from backend
         penLoc: [1],
         prevSteps: 1
@@ -72,9 +73,12 @@ function Game() {
 
   //check if player location is generated
   let maze;
-  let errorModal = null;
-  if(mazeData.error_message) {
-    errorModal = <ErrorModal error_message={mazeData.error_message}/>;
+  let messageModal = null;
+  if(mazeData.error_message || mazeData.message) {
+    const modalMessage = mazeData.error_message 
+      ? mazeData.error_message
+      : mazeData.message
+    messageModal = <MessageModal error_message={modalMessage}/>;
   }
   if(mazeData.marioLoc) {
     //set maze and controller component with required props
@@ -85,19 +89,8 @@ function Game() {
         /> */}
         <div className="game">
           <MazeState.Provider value={[mazeData, setMazeData]}>
-            {errorModal}
+            {messageModal}
             <Controller />
-            {/* <Maze 
-              x = {mazeData.inputX} 
-              y = {mazeData.inputY}
-              coinLoc = {mazeData.coinLoc}
-              obstacleLoc = {mazeData.obstacleLoc}
-              marioLoc = {mazeData.marioLoc} 
-              currentDirection = {mazeData.currentDirection}
-              positionsSeen = {mazeData.positionsSeen}
-              penLoc = {mazeData.penLoc}
-              prevSteps = {mazeData.prevSteps}
-              /> */}
           </MazeState.Provider>
         </div>
       </>
