@@ -168,6 +168,28 @@ export default function Controller() {
         }
     }
 
+    const submitAnswer = () => {
+        if (mazeData.levelType === 'pick_coins') {
+            const text_answer = document.getElementById("coinsweeper-answer").value;
+            fetch('http://localhost:5000/submitAnswer', {
+                crossDomain: true,
+                method: 'POST',
+                body: JSON.stringify({ text_answer : text_answer }),
+                headers: {
+                      'Content-type': 'application/json'
+                  }
+                })
+                .then(response => response.json())
+                .then(response => {
+                    setMazeData(prev => ({
+                        ...prev,
+                        ...response,
+                    }))
+                }
+            )
+        }
+    }
+
     function getSteps(code, currState) {
         fetch('http://localhost:5000/coinSweeper', {
             crossDomain: true,
