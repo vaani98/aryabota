@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './styles/uiConfigurations.css';
 //BUTTON and DROPDOWN COMPONENTS
 import Select from 'react-select';
 import Button from '@material-ui/core/Button';
@@ -8,6 +9,7 @@ import { GithubPicker } from 'react-color';
 import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
 import Create from '@material-ui/icons/Create';
+import Refresh from '@material-ui/icons/Refresh';
 
 /**
  * UI Configuration Toolbar Component
@@ -19,23 +21,23 @@ import Create from '@material-ui/icons/Create';
  * @example
  * <UiConfigs />
  */
-function UiConfigs() {
+function UiConfigs(props) {
 
     /**
      * color sets the base color of the webpage
      * @var
      */
-    var [color, setColor] = useState("");
+    let [color, setColor] = useState("");
     /**
      * sizes sets the size range of the text
      * @var
      */
-    var [sizes, setSizes] = useState("Medium");
+    let [sizes, setSizes] = useState("Medium");
     /**
      * penState sets toggles colour trail visibility
      * @var
      */
-    var [penState, setPenState] = useState("yellow");
+    let [penState, setPenState] = useState("penDown");
 
     /**
      * Updates color
@@ -51,6 +53,7 @@ function UiConfigs() {
      */
     var sizeChange = e => {
         setSizes(e.label);
+        props.onSizeChange(e.editor);
     }
 
     /**
@@ -60,26 +63,20 @@ function UiConfigs() {
     var sizeValues = [
         {
             value: 1,
-            label: "Small"
+            label: "Small",
+            editor: 12
         },
         {
             value: 2,
-            label: "Medium"
+            label: "Medium",
+            editor: 14
         },
         {
             value: 3,
-            label: "Large"
+            label: "Large",
+            editor: 16
         }
     ];
-
-    // let x = 32;
-    // let colors = [];
-    // if (x <= 50) {
-    //     colors.push('testColor');
-    // }
-    // else {
-    //     colors.push('test2');
-    // }
 
     /**
      * calculates colour values for highlights based on the base colour
@@ -191,10 +188,15 @@ function UiConfigs() {
      * <TogglePen />
      */
     const TogglePen = () => {
-        // var [tp, setTp] = useState("penDown");
         const onClick = () => {
-            if (penState === "yellow") setPenState("white");
-            else setPenState("yellow");
+            if (penState === "penDown") {
+                setPenState("penUp");
+                props.onPenChange("penUp");
+            }
+            else {
+                setPenState("penDown");
+                props.onPenChange("penDown");
+            }
         }
 
         return (
@@ -205,22 +207,40 @@ function UiConfigs() {
                     color="secondary"
                     startIcon={<Create />}
                 >
-                    Show/Hide Trail
+                    {penState === "penUp" ? "Pen Down" : "Pen Up"}
                 </Button>
+            </div>
+        )
+    }
+
+    /**
+     * This component displays a reset button on the toolbar
+     * @returns ResetButton component
+     * @example
+     * <ResetButton />
+     */
+    const ResetButton = () => {
+        const onClick = () => {
+            //TODO: Add reset logic
+        }
+
+        return (
+            <div className="resetButton">
+                <Button
+                    onClick={onClick}
+                    startIcon={<Refresh />}
+                />
             </div>
         )
     }
 
     return (
         <div>
-            {/* <h1 className={colors}>{x}</h1> */}
             <style>
                 {
                     'body { background-color: ' + color + '; color: ' + LightenDarkenColor(color, -85) + ';}'
                     + '.toolbar { background-color: ' + LightenDarkenColor(color, -35) + ';}'
                     + '.output-title {background-color: ' + color + ';}'
-                    // + '.penDown { background-color: ' + LightenDarkenColor(color, -25) + ';}'
-                    + '.penDown { background-color: ' + penState + ';}'
                     + (sizes === "Small" ? 'p { font-size: small;} h3 { font-size: large; } .status { font-size: 22px; } textarea { font-size: 13px;}' :
                         sizes === "Medium" ? 'p { font-size: medium;} h3 { font-size: larger; } .status { font-size: 25px; } textarea { font-size: 15px;}' :
                             sizes === "Large" ? 'p { font-size: larger;} h3 { font-size: x-large; } .status { font-size: 30px; } textarea { font-size: 17px;}' :
@@ -229,9 +249,14 @@ function UiConfigs() {
                 }
             </style>
             <div className="toolbar" id="toolbar-div">
-                <ToggleSize />
-                <ToggleColor />
-                <TogglePen />
+                <>
+                    <ResetButton />
+                </>
+                <div className="configs">
+                    <ToggleSize />
+                    <ToggleColor />
+                    <TogglePen />
+                </div>
             </div>
         </div>
     )
