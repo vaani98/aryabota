@@ -1,6 +1,8 @@
 {
     "rows": 10,
     "columns": 10,
+    "type": "pick_coins",
+    "answer": 7,
     "coin_sweeper_start": {
         "row": 1,
         "column": 1,
