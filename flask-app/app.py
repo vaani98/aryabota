@@ -7,7 +7,8 @@ from jsonschema import RefResolver, Draft7Validator
 
 from grid import Grid
 from coin_sweeper import CoinSweeper
-from lexer_parser import understand, get_initial_state
+from problem import Problem
+from lexer_parser import understand
 from utils import get_for_every_position
 
 """Opening config to read grid attributes"""
@@ -45,6 +46,7 @@ def validate(problem_file_path):
 
 """Initialise the state of the grid"""
 def initialise_state(problem):
+    problem_details = problem["problem"]
     state = problem["initial_state"]
     bot = CoinSweeper.get_instance()
     coin_sweeper_state = state["coin_sweeper"]
@@ -55,12 +57,15 @@ def initialise_state(problem):
     columns = grid_state["dimensions"]["column"]
     coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
     obstacles_per_position = get_for_every_position(grid_state["obstacles"], rows, columns, False)
-    grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, problem["problem"]["problem_type"], problem["answer"]["value"])
+    grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position)
+    problem_instance = Problem.get_instance()
+    problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
 
 @app.before_first_request
 def before_first_request():
+    print("hi?")
     """Reading and validating config against schema, initialising the grid"""
-    problem_file_path = "../resources/problem-grids/count_number_of_coins.json"
+    problem_file_path = "../resources/problem-grids/go_home.json"
     problem = validate(problem_file_path)
     initialise_state(problem)   
 
@@ -85,7 +90,8 @@ def coin_sweeper():
     if request.method == 'OPTIONS':
         return ("", 200)
     if request.method == 'GET':
-        return jsonify(get_initial_state())
+        problem = Problem.get_instance()
+        return jsonify(problem.get_initial_state())
     if request.method == 'POST':
         # getting raw data in JSON format, needs header Content-Type = application/json
         commands = request.json
@@ -97,7 +103,7 @@ def coin_sweeper():
 @cross_origin()
 def submit_answer():
     print("@@", request, request.json)
-    commands = request.json
-    grid = Grid.get_instance()
-    response = grid.check_answer(commands['text_answer'])
+    submitted_answer = request.json
+    problem = Problem.get_instance()
+    response = problem.check_answer(submitted_answer)
     return jsonify(response)

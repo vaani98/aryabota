@@ -2,7 +2,8 @@
 class Grid:
     """Properties:
         rows: number of rows, default 10
-        columns: number of columns, default 10"""
+        columns: number of columns, default 10
+        many moreeee"""
     __instance = None
     @staticmethod
     def get_instance():
@@ -19,14 +20,10 @@ class Grid:
             raise Exception("This class is a singleton!")
         Grid.__instance = self
 
-    def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None, type = None, answer = None):
+    def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None):
         """Configure attributes"""
         self.rows = rows
         self.columns = columns
-        if type is not None: 
-            self.type = type
-        if answer is not None: 
-            self.answer = answer
         if coins is not None:
             self.coins = coins
         if coins_per_position is not None:
@@ -48,20 +45,6 @@ class Grid:
         # TODO decide whether to just return 0 instead?
         raise Exception("No coins are present in this grid!")
 
-    def check_answer(self, submitted_answer): 
-        succeeded = None
-        message = "not implemented yet!"
-        if self.type == "value_match":
-            succeeded = str(self.answer).lower() == str(submitted_answer).lower()
-            if succeeded: 
-                message = 'Correct answer!'
-            else: 
-                message = 'Wrong answer, please try again'
-        return {
-            "succeeded": succeeded,
-            "message": message
-        }
-
     def get_state(self):
         if self.__instance:
             return {
@@ -70,7 +53,6 @@ class Grid:
                 "coins": self.coins,
                 "coins_per_position": self.coins_per_position,
                 "obstacles": self.obstacles,
-                "obstacles_per_position": self.obstacles_per_position,
-                "type": self.type,
+                "obstacles_per_position": self.obstacles_per_position
             }
         return {}
