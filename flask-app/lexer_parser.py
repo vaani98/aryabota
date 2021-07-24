@@ -282,9 +282,3 @@ def understand(commands):
     }
     print("Response and python program:", response_and_python_program)
     return response_and_python_program
-
-def get_initial_state():
-    grid_state = grid.get_state()
-    coin_sweeper_state = bot.get_state()
-    grid_state.update(coin_sweeper_state)
-    return grid_state
