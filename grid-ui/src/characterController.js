@@ -33,6 +33,7 @@ export default function Controller() {
     // const [pythonicCode, setPythonicCode] = useContext(PythonicCodeState);
 
     const [penState, setPenState] = useState("penDown");
+    const [editorFont, setEditorFont] = useState(14);
 
     /**
      * local state to store interval id / game loop id
@@ -168,8 +169,8 @@ export default function Controller() {
         let output = control.outputValue.toString();
         //TODO: If someone can make this code better, pls do
         output = output.replace(/,/g, '\n');
-        output = output.replace(/\n\n*/g,'\n');
-        output = output.replace(/^\s*\n+|\s*\n+$/g,'');
+        output = output.replace(/\n\n*/g, '\n');
+        output = output.replace(/^\s*\n+|\s*\n+$/g, '');
         return output;
 
         // return <div>
@@ -200,6 +201,7 @@ export default function Controller() {
             <UiConfigs
                 penLoc={mazeData.penLoc}
                 onPenChange={setPenState}
+                onSizeChange={setEditorFont}
             />
 
             <div className="game-info">
@@ -207,8 +209,6 @@ export default function Controller() {
                 <div className="input-div">
                     <form onSubmit={submitCode}>
                         <div style={{
-                            // display: 'flex',
-                            // flexDirection: 'column',
                             marginRight: '50px'
                         }}>
                             <AceEditor
@@ -219,7 +219,7 @@ export default function Controller() {
                                 classname="editor"
                                 mode="java"
                                 theme="github"
-                                // value={'move 1'}
+                                fontSize={editorFont}
                                 onChange={onChange}
                                 name="editor-div"
                                 editorProps={{ $blockScrolling: true }}
@@ -257,21 +257,23 @@ export default function Controller() {
                     penLoc={mazeData.penLoc}
                     prevSteps={mazeData.prevSteps}
                 />
+                <br />
                 <div className="output-div">
                     <h3 className="output-title">Output:</h3>
                     <AceEditor
-                    style={{
-                        width: '100%',
-                        height: '100px'
-                    }}
-                    classname="editor"
-                    mode="java"
-                    theme="github"
-                    value={getOutputValue()}
-                    readOnly={true}
-                    name="output-div"
-                    editorProps={{ $blockScrolling: true }}
-                />
+                        style={{
+                            width: '100%',
+                            height: '100px'
+                        }}
+                        classname="editor"
+                        mode="java"
+                        theme="github"
+                        value={getOutputValue()}
+                        fontSize={editorFont}
+                        readOnly={true}
+                        name="output-div"
+                        editorProps={{ $blockScrolling: true }}
+                    />
                 </div>
             </div>
             <div className="separator"></div>
@@ -286,25 +288,26 @@ export default function Controller() {
                     mode="java"
                     theme="github"
                     value={getPythonicCode()}
+                    fontSize={editorFont}
                     readOnly={true}
                     name="python-div"
                     editorProps={{ $blockScrolling: true }}
                 />
                 <ThemeProvider theme={theme}>
-                            <Button
-                                style={{
-                                    marginTop: '30px',
-                                    width: '110px',
-                                    marginLeft: '65%'
-                                }}
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                endIcon={<PlayArrowRounded />}
-                            >
-                                Submit
-                            </Button>
-                        </ThemeProvider>
+                    <Button
+                        style={{
+                            marginTop: '30px',
+                            width: '110px',
+                            marginLeft: '65%'
+                        }}
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        endIcon={<PlayArrowRounded />}
+                    >
+                        Submit
+                    </Button>
+                </ThemeProvider>
             </div>
             <div className="controller"></div>
         </>

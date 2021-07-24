@@ -53,6 +53,7 @@ function UiConfigs(props) {
      */
     var sizeChange = e => {
         setSizes(e.label);
+        props.onSizeChange(e.editor);
     }
 
     /**
@@ -62,15 +63,18 @@ function UiConfigs(props) {
     var sizeValues = [
         {
             value: 1,
-            label: "Small"
+            label: "Small",
+            editor: 12
         },
         {
             value: 2,
-            label: "Medium"
+            label: "Medium",
+            editor: 14
         },
         {
             value: 3,
-            label: "Large"
+            label: "Large",
+            editor: 16
         }
     ];
 
