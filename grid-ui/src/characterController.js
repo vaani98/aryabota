@@ -41,7 +41,7 @@ export default function Controller() {
      */
     const [control, setControl] = useState({
         changeInterval: null,
-        pythonicCode: [],
+        pythonicCode: null,
         outputValue: [],
         steps: []
     });
@@ -70,7 +70,6 @@ export default function Controller() {
                 }))
                 control.steps.shift();
             } else {
-                control.pythonicCode.push(currStep.python)
                 control.outputValue.push(currStep.outputValue)
                 control.steps.shift()
             }
@@ -83,6 +82,70 @@ export default function Controller() {
         }
 
     }
+
+    function parseResponse(response, currState) {
+        setControl(prev => ({
+            ...prev,
+            pythonicCode: response.python
+        }))
+        let steps = [];
+        response.response?.forEach(step => {
+            console.log(step)
+            if (step.error_message) {
+                steps.push({
+                    error_message: step.error_message
+                });
+                setControl(prev => ({
+                    ...prev,
+                    steps: steps
+                }));
+                throw "obstacle/boundary error";
+            } 
+            if ("value" in step) {
+                let stepObj = {
+                    outputValue: step.value
+                };
+                steps.push(stepObj)
+                setControl(prev => ({
+                    ...prev,
+                    steps: steps
+                }));
+            } else if ("stateChanges" in step) {
+                let stepObj = {
+                    stateChanges: []
+                };
+                step.stateChanges?.forEach(change => {
+                    const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
+                    const newDir = change.dir;
+                    const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
+                    currState = {
+                        ...currState,
+                        marioLoc: newPos,
+                        currentDirection: newDir,
+                        positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                    };
+                    stepObj.stateChanges.push(currState);
+                });
+                steps.push(stepObj);
+                setControl(prev => ({
+                    ...prev,
+                    steps: steps
+                }));
+            }
+            else {
+                let stepObj = {
+                    python: step.python,
+                };
+                steps.push(stepObj)
+                setControl(prev => ({
+                    ...prev,
+                    steps: steps
+                }));
+            }
+        })
+
+    }
+
 
     function updateCoinSweeperBot(code) {
         getSteps(code, mazeData);
@@ -99,70 +162,15 @@ export default function Controller() {
         })
             .then(response => response.json())
             .then(response => {
-                console.log(response)
-                let steps = [];
-                response.forEach(step => {
-                    console.log(step)
-                    if (step.error_message) {
-                        steps.push({
-                            error_message: step.error_message
-                        });
-                        setControl(prev => ({
-                            ...prev,
-                            steps: steps
-                        }));
-                        throw "obstacle/boundary error";
-                    }
-                    if ("python" in step) {
-                        if ("value" in step) {
-                            let stepObj = {
-                                python: step.python,
-                                outputValue: step.value
-                            };
-                            steps.push(stepObj)
-                            setControl(prev => ({
-                                ...prev,
-                                steps: steps
-                            }));
-                        } else if ("stateChanges" in step) {
-                            let stepObj = {
-                                python: step.python,
-                                stateChanges: []
-                            };
-                            step.stateChanges?.forEach(change => {
-                                const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
-                                const newDir = change.dir;
-                                const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
-                                currState = {
-                                    ...currState,
-                                    marioLoc: newPos,
-                                    currentDirection: newDir,
-                                    positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
-                                    penLoc: penState === "penDown" ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps + 1)) : currState.penLoc,
-                                    prevSteps: newPositionsSeen.length
-                                };
-                                stepObj.stateChanges.push(currState);
-                            });
-                            steps.push(stepObj);
-                            setControl(prev => ({
-                                ...prev,
-                                steps: steps
-                            }));
-                        }
-                    }
-                })
+                parseResponse(response, currState)   
             });
     }
 
     function getPythonicCode() {
-        let pythonCode = control.pythonicCode.toString();
-        pythonCode = pythonCode.replace(/,/g, '\n');
-        // return <div>
-        //     {control.pythonicCode.map(codeLine => {
-        //         return <p> {codeLine} </p>
-        //     })}
-        // </div>
-        return pythonCode;
+        if(control.pythonicCode !== null)
+            return control.pythonicCode.replace(/,/g, '\n');
+        else
+            return null
     }
 
     function getOutputValue() {
@@ -172,17 +180,11 @@ export default function Controller() {
         output = output.replace(/\n\n*/g, '\n');
         output = output.replace(/^\s*\n+|\s*\n+$/g, '');
         return output;
-
-        // return <div>
-        //     {control.outputValue.map(codeLine => {
-        //         return <p> {codeLine} </p>
-        //     })}
-        // </div>
     }
 
     const submitCode = function (e) {
         e.preventDefault();
-        updateCoinSweeperBot(editorValue);
+        getSteps(editorValue, mazeData)
     }
 
     const theme = createTheme({
