@@ -87,6 +87,28 @@ export default function Controller() {
         getSteps(code, mazeData);
     }
 
+    const submitAnswer = () => {
+        if (mazeData.levelType === 'pick_coins') {
+            const text_answer = document.getElementById("coinsweeper-answer").value;
+            fetch('http://localhost:5000/submitAnswer', {
+                crossDomain: true,
+                method: 'POST',
+                body: JSON.stringify({ text_answer : text_answer }),
+                headers: {
+                      'Content-type': 'application/json'
+                  }
+                })
+                .then(response => response.json())
+                .then(response => {
+                    setMazeData(prev => ({
+                        ...prev,
+                        ...response,
+                    }))
+                }
+            )
+        }
+    }
+
     function getSteps(code, currState) {
         fetch('http://localhost:5000/coinSweeper', {
             crossDomain: true,
@@ -194,6 +216,13 @@ export default function Controller() {
     function onChange(newValue) {
         setEditorValue(newValue);
     }
+    const submitButtonStyle = {
+        marginTop: '30px',
+        width: '110px',
+        marginLeft: mazeData.levelType === 'pick_coins'
+        ? '90px'
+        : '65%'
+    }
 
     return (
         <>
@@ -291,12 +320,16 @@ export default function Controller() {
                     editorProps={{ $blockScrolling: true }}
                 />
                 <ThemeProvider theme={theme}>
-                            <Button
-                                style={{
-                                    marginTop: '30px',
-                                    width: '110px',
-                                    marginLeft: '65%'
-                                }}
+                    <div className="submit-area">
+                        {mazeData.levelType === 'pick_coins' ? <input
+                            style = {{
+                                marginTop: '30px'
+                            }}
+                            id = "coinsweeper-answer"
+                            placeholder="answer" /> : null}
+                        <Button
+                                onClick = {submitAnswer}
+                                style={submitButtonStyle}
                                 type="submit"
                                 variant="contained"
                                 color="primary"
@@ -304,7 +337,8 @@ export default function Controller() {
                             >
                                 Submit
                             </Button>
-                        </ThemeProvider>
+                    </div>
+                </ThemeProvider>
             </div>
             <div className="controller"></div>
         </>

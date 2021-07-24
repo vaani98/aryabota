@@ -91,3 +91,12 @@ def coin_sweeper():
         response = understand(commands)
         return jsonify(response)
     return ("", 405)
+
+@app.route('/submitAnswer', methods=(['POST']))
+@cross_origin()
+def submit_answer():
+    print("@@", request, request.json)
+    commands = request.json
+    grid = Grid.get_instance()
+    response = grid.check_answer(commands['text_answer'])
+    return jsonify(response)
