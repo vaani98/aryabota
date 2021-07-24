@@ -20,11 +20,11 @@ CORS(app)
 """Utils"""
 """Build the JSON Schema and Store for Resolver and Draft7Validator"""
 def build_schema_and_store():
-    schema_file = open("resources/schema/problem.json")
+    schema_file = open("../resources/schema/problem.json")
     schema = json.loads(schema_file.read())
-    state_schema_file = open("resources/schema/problem_state.json")
+    state_schema_file = open("../resources/schema/problem_state.json")
     state_schema = json.loads(state_schema_file.read())
-    position_schema_file = open("resources/schema/position.json")
+    position_schema_file = open("../resources/schema/position.json")
     position_schema = json.loads(position_schema_file.read())
     schema_store = {
         schema['$id'] : schema,
@@ -60,7 +60,7 @@ def initialise_state(problem):
 @app.before_first_request
 def before_first_request():
     """Reading and validating config against schema, initialising the grid"""
-    problem_file_path = "resources/problem-grids/count_number_of_coins.json"
+    problem_file_path = "../resources/problem-grids/count_number_of_coins.json"
     problem = validate(problem_file_path)
     initialise_state(problem)   
 

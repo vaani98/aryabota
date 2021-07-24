@@ -40,7 +40,7 @@ class Grid:
         print(row, column)
         """Get number of coins at a given position in the grid, ie, (row, column)"""
         if self.coins_per_position is not None:
-            if row < self.rows and column < self.columns:
+            if row <= self.rows and column <= self.columns:
                 return self.coins_per_position[row - 1][column - 1]
             raise Exception("This position does not exist on the grid!")
         # TODO decide whether to just return 0 instead?
