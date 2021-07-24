@@ -3,7 +3,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
 
-from Grid import Grid
+from grid import Grid
 from coin_sweeper import CoinSweeper
 
 # utilities
