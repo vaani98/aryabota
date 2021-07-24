@@ -70,7 +70,7 @@ export default function Maze(props) {
     let rotation = '0';
     if (props?.positionsSeen?.indexOf(blockCount) >= 0
       && props?.positionsSeen?.indexOf(blockCount) !== -1) {
-      // classnames = props.penStatus ? "penUp" : "penDown";
+      classnames = "penDown";
     }
     if (props.marioLoc === blockCount) {
       switch (props.currentDirection) {
@@ -85,9 +85,6 @@ export default function Maze(props) {
       blockImg = obstacle_img;
     } else if (props.coinLoc.indexOf(blockCount) !== -1) {
       blockImg = coin_stack;
-    } 
-    if (props.penLoc.indexOf(blockCount) !== -1) {
-      classnames = "penDown";
     }
     return <Block 
       value = {blockCount} 
