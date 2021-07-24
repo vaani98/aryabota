@@ -49,7 +49,7 @@ class Grid:
     def check_answer(self, submitted_answer): 
         succeeded = None
         message = "not implemented yet!"
-        if self.type == "text_submit":
+        if self.type == "pick_coins":
             succeeded = str(self.answer).lower() == str(submitted_answer).lower()
             if succeeded: 
                 message = 'Correct answer!'
