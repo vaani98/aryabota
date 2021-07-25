@@ -1,0 +1,63 @@
+{
+    "problem": {
+        "problem_type": "state_match",
+        "statement": "Find the total number of coins in this grid."
+    },
+    "initial_state": {
+        "grid": {
+            "dimensions": {
+                "row": 3,
+                "column": 3
+            },
+            "coins": [
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 2
+                    },
+                    "number": 5
+                },
+                {
+                    "position": {
+                        "row": 2,
+                        "column": 2
+                    },
+                    "number": 2
+                }
+            ],
+            "obstacles": [
+                {
+                    "position": {
+                        "row": 2,
+                        "column": 1
+                    }
+                },
+                {
+                    "position": {
+                        "row": 3,
+                        "column": 1
+                    }
+                }
+            ]
+        },
+        "coin_sweeper": {
+            "position": {
+                "row": 1,
+                "column": 1
+            },
+            "dir": "down"
+        }
+    },
+    "answer": {
+        "state": {
+            "grid": {
+            },
+            "coin_sweeper": {
+                "position": {
+                    "row": 3,
+                    "column": 3
+                }
+            }
+        }
+    }
+}

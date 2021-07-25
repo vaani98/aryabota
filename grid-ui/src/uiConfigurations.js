@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './styles/uiConfigurations.css';
 //BUTTON and DROPDOWN COMPONENTS
 import Select from 'react-select';
@@ -10,6 +10,10 @@ import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
 import Create from '@material-ui/icons/Create';
 import Refresh from '@material-ui/icons/Refresh';
+//MAZE STATE
+import { MazeState } from './globalStates';
+//UTILS
+import { convertToContinuousNumbering } from './utils';
 
 /**
  * UI Configuration Toolbar Component
@@ -22,6 +26,12 @@ import Refresh from '@material-ui/icons/Refresh';
  * <UiConfigs />
  */
 function UiConfigs(props) {
+
+    /**
+     * Global context / state to manipulate character location, etc.
+     * @const
+     */
+     const [mazeData, setMazeData] = useContext(MazeState);
 
     /**
      * color sets the base color of the webpage
@@ -221,15 +231,41 @@ function UiConfigs(props) {
      */
     const ResetButton = () => {
         const onClick = () => {
-            //TODO: Add reset logic
+            fetch('http://localhost:5000/reset', {
+                crossDomain: true,
+                method: 'POST',
+                headers: {
+                      'Content-type': 'application/json'
+                  }
+                })
+                .then(response => response.json())
+                .then(response => {
+                    setMazeData(prev => ({
+                        ...prev,
+                        rows: response.rows,
+                        columns: response.columns,
+                        coinSweeper: convertToContinuousNumbering(response.row, response.column, response.columns),
+                        coinLoc: response.coins.map(obj => convertToContinuousNumbering(obj.position.row, obj.position.column, response.columns)),
+                        obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.position.row, obj.position.column, response.columns)),
+                        positionsSeen: response.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, response.columns)),
+                        currentDirection: response.dir,
+                        levelType: response.type,
+                        penLoc: [1],
+                        prevSteps: 1
+                    }))
+                })
         }
 
         return (
             <div className="resetButton">
                 <Button
                     onClick={onClick}
-                    startIcon={<Refresh />}
-                />
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<Refresh/>}
+                >
+                    Reset
+                </Button>
             </div>
         )
     }
@@ -249,10 +285,8 @@ function UiConfigs(props) {
                 }
             </style>
             <div className="toolbar" id="toolbar-div">
-                <>
-                    <ResetButton />
-                </>
                 <div className="configs">
+                    <ResetButton />
                     <ToggleSize />
                     <ToggleColor />
                     <TogglePen />

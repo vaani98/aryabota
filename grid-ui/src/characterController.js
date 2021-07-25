@@ -5,7 +5,7 @@ import "ace-builds/src-noconflict/theme-github";
 import './styles/characterController.css';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
-import { convertToContinuousNumbering } from './utils';
+import { convertToContinuousNumbering, convertToProblemState } from './utils';
 import UiConfigs from './uiConfigurations';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
@@ -115,12 +115,12 @@ export default function Controller() {
                     stateChanges: []
                 };
                 step.stateChanges?.forEach(change => {
-                    const newPos = convertToContinuousNumbering(change.row, change.column, currState.inputY);
+                    const newPos = convertToContinuousNumbering(change.row, change.column, currState.columns);
                     const newDir = change.dir;
-                    const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.inputY));
+                    const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.columns));
                     currState = {
                         ...currState,
-                        marioLoc: newPos,
+                        coinSweeper: newPos,
                         currentDirection: newDir,
                         positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
                     };
@@ -147,6 +147,7 @@ export default function Controller() {
     }
 
     const submitAnswer = () => {
+        console.log(mazeData)
         if (mazeData.levelType === 'value_match') {
             const text_answer = document.getElementById("coinsweeper-answer").value;
             fetch('http://localhost:5000/submitAnswer', {
@@ -165,16 +166,11 @@ export default function Controller() {
                     }))
                 }
             )
-        }
-    }
-
-    const submitAnswer = () => {
-        if (mazeData.levelType === 'pick_coins') {
-            const text_answer = document.getElementById("coinsweeper-answer").value;
+        } else if (mazeData.levelType === 'state_match') {
             fetch('http://localhost:5000/submitAnswer', {
                 crossDomain: true,
                 method: 'POST',
-                body: JSON.stringify({ text_answer : text_answer }),
+                body: JSON.stringify(convertToProblemState(mazeData)),
                 headers: {
                       'Content-type': 'application/json'
                   }
@@ -295,15 +291,16 @@ export default function Controller() {
             <div className="separator"></div>
             <div>
                 <Maze
-                    x={mazeData.inputX}
-                    y={mazeData.inputY}
+                    x={mazeData.rows}
+                    y={mazeData.columns}
                     coinLoc={mazeData.coinLoc}
                     obstacleLoc={mazeData.obstacleLoc}
-                    marioLoc={mazeData.marioLoc}
+                    coinSweeper={mazeData.coinSweeper}
                     currentDirection={mazeData.currentDirection}
                     positionsSeen={mazeData.positionsSeen}
                     penLoc={mazeData.penLoc}
                     prevSteps={mazeData.prevSteps}
+                    home={mazeData.home}
                 />
                 <br />
                 <div className="output-div">

@@ -3,6 +3,7 @@ import React from 'react';
 import coinsweeper_img from './assets/coinsweeper.png';
 import obstacle_img from './assets/obstacle.png'
 import coin_stack from './assets/coin_stack.png'
+import home from './assets/home.png'
 
 /**
  * Component to draw dynamic maze, food and 
@@ -11,10 +12,7 @@ import coin_stack from './assets/coin_stack.png'
  * 1. take maze size input
  * 2. generate a 2 array of blocks
  * 3. each blocks is returned by Block component
- * 4. send respective food and player sprites to blocks
  * @component
- * @example
- * <Maze x={input.x} y={input.y} foodLoc={mazeData.randomFoods} marioLoc={mazeData.marioLoc} />
  */
 export default function Maze(props) {
   /**
@@ -72,7 +70,7 @@ export default function Maze(props) {
       && props?.positionsSeen?.indexOf(blockCount) !== -1) {
       // classnames = props.penStatus ? "penUp" : "penDown";
     }
-    if (props.marioLoc === blockCount) {
+    if (props.coinSweeper === blockCount) {
       switch (props.currentDirection) {
         case 'up': rotation = '180'; break;
         case 'down': rotation = '0'; break;
@@ -85,7 +83,9 @@ export default function Maze(props) {
       blockImg = obstacle_img;
     } else if (props.coinLoc.indexOf(blockCount) !== -1) {
       blockImg = coin_stack;
-    } 
+    } else if (props.home === blockCount) {
+      blockImg = home;
+    }
     if (props.penLoc.indexOf(blockCount) !== -1) {
       classnames = "penDown";
     }

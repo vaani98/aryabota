@@ -18,6 +18,26 @@
   return coinPositions;
 }
 
+export function convertToRowsAndColumns(blockNumber, columns) {
+  return {
+    row: Math.ceil(blockNumber/columns), 
+    column: (blockNumber - 1) % columns + 1
+  }
+}
+
 export function convertToContinuousNumbering(row, column, columns) {
-  return column + columns * (row - 1);
+  if(row && column)
+    return column + columns * (row - 1);
+}
+
+export function convertToProblemState(mazeData) {
+  const {row, column} = convertToRowsAndColumns(mazeData.coinSweeper, mazeData.columns)
+  return {
+    grid: {
+    },
+    coin_sweeper: {
+      position: {row, column},
+      dir: mazeData.currentDirection
+    }
+  }
 }

@@ -56,14 +56,15 @@ function Game() {
     .then(response => {
       setMazeData(mazeData => ({
         ...mazeData,
-        inputX: response.rows,
-        inputY: response.columns,
-        marioLoc: convertToContinuousNumbering(response.row, response.column, response.columns),
+        rows: response.rows,
+        columns: response.columns,
+        coinSweeper: convertToContinuousNumbering(response.row, response.column, response.columns),
         coinLoc: response.coins.map(obj => convertToContinuousNumbering(obj.position.row, obj.position.column, response.columns)),
         obstacleLoc: response.obstacles.map(obj => convertToContinuousNumbering(obj.position.row, obj.position.column, response.columns)),
         positionsSeen: response.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, response.columns)),
         currentDirection: response.dir,
         levelType: response.type,
+        home: convertToContinuousNumbering(response.home?.position?.row, response.home?.position?.column, response.columns),
         //TODO: Might want to set these two values from backend
         penLoc: [1],
         prevSteps: 1
@@ -80,7 +81,7 @@ function Game() {
       : mazeData.message
     messageModal = <MessageModal error_message={modalMessage}/>;
   }
-  if(mazeData.marioLoc) {
+  if(mazeData.coinSweeper) {
     //set maze and controller component with required props
     maze = (
       <>
