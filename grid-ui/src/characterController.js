@@ -100,7 +100,7 @@ export default function Controller() {
                     steps: steps
                 }));
                 throw "obstacle/boundary error";
-            } 
+            }
             if ("value" in step) {
                 let stepObj = {
                     outputValue: step.value
@@ -123,6 +123,10 @@ export default function Controller() {
                         coinSweeper: newPos,
                         currentDirection: newDir,
                         positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
+                        penLoc: penState === "penDown"
+                            ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps, newPositionsSeen.length-1))
+                            : currState.penLoc,
+                        prevSteps: newPositionsSeen.length
                     };
                     stepObj.stateChanges.push(currState);
                 });
@@ -153,11 +157,11 @@ export default function Controller() {
             fetch('http://localhost:5000/submitAnswer', {
                 crossDomain: true,
                 method: 'POST',
-                body: JSON.stringify({ text_answer : text_answer }),
+                body: JSON.stringify({ text_answer: text_answer }),
                 headers: {
-                      'Content-type': 'application/json'
-                  }
-                })
+                    'Content-type': 'application/json'
+                }
+            })
                 .then(response => response.json())
                 .then(response => {
                     setMazeData(prev => ({
@@ -165,16 +169,16 @@ export default function Controller() {
                         ...response,
                     }))
                 }
-            )
+                )
         } else if (mazeData.levelType === 'state_match') {
             fetch('http://localhost:5000/submitAnswer', {
                 crossDomain: true,
                 method: 'POST',
                 body: JSON.stringify(convertToProblemState(mazeData)),
                 headers: {
-                      'Content-type': 'application/json'
-                  }
-                })
+                    'Content-type': 'application/json'
+                }
+            })
                 .then(response => response.json())
                 .then(response => {
                     setMazeData(prev => ({
@@ -182,7 +186,7 @@ export default function Controller() {
                         ...response,
                     }))
                 }
-            )
+                )
         }
     }
 
@@ -197,12 +201,12 @@ export default function Controller() {
         })
             .then(response => response.json())
             .then(response => {
-                parseResponse(response, currState)   
+                parseResponse(response, currState)
             });
     }
 
     function getPythonicCode() {
-        if(control.pythonicCode !== null)
+        if (control.pythonicCode !== null)
             return control.pythonicCode.replace(/,/g, '\n');
         else
             return null
@@ -236,8 +240,8 @@ export default function Controller() {
         marginTop: '30px',
         width: '110px',
         marginLeft: mazeData.levelType === 'value_match'
-        ? '90px'
-        : '65%'
+            ? '90px'
+            : '65%'
     }
 
     return (
@@ -341,21 +345,21 @@ export default function Controller() {
                 <ThemeProvider theme={theme}>
                     <div className="submit-area">
                         {mazeData.levelType === 'value_match' ? <input
-                            style = {{
+                            style={{
                                 marginTop: '30px'
                             }}
-                            id = "coinsweeper-answer"
+                            id="coinsweeper-answer"
                             placeholder="answer" /> : null}
                         <Button
-                                onClick = {submitAnswer}
-                                style={submitButtonStyle}
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                endIcon={<PlayArrowRounded />}
-                            >
-                                Submit
-                            </Button>
+                            onClick={submitAnswer}
+                            style={submitButtonStyle}
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            endIcon={<PlayArrowRounded />}
+                        >
+                            Submit
+                        </Button>
                     </div>
                 </ThemeProvider>
             </div>
