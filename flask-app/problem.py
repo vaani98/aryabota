@@ -45,7 +45,7 @@ class Problem:
         succeeded = None
         message = "Not implemented yet!"
         if self.type == "value_match":
-            succeeded = str(self.answer).lower() == str(submitted_answer).lower()
+            succeeded = str(self.answer["value"]).lower() == str(submitted_answer["text_answer"]).lower()
         elif self.type == "state_match":
             succeeded = self.compare_states(submitted_answer)
         if succeeded: 
