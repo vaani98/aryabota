@@ -51,6 +51,9 @@ def convert_pseudocode_to_python(command, **params):
         "MYROW": "get_my_row()",
         "MYCOLUMN": "get_my_column()",
         "TURNLEFT": "turn()",
+        "TURNRIGHT": "turn('right')",
+        "PENUP": "set_pen('up')",
+        "PENDOWN": "set_pen('down')",
         "MOVE": "move({steps})",
         "GET_COINS": "get_number_of_coins()",
         "PLUS": "{variable1}+{variable2}",
@@ -62,6 +65,7 @@ def convert_pseudocode_to_python(command, **params):
         "IDENTIFIER" : "{variable}",
         "NUMBER" : "{value}",
         "PRINT_VALUE": "print_value({expr})",
-        "ASSIGNMENT": "{variable}={expr}"
+        "ASSIGNMENT": "{variable}={expr}",
+        "SUBMIT": "submit({value})"
     }
     return conversion_table[command].format(**params)

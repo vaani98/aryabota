@@ -27,15 +27,18 @@ class CoinSweeper:
         self.column = 1
         self.dir = "down"
         self.trail = []
+        self.pen = "up"
         self.append_position_to_trail()
 
-    def configure(self, row, column, dir):
+    def configure(self, row, column, dir, pen = None):
         """Configure attributes"""
         self.row = row
         self.column = column
         self.dir = dir
         self.trail.clear()
         self.append_position_to_trail()
+        if pen is not None:
+            self.pen = pen
 
     # utility
     def get_dir(self):
@@ -48,7 +51,8 @@ class CoinSweeper:
             "row": self.row,
             "column": self.column,
             "dir": self.dir,
-            "trail": self.trail
+            "trail": self.trail,
+            "pen": self.pen
         }
 
     def append_position_to_trail(self, row = None, column = None):
@@ -141,4 +145,7 @@ class CoinSweeper:
             self.dir = "down"
         elif self.dir == "left":
             self.dir = "up"
-            
+
+    def set_pen(self, status = "up"):
+        """Toggle the status of pen"""
+        self.pen = status

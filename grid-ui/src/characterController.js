@@ -117,6 +117,10 @@ export default function Controller() {
                 step.stateChanges?.forEach(change => {
                     const newPos = convertToContinuousNumbering(change.row, change.column, currState.columns);
                     const newDir = change.dir;
+                    // pen status from back-end (set via 'pen up' or 'pen down' commands)
+                    const penStatusOnMove = change.pen;
+                    if (penStatusOnMove === "up") setPenState("penUp")
+                    else if (penStatusOnMove === "down") setPenState("penDown")
                     const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.columns));
                     currState = {
                         ...currState,

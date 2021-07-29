@@ -5,6 +5,7 @@ import json
 
 from grid import Grid
 from coin_sweeper import CoinSweeper
+from problem import Problem
 
 """Opening config to read grid attributes"""
 with open('../config.yaml') as f:
@@ -60,6 +61,9 @@ def turn(direction = "left"):
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
 
+def set_pen(status = "up"):
+    bot.set_pen(status)
+
 def get_number_of_coins(row = bot.my_row(), column = bot.my_column()):
     # TODO: change to success and message format as with move, GET should never fail silently
     return grid.get_number_of_coins(bot.my_row(),bot.my_column())
@@ -93,3 +97,13 @@ def print_value(expr):
     print(results)
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
+
+def submit(value):
+    problem = Problem.get_instance()
+    if value is not None:
+        response = problem.check_answer(value)
+    else:
+        coin_sweeper_state = bot.get_state()
+        response = problem.check_answer(coin_sweeper_state)
+    with open(results_file_path, "w") as results_file:
+        results_file.write(json.dumps(response))
