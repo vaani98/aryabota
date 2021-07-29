@@ -63,7 +63,6 @@ def initialise_state(problem):
 
 @app.before_first_request
 def before_first_request():
-    print("hi?")
     """Reading and validating config against schema, initialising the grid"""
     problem_file_path = "../resources/problem-grids/go_home.json"
     problem = validate(problem_file_path)
@@ -80,7 +79,8 @@ def index():
 def reset():
     """To reset the given problem"""
     before_first_request()
-    return jsonify(get_initial_state())
+    problem = Problem.get_instance()
+    return jsonify(problem.get_initial_state())
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))
 @cross_origin()
