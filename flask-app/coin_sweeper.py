@@ -55,6 +55,15 @@ class CoinSweeper:
             "pen": self.pen
         }
 
+    def get_bot_state_for_answer(self):
+        """Get current state of the CoinSweeper robot's position wrapped in a dictionary"""
+        return {
+            "position": {
+                "row": self.row,
+                "column": self.column
+            }
+        }
+
     def append_position_to_trail(self, row = None, column = None):
         if row is None and column is None:
             self.trail.append({

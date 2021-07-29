@@ -32,6 +32,9 @@ class Problem:
 
     def compare_states(self, submitted_answer):
         reqd_state = self.answer["state"]
+        print("comparing states!!")
+        print(submitted_answer)
+        print(reqd_state)
         try:
             for key in reqd_state["coin_sweeper"]:
                 if reqd_state["coin_sweeper"][key] != submitted_answer["coin_sweeper"][key]:
@@ -41,7 +44,7 @@ class Problem:
             return False
         return True
 
-    def check_answer(self, submitted_answer): 
+    def check_answer(self, submitted_answer):
         succeeded = None
         message = "Not implemented yet!"
         if self.type == "value_match":

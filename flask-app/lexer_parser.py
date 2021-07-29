@@ -67,7 +67,7 @@ tokens = [
     'TURNLEFT',
     'TURNRIGHT',
     'PENUP',
-    'PENDOWN'
+    'PENDOWN',
     'COINS',
     'IDENTIFIER',
     'ASSIGN',
@@ -277,13 +277,13 @@ def p_assign_expr(p):
 
 def p_submit_expr(p):
     '''
-    submit_expr : submit value_expr
-                | submit
+    submit_expr : SUBMIT
+                | SUBMIT value_expr
     '''
     if len(p) == 3:
         python_code = convert_pseudocode_to_python("SUBMIT", value = p[2])
     elif len(p) == 2:
-        python_code = convert_pseudocode_to_python("SUBMIT")
+        python_code = convert_pseudocode_to_python("SUBMIT", value = '')
     p[0] = python_code
     
 def p_error(p):
@@ -319,5 +319,5 @@ def understand(commands):
         "python": python_program,
         "response": response
     }
-    print("Response and python program:", response_and_python_program)
+    # print("Response and python program:", response_and_python_program)
     return response_and_python_program

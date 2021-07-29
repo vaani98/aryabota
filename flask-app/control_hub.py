@@ -28,6 +28,8 @@ def make_response(response_type, response):
         return {
             "error_message": response
         }
+    elif response_type == "submit":
+        return response
 
 def get_my_row():
     return bot.my_row()
@@ -45,7 +47,6 @@ def move(steps):
             results.append(make_response("error", message))
             # TODO: specific error raising
             raise Exception("Hitting obstacles or falling off the grid ;_;")
-    print(results)
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
 
@@ -57,7 +58,6 @@ def turn(direction = "left"):
     with open(results_file_path) as results_file:
         results = json.loads(results_file.read())
         results.append(make_response("state", bot.get_state()))
-    print(results)
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
 
@@ -94,16 +94,18 @@ def print_value(expr):
         results = json.loads(results_file.read())
     response = expr
     results.append(make_response("value", response))
-    print(results)
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
 
-def submit(value):
+def submit(value = None):
+    with open(results_file_path) as results_file:
+        results = json.loads(results_file.read())
     problem = Problem.get_instance()
     if value is not None:
         response = problem.check_answer(value)
     else:
-        coin_sweeper_state = bot.get_state()
+        coin_sweeper_state = {"coin_sweeper": bot.get_bot_state_for_answer()}
         response = problem.check_answer(coin_sweeper_state)
+    results.append(make_response("submit", response))
     with open(results_file_path, "w") as results_file:
-        results_file.write(json.dumps(response))
+        results_file.write(json.dumps(results))
