@@ -38,10 +38,10 @@ def build_schema_and_store():
 def validate(problem_file_path):
     problem_file = open(problem_file_path)
     problem = json.loads(problem_file.read())
-    schema, schema_store = build_schema_and_store()
-    resolver = RefResolver.from_schema(schema, store = schema_store)
-    validator = Draft7Validator(schema, resolver = resolver)
-    validator.validate(problem)
+    # schema, schema_store = build_schema_and_store()
+    # resolver = RefResolver.from_schema(schema, store = schema_store)
+    # validator = Draft7Validator(schema, resolver = resolver)
+    # validator.validate(problem)
     return problem
 
 """Initialise the state of the grid"""
@@ -64,7 +64,7 @@ def initialise_state(problem):
 @app.before_first_request
 def before_first_request():
     """Reading and validating config against schema, initialising the grid"""
-    problem_file_path = "../resources/problem-grids/go_home.json"
+    problem_file_path = "../resources/problem-grids/state_check.json"
     problem = validate(problem_file_path)
     initialise_state(problem)   
 

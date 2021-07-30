@@ -1,0 +1,102 @@
+{
+    "problem": {
+        "problem_type": "state_match",
+        "statement": "Pass through all the houses in the grid."
+    },
+    "initial_state": {
+        "grid": {
+            "dimensions": {
+                "row": 3,
+                "column": 3
+            },
+            "coins": [
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 2
+                    },
+                    "number": 5
+                },
+                {
+                    "position": {
+                        "row": 2,
+                        "column": 2
+                    },
+                    "number": 2
+                }
+            ],
+            "obstacles": [
+                {
+                    "position": {
+                        "row": 2,
+                        "column": 1
+                    }
+                },
+                {
+                    "position": {
+                        "row": 3,
+                        "column": 1
+                    }
+                }
+            ],
+            "homes": [
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 3
+                    }
+                },
+                {
+                    "position": {
+                        "row": 2,
+                        "column": 3
+                    }
+                },
+                {
+                    "position": {
+                        "row": 3,
+                        "column": 3
+                    }
+                }
+            ]
+        },
+        "coin_sweeper": {
+            "position": {
+                "row": 1,
+                "column": 1
+            },
+            "dir": "down"
+        }
+    },
+    "answer": {
+        "type": "lazy",
+        "state": {
+            "coin_sweeper": {
+                "position": {
+                    "row": 3,
+                    "column": 3
+                },
+                "blocks": [
+                    {
+                        "position": {
+                            "row": 1,
+                            "column": 3
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 2,
+                            "column": 3
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 3,
+                            "column": 3
+                        }
+                    }
+                ]    
+            }
+        }
+    }
+}

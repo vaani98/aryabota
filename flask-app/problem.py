@@ -47,6 +47,7 @@ class Problem:
     def check_answer(self, submitted_answer):
         succeeded = None
         message = "Not implemented yet!"
+        print('! in check answer', self, submitted_answer)
         if self.type == "value_match":
             succeeded = str(self.answer["value"]).lower() == str(submitted_answer["text_answer"]).lower()
         elif self.type == "state_match":

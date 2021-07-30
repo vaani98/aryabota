@@ -61,7 +61,8 @@ class CoinSweeper:
             "position": {
                 "row": self.row,
                 "column": self.column
-            }
+            },
+            "blocks": self.trail
         }
 
     def append_position_to_trail(self, row = None, column = None):
@@ -107,7 +108,8 @@ class CoinSweeper:
                     if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.row, to_move, offset):
-                    self.append_position_to_trail(i, self.column)
+                    if self.pen == "down":
+                        self.append_position_to_trail(i, self.column)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
@@ -126,11 +128,13 @@ class CoinSweeper:
                     if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.column, to_move, offset):
-                    self.append_position_to_trail(self.row, i)
+                    if self.pen == "down":
+                        self.append_position_to_trail(self.row, i)
                 self.column = curr_column
             else:
                 return [False, boundary_message]
-        self.append_position_to_trail()
+        if self.pen == "down":
+            self.append_position_to_trail()
         return [True, "Moved!"]
 
     def turn_left(self):
