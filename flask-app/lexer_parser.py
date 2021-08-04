@@ -1,5 +1,6 @@
 """Lexer and parser module for pseudo-code"""
 # pylint: disable=invalid-name,unused-argument,global-statement
+# >, >=, <, <=, =, !=
 import ply.lex as lex
 import ply.yacc as yacc
 import yaml
@@ -256,15 +257,13 @@ def p_value_expr(p):
         python_code = convert_pseudocode_to_python("NUMBER", value = p[1])
     p[0] = python_code
 
+#obstacle dir - ahead, behind, left, right
+#begin and end
 def p_selection_expr(p):
     '''
-    selection_expr : IFCOINS COMMA expr
-                   | IFNOOBSTACLE COMMA expr
+    selection_expr : IFNOOBSTACLE COMMA expr
     '''
-    if p[1] == 'IFCOINS':
-        python_code = convert_pseudocode_to_python("IFCOINS")
-        p[0] = python_code + " " + p[3]
-    elif p[1] == 'IFNOOBSTACLE':
+    if p[1] == 'IFNOOBSTACLE':
         python_code = convert_pseudocode_to_python("IFNOOBSTACLE")
         p[0] = python_code + " " + p[3]
 
