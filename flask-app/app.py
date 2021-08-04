@@ -50,7 +50,10 @@ def initialise_state(problem):
     state = problem["initial_state"]
     bot = CoinSweeper.get_instance()
     coin_sweeper_state = state["coin_sweeper"]
-    bot.configure(coin_sweeper_state["position"]["row"], coin_sweeper_state["position"]["column"], coin_sweeper_state["dir"])
+    if "pen" in coin_sweeper_state:
+        bot.configure(coin_sweeper_state["position"]["row"], coin_sweeper_state["position"]["column"], coin_sweeper_state["dir"], coin_sweeper_state["pen"])
+    else:
+        bot.configure(coin_sweeper_state["position"]["row"], coin_sweeper_state["position"]["column"], coin_sweeper_state["dir"], "down")
     grid = Grid.get_instance()
     grid_state = state["grid"]
     rows = grid_state["dimensions"]["row"]

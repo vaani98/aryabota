@@ -7,7 +7,6 @@ class DictCompareWrapper:
     def __init__(self, json):
         self.json = json
     def __eq__(self, other):
-        print("hello from dict")
         comp = True
         obj = self.json
         other_obj = other.json
@@ -15,6 +14,7 @@ class DictCompareWrapper:
             if comp:
                 if key not in other_obj.keys():
                     return False
+                print(key)
                 comp = comp and obj[key] == other_obj[key]
             else:
                 return False
@@ -25,7 +25,6 @@ class ListCompareWrapper:
         self.array = array
         self.compare_type = compare_type
     def __eq__(self, other):
-        print("hello from list")
         if self.compare_type == "lenient":
             comp = True
             for item in self.array:
@@ -43,7 +42,6 @@ def wrap(obj, compare_type):
             obj[key] = wrap(obj[key], compare_type)
         obj = DictCompareWrapper(obj)
     elif isinstance(obj, list):
-        print("making list?")
         for i in range(len(obj)):
             obj[i] = wrap(obj[i], compare_type)
         obj = ListCompareWrapper(obj, compare_type)
@@ -81,19 +79,7 @@ class Problem:
         compare_type = self.answer["type"]
         reqd_ans = wrap(reqd_state, compare_type)
         ans = wrap(submitted_answer, compare_type)
-        print(reqd_ans)
-        print(ans)
-        print( ans == reqd_ans)
-        # if self.answer["type"] == "strict":
-        #     reqd_string = json.dumps(reqd_state, sort_keys=True)
-        #     given_string = json.dumps(submitted_answer, sort_keys=True)
-        #     return reqd_string == given_string
-        # elif self.answer["type"] == "lenient":
-        #     print("checking here")
-        #     print(submitted_answer)
-        #     print(reqd_state)
-        #     return compare_states_per_key(submitted_answer, reqd_state, self.answer["type"])
-        return False
+        return reqd_ans == ans
 
     def check_answer(self, submitted_answer):
         succeeded = None
