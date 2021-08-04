@@ -38,10 +38,10 @@ def build_schema_and_store():
 def validate(problem_file_path):
     problem_file = open(problem_file_path)
     problem = json.loads(problem_file.read())
-    # schema, schema_store = build_schema_and_store()
-    # resolver = RefResolver.from_schema(schema, store = schema_store)
-    # validator = Draft7Validator(schema, resolver = resolver)
-    # validator.validate(problem)
+    schema, schema_store = build_schema_and_store()
+    resolver = RefResolver.from_schema(schema, store = schema_store)
+    validator = Draft7Validator(schema, resolver = resolver)
+    validator.validate(problem)
     return problem
 
 """Initialise the state of the grid"""

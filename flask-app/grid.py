@@ -32,8 +32,12 @@ class Grid:
             self.obstacles = obstacles
         if obstacles_per_position is not None:
             self.obstacles_per_position = obstacles_per_position
+        self.coloured = []
         print(self.obstacles_per_position)
         print(self.coins_per_position)
+
+    def colour(self, pos):
+        self.coloured.append(pos)
 
     def get_number_of_coins(self, row, column):
         print(row, column)
@@ -54,5 +58,18 @@ class Grid:
                 "coins_per_position": self.coins_per_position,
                 "obstacles": self.obstacles,
                 "obstacles_per_position": self.obstacles_per_position
+            }
+        return {}
+
+    def get_state_for_answer(self):
+        if self.__instance:
+            return {
+                "dimensions": {
+                    "row": self.rows,
+                    "column": self.columns
+                },
+                "coins": self.coins,
+                "obstacles": self.obstacles,
+                "coloured": self.coloured
             }
         return {}

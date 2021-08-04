@@ -69,14 +69,16 @@
         }
     },
     "answer": {
-        "type": "lazy",
+        "type": "lenient",
         "state": {
             "coin_sweeper": {
                 "position": {
                     "row": 3,
                     "column": 3
-                },
-                "blocks": [
+                }
+            },
+            "grid": {
+                "coloured": [
                     {
                         "position": {
                             "row": 1,
@@ -95,7 +97,7 @@
                             "column": 3
                         }
                     }
-                ]    
+                ]
             }
         }
     }

@@ -104,8 +104,11 @@ def submit(value = None):
     if value is not None:
         response = problem.check_answer(value)
     else:
-        coin_sweeper_state = {"coin_sweeper": bot.get_bot_state_for_answer()}
-        response = problem.check_answer(coin_sweeper_state)
+        current_state = {
+            "coin_sweeper": bot.get_state_for_answer(),
+            "grid": grid.get_state_for_answer()
+        }
+        response = problem.check_answer(current_state)
     results.append(make_response("submit", response))
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))

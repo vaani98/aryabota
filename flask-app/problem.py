@@ -1,7 +1,53 @@
 from re import sub
+from typing import Dict, List
 from grid import Grid
 from coin_sweeper import CoinSweeper
-import copy
+
+class DictCompareWrapper:
+    def __init__(self, json):
+        self.json = json
+    def __eq__(self, other):
+        print("hello from dict")
+        comp = True
+        obj = self.json
+        other_obj = other.json
+        for key in obj.keys():
+            if comp:
+                if key not in other_obj.keys():
+                    return False
+                comp = comp and obj[key] == other_obj[key]
+            else:
+                return False
+        return comp
+
+class ListCompareWrapper:
+    def __init__(self, array, compare_type):
+        self.array = array
+        self.compare_type = compare_type
+    def __eq__(self, other):
+        print("hello from list")
+        if self.compare_type == "lenient":
+            comp = True
+            for item in self.array:
+                if comp:
+                    comp = comp and item in other.array
+                else:
+                    return False
+            return comp
+        else:
+            return self.array == other.array
+
+def wrap(obj, compare_type):
+    if isinstance(obj, dict):
+        for key in obj.keys():
+            obj[key] = wrap(obj[key], compare_type)
+        obj = DictCompareWrapper(obj)
+    elif isinstance(obj, list):
+        print("making list?")
+        for i in range(len(obj)):
+            obj[i] = wrap(obj[i], compare_type)
+        obj = ListCompareWrapper(obj, compare_type)
+    return obj
 
 """ the Singleton Problem, its attributes and state"""
 class Problem:
@@ -32,22 +78,26 @@ class Problem:
 
     def compare_states(self, submitted_answer):
         reqd_state = self.answer["state"]
-        print("comparing states!!")
-        print(submitted_answer)
-        print(reqd_state)
-        try:
-            for key in reqd_state["coin_sweeper"]:
-                if reqd_state["coin_sweeper"][key] != submitted_answer["coin_sweeper"][key]:
-                    return False
-        except KeyError as e:
-            print(e)
-            return False
-        return True
+        compare_type = self.answer["type"]
+        reqd_ans = wrap(reqd_state, compare_type)
+        ans = wrap(submitted_answer, compare_type)
+        print(reqd_ans)
+        print(ans)
+        print( ans == reqd_ans)
+        # if self.answer["type"] == "strict":
+        #     reqd_string = json.dumps(reqd_state, sort_keys=True)
+        #     given_string = json.dumps(submitted_answer, sort_keys=True)
+        #     return reqd_string == given_string
+        # elif self.answer["type"] == "lenient":
+        #     print("checking here")
+        #     print(submitted_answer)
+        #     print(reqd_state)
+        #     return compare_states_per_key(submitted_answer, reqd_state, self.answer["type"])
+        return False
 
     def check_answer(self, submitted_answer):
         succeeded = None
         message = "Not implemented yet!"
-        print('! in check answer', self, submitted_answer)
         if self.type == "value_match":
             succeeded = str(self.answer["value"]).lower() == str(submitted_answer["text_answer"]).lower()
         elif self.type == "state_match":
