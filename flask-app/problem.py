@@ -33,6 +33,20 @@ class ListCompareWrapper:
                 else:
                     return False
             return comp
+        elif self.compare_type == "strict":
+            if len(self.array) != len(other.array):
+                return False
+            comp = True
+            for item in self.array:
+                comp = comp and item in other.array
+                if comp:
+                    index_self = self.array.index(item)
+                    index_other = other.array.index(item)
+                    self.array.pop(index_self)
+                    other.array.pop(index_other)
+                else:
+                    return False
+            return comp
         else:
             return self.array == other.array
 

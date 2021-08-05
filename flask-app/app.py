@@ -58,8 +58,15 @@ def initialise_state(problem):
     grid_state = state["grid"]
     rows = grid_state["dimensions"]["row"]
     columns = grid_state["dimensions"]["column"]
-    coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
-    obstacles_per_position = get_for_every_position(grid_state["obstacles"], rows, columns, False)
+    coins_per_position = obstacles_per_position = None
+    if "coins" in grid_state:
+        coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
+    else:
+        grid_state["coins"] = None
+    if "obstacles" in grid_state:
+        obstacles_per_position = get_for_every_position(grid_state["obstacles"], rows, columns, False)
+    else:
+        grid_state["obstacles"] = None
     grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position)
     problem_instance = Problem.get_instance()
     problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
@@ -67,7 +74,7 @@ def initialise_state(problem):
 @app.before_first_request
 def before_first_request():
     """Reading and validating config against schema, initialising the grid"""
-    problem_file_path = "../resources/problem-grids/state_check.json"
+    problem_file_path = "../resources/problem-grids/shortest_path.json"
     problem = validate(problem_file_path)
     initialise_state(problem)   
 
