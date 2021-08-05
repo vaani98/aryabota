@@ -35,7 +35,8 @@ class Grid:
             self.obstacles_per_position = obstacles_per_position
 
     def colour(self, pos):
-        self.coloured.append(pos)
+        if pos not in self.coloured:
+            self.coloured.append(pos)
 
     def get_number_of_coins(self, row, column):
         """Get number of coins at a given position in the grid, ie, (row, column)"""

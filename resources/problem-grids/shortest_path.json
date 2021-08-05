@@ -207,6 +207,12 @@
                             "row": 5,
                             "column": 6
                         }
+                    },
+                    {
+                        "position": {
+                            "row": 6,
+                            "column": 6
+                        }
                     }
                 ]
             }

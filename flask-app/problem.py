@@ -2,6 +2,7 @@ from re import sub
 from typing import Dict, List
 from grid import Grid
 from coin_sweeper import CoinSweeper
+import json
 
 class DictCompareWrapper:
     def __init__(self, json):
@@ -14,7 +15,6 @@ class DictCompareWrapper:
             if comp:
                 if key not in other_obj.keys():
                     return False
-                print(key)
                 comp = comp and obj[key] == other_obj[key]
             else:
                 return False
