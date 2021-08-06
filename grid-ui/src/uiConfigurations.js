@@ -20,7 +20,7 @@ import { convertToContinuousNumbering } from './utils';
  * This component provides support for:
  * 1. Adjusting font size (s/m/l) ranges
  * 2. Changing webpage base colour
- * 3. Toggling pen status (up/down)
+ * 3. Toggling levels
  * @component
  * @example
  * <UiConfigs />
@@ -43,11 +43,6 @@ function UiConfigs(props) {
      * @var
      */
     let [sizes, setSizes] = useState("Medium");
-    /**
-     * penState sets toggles colour trail visibility
-     * @var
-     */
-    let [penState, setPenState] = useState("penDown");
 
     /**
      * Updates color
@@ -85,6 +80,21 @@ function UiConfigs(props) {
             value: 3,
             label: "Large",
             editor: 16
+        }
+    ];
+
+    var levels = [
+        {
+            value: "go_home",
+            label: "Go home",
+        },
+        {
+            value: "count_coins",
+            label: "Count the number of coins",
+        },
+        {
+            value: "check_state",
+            label: "Checking the state",
         }
     ];
 
@@ -196,29 +206,28 @@ function UiConfigs(props) {
      * @returns TogglePen component
      * @example
      * <TogglePen />
+     * <Select
+                        id="LevelSelector"
+                        options={levels}
+                    />
      */
-    const TogglePen = () => {
-        const onClick = () => {
-            if (penState === "penDown") {
-                setPenState("penUp");
-                props.onPenChange("penUp");
-            }
-            else {
-                setPenState("penDown");
-                props.onPenChange("penDown");
-            }
-        }
-
+    const ToggleLevel = () => {
         return (
-            <div className="penToggle">
+            <div className="levelSelector">
+                <form action="http://localhost:5000/set_problem" method="get">
                 <Button
-                    onClick={onClick}
                     variant="contained"
                     color="secondary"
-                    startIcon={<Create />}
                 >
-                    {penState === "penUp" ? "Pen Down" : "Pen Up"}
+                    Level
                 </Button>
+                <Select
+                        id="LevelSelector"
+                        name = "problem"
+                        options={levels}
+                    />
+                <input type="submit" value="submit"></input>
+                </form>
             </div>
         )
     }
@@ -289,7 +298,7 @@ function UiConfigs(props) {
                     <ResetButton />
                     <ToggleSize />
                     <ToggleColor />
-                    <TogglePen />
+                    <ToggleLevel />
                 </div>
             </div>
         </div>

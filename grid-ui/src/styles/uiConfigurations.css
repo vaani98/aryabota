@@ -14,7 +14,7 @@
     z-index: 5;
   }
   
-  .colorSelector button, .sizeSelector button, .penToggle button, .resetButton button{
+  .colorSelector button, .sizeSelector button, .levelSelector button, .penToggle button, .resetButton button{
     width: 200px;
   }
   

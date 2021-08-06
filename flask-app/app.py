@@ -1,6 +1,6 @@
 """Flask App"""
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS, cross_origin
 import yaml
 from jsonschema import RefResolver, Draft7Validator
@@ -70,6 +70,19 @@ def initialise_state(problem):
     grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, grid_state["homes"])
     problem_instance = Problem.get_instance()
     problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
+
+@app.route('/set_problem', methods = ['GET'])
+def set_problem():
+    if request.method == 'GET':
+        problem = request.args.get('problem', None)
+        print("Problem=", problem)
+    problems = {'count_coins': 'count_number_of_coins.json', 'go_home': 'go_home.json', 'check_state': 'state_check.json'}
+    problem_file_path = "../resources/problem-grids/"+problems[problem]
+    print(problem_file_path)
+    problem = validate(problem_file_path)
+    initialise_state(problem)
+    #return json.dumps(), 200, {'ContentType':'application/json'}
+    return redirect(request.referrer)
 
 @app.before_first_request
 def before_first_request():
