@@ -65,13 +65,17 @@ tokens = [
     'MYCOLUMN',
     'MOVE',
     'TURNLEFT',
+    'TURNRIGHT',
+    'PENUP',
+    'PENDOWN',
     'COINS',
     'IDENTIFIER',
     'ASSIGN',
     'COMMA',
     'IFCOINS',
     'IFNOOBSTACLE',
-    'PRINT'
+    'PRINT',
+    'SUBMIT'
 ]
 
 t_ignore = ' \t'
@@ -111,6 +115,21 @@ def t_TURNLEFT(t):
     r'turn[ ]*left'
     t.value = 'TURNLEFT'
     return t
+
+def t_TURNRIGHT(t):
+    r'turn[ ]*right'
+    t.value = 'TURNRIGHT'
+    return t
+
+def t_PENUP(t):
+    r'pen[ ]*up'
+    t.value = 'PENUP'
+    return t
+
+def t_PENDOWN(t):
+    r'pen[ ]*down'
+    t.value = 'PENDOWN'
+    return t  
 
 def t_MYROW(t):
     r'my[ ]*row'
@@ -155,6 +174,11 @@ def t_PRINT(t):
     t.value = 'PRINT'
     return t
 
+def t_SUBMIT(t):
+    r'submit'
+    t.value = 'SUBMIT'
+    return t
+
 def t_IDENTIFIER(t):
     r'[a-zA-z_][a-zA-Z0-9]*'
     t.type = 'IDENTIFIER'
@@ -180,12 +204,16 @@ def p_commands(p):
 def p_command(p):
     '''
     expr : TURNLEFT
+        | TURNRIGHT
+        | PENUP
+        | PENDOWN
         | MOVE NUMBER
         | assign_expr
         | selection_expr
         | print_expr
+        | submit_expr
     '''
-    if p[1] == 'TURNLEFT':
+    if p[1] in ['TURNLEFT', 'TURNRIGHT', 'PENUP', 'PENDOWN']:
         python_code = convert_pseudocode_to_python(p[1])
         p[0] = python_code
     elif len(p) == 2:
@@ -246,6 +274,17 @@ def p_assign_expr(p):
     '''
     python_code = convert_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
     p[0] = python_code
+
+def p_submit_expr(p):
+    '''
+    submit_expr : SUBMIT
+                | SUBMIT value_expr
+    '''
+    if len(p) == 3:
+        python_code = convert_pseudocode_to_python("SUBMIT", value = p[2])
+    elif len(p) == 2:
+        python_code = convert_pseudocode_to_python("SUBMIT", value = '')
+    p[0] = python_code
     
 def p_error(p):
     """Error in parsing command"""
@@ -280,5 +319,5 @@ def understand(commands):
         "python": python_program,
         "response": response
     }
-    print("Response and python program:", response_and_python_program)
+    # print("Response and python program:", response_and_python_program)
     return response_and_python_program

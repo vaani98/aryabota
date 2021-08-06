@@ -69,7 +69,15 @@ export default function Controller() {
                     error_message: currStep.error_message
                 }))
                 control.steps.shift();
-            } else {
+            } else if (currStep.message) {
+                setMazeData(prev => ({
+                    ...prev,
+                    succeeded: currStep.succeeded,
+                    message: currStep.message
+                }))
+                control.steps.shift();
+            }
+            else {
                 control.outputValue.push(currStep.outputValue)
                 control.steps.shift()
             }
@@ -117,6 +125,10 @@ export default function Controller() {
                 step.stateChanges?.forEach(change => {
                     const newPos = convertToContinuousNumbering(change.row, change.column, currState.columns);
                     const newDir = change.dir;
+                    // pen status from back-end (set via 'pen up' or 'pen down' commands)
+                    const penStatusOnMove = change.pen;
+                    if (penStatusOnMove === "up") setPenState("penUp")
+                    else if (penStatusOnMove === "down") setPenState("penDown")
                     const newPositionsSeen = change.trail.map(trailObj => convertToContinuousNumbering(trailObj.row, trailObj.column, currState.columns));
                     currState = {
                         ...currState,
@@ -136,16 +148,23 @@ export default function Controller() {
                     steps: steps
                 }));
             }
-            else {
-                let stepObj = {
-                    python: step.python,
-                };
-                steps.push(stepObj)
+            else if ("message" in step) {
+                steps.push(step);
                 setControl(prev => ({
                     ...prev,
                     steps: steps
                 }));
             }
+            // else {
+            //     let stepObj = {
+            //         python: step.python,
+            //     };
+            //     steps.push(stepObj)
+            //     setControl(prev => ({
+            //         ...prev,
+            //         steps: steps
+            //     }));
+            // }
         })
 
     }
@@ -185,8 +204,7 @@ export default function Controller() {
                         ...prev,
                         ...response,
                     }))
-                }
-                )
+                })
         }
     }
 
@@ -201,12 +219,13 @@ export default function Controller() {
         })
             .then(response => response.json())
             .then(response => {
+                console.log(response)
                 parseResponse(response, currState)
             });
     }
 
     function getPythonicCode() {
-        if (control.pythonicCode !== null)
+        if (control.pythonicCode)
             return control.pythonicCode.replace(/,/g, '\n');
         else
             return null

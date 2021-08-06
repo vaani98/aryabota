@@ -8,7 +8,8 @@
         "problem_type": {
           "type": "string",
           "enum": [
-            "value_match", "state_match"
+            "value_match",
+            "state_match"
           ]
         },
         "statement": {
@@ -22,12 +23,18 @@
     "answer": {
       "type": "object",
       "properties": {
-        "value": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "lenient",
+            "strict"
+          ]
         },
+        "value": {},
         "state": {
           "$ref": "problem_state.json#"
         }
-      } 
+      }
     }
   }
 }

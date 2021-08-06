@@ -27,15 +27,18 @@ class CoinSweeper:
         self.column = 1
         self.dir = "down"
         self.trail = []
+        self.pen = "up"
         self.append_position_to_trail()
 
-    def configure(self, row, column, dir):
+    def configure(self, row, column, dir, pen = None):
         """Configure attributes"""
         self.row = row
         self.column = column
         self.dir = dir
         self.trail.clear()
         self.append_position_to_trail()
+        if pen is not None:
+            self.pen = pen
 
     # utility
     def get_dir(self):
@@ -48,19 +51,35 @@ class CoinSweeper:
             "row": self.row,
             "column": self.column,
             "dir": self.dir,
-            "trail": self.trail
+            "trail": self.trail,
+            "pen": self.pen
+        }
+
+    def get_state_for_answer(self):
+        """Get current state of the CoinSweeper robot's position wrapped in a dictionary"""
+        return {
+            "position": {
+                "row": self.row,
+                "column": self.column
+            }
         }
 
     def append_position_to_trail(self, row = None, column = None):
         if row is None and column is None:
-            self.trail.append({
+            pos = {
                 "row": self.row,
                 "column": self.column
-            })
+            }
         else:
-            self.trail.append({
+            pos = {
                 "row": row,
                 "column": column
+            }
+        print(pos)
+        self.trail.append(pos)
+        if self.pen == "down":
+            grid.colour({
+                "position": pos
             })
 
     # ask
@@ -94,7 +113,8 @@ class CoinSweeper:
                     if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.row, to_move, offset):
-                    self.append_position_to_trail(i, self.column)
+                    if self.pen == "down":
+                        self.append_position_to_trail(i, self.column)
                 self.row = curr_row
             else:
                 return [False, boundary_message]
@@ -113,11 +133,13 @@ class CoinSweeper:
                     if pos_obj in state['obstacles']:
                         return [False, obstacle_message]
                 for i in range(self.column, to_move, offset):
-                    self.append_position_to_trail(self.row, i)
+                    if self.pen == "down":
+                        self.append_position_to_trail(self.row, i)
                 self.column = curr_column
             else:
                 return [False, boundary_message]
-        self.append_position_to_trail()
+        if self.pen == "down":
+            self.append_position_to_trail()
         return [True, "Moved!"]
 
     def turn_left(self):
@@ -141,4 +163,7 @@ class CoinSweeper:
             self.dir = "down"
         elif self.dir == "left":
             self.dir = "up"
-            
+
+    def set_pen(self, status = "up"):
+        """Toggle the status of pen"""
+        self.pen = status
