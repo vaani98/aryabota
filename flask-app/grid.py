@@ -20,7 +20,7 @@ class Grid:
             raise Exception("This class is a singleton!")
         Grid.__instance = self
 
-    def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None):
+    def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None, homes = None):
         """Configure attributes"""
         self.rows = rows
         self.columns = columns
@@ -33,6 +33,8 @@ class Grid:
             self.obstacles = obstacles
         if obstacles_per_position is not None:
             self.obstacles_per_position = obstacles_per_position
+        if homes is not None: 
+            self.homes = homes
 
     def colour(self, pos):
         if pos not in self.coloured:
@@ -55,7 +57,8 @@ class Grid:
                 "coins": self.coins,
                 "coins_per_position": self.coins_per_position,
                 "obstacles": self.obstacles,
-                "obstacles_per_position": self.obstacles_per_position
+                "obstacles_per_position": self.obstacles_per_position,
+                "homes": self.homes
             }
         return {}
 

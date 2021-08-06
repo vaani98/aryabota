@@ -120,5 +120,5 @@ class Problem:
         grid_state["type"] = self.type
         if self.type == "state_match":
             if "coin_sweeper" in self.answer["state"]:
-                grid_state["home"] = self.answer["state"]["coin_sweeper"]
+                grid_state["homes"] = [self.answer["state"]["coin_sweeper"]]
         return grid_state

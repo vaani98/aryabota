@@ -67,7 +67,7 @@ def initialise_state(problem):
         obstacles_per_position = get_for_every_position(grid_state["obstacles"], rows, columns, False)
     else:
         grid_state["obstacles"] = None
-    grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position)
+    grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, grid_state["homes"])
     problem_instance = Problem.get_instance()
     problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
 

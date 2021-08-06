@@ -83,7 +83,7 @@ export default function Maze(props) {
       blockImg = obstacle_img;
     } else if (props.coinLoc.indexOf(blockCount) !== -1) {
       blockImg = coin_stack;
-    } else if (props.home === blockCount) {
+    } else if (props.home.indexOf(blockCount) !== -1) {
       blockImg = home;
     }
     if (props.penLoc.indexOf(blockCount) !== -1) {
