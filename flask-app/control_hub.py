@@ -66,26 +66,111 @@ def set_pen(status = "up"):
 
 def get_number_of_coins(row = bot.my_row(), column = bot.my_column()):
     # TODO: change to success and message format as with move, GET should never fail silently
-    return grid.get_number_of_coins(bot.my_row(),bot.my_column())
+    return grid.get_number_of_coins(row,column)
 
 def obstacle(row = bot.my_row(), column = bot.my_column()):
     state = grid.get_state()
     dir = bot.get_dir()
     if dir == "down":
-        if bot.my_row()+1 <= grid.rows:
-            if({'row': bot.my_row()+1, 'column': bot.my_column()} in state['obstacles']):
+        if row+1 <= grid.rows:
+            if({'row': row+1, 'column': column} in state['obstacles']):
+                return 0
+    elif dir == "up":
+        if row-1 > 0:
+            if({'row': row-1, 'column': column} in state['obstacles']):
+                return 0
+    elif dir == "right":
+        if column+1 <= grid.columns:
+            if({'row': row, 'column': column+1} in state['obstacles']):
+                return 0
+    elif dir == "left":
+        if column-1 > 0:
+            if({'row': row, 'column': column-1} in state['obstacles']):
+                return 0
+    return 1 
+
+def obstacle_ahead(row = bot.my_row(), column = bot.my_column()):
+    state = grid.get_state()
+    dir = bot.get_dir()
+    if dir == "down":
+        if row+1 <= grid.rows:
+            if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
     elif dir == "up":
-        if bot.my_row()-1 > 0:
-            if({'row': bot.my_row()-1, 'column': bot.my_column()} in state['obstacles']):
+        if row-1 > 0:
+            if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
     elif dir == "right":
-        if bot.my_column()+1 <= grid.columns:
-            if({'row': bot.my_row(), 'column': bot.my_column()+1} in state['obstacles']):
+        if column+1 <= grid.columns:
+            if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
     elif dir == "left":
-        if bot.my_column()-1 > 0:
-            if({'row': bot.my_row(), 'column': bot.my_column()-1} in state['obstacles']):
+        if column-1 > 0:
+            if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
+                return 1
+    return 0 
+
+def obstacle_behind(row = bot.my_row(), column = bot.my_column()):
+    state = grid.get_state()
+    dir = bot.get_dir()
+    if dir == "up":
+        if row+1 <= grid.rows:
+            if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
+                return 1
+    elif dir == "down":
+        if row-1 > 0:
+            if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
+                return 1
+    elif dir == "left":
+        if column+1 <= grid.columns:
+            if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
+                return 1
+    elif dir == "right":
+        if column-1 > 0:
+            if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
+                return 1
+    return 0 
+
+def obstacle_left(row = bot.my_row(), column = bot.my_column()):
+    state = grid.get_state()
+    dir = bot.get_dir()
+    if dir == "left":
+        if row+1 <= grid.rows:
+            if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
+                return 1
+    elif dir == "right":
+        if row-1 > 0:
+            if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
+                return 1
+    elif dir == "down":
+        print(state['obstacles'])
+        if column+1 <= grid.columns:
+            if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
+                return 1
+    elif dir == "up":
+        if column-1 > 0:
+            if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
+                return 1
+    return 0
+
+def obstacle_right(row = bot.my_row(), column = bot.my_column()):
+    state = grid.get_state()
+    dir = bot.get_dir()
+    if dir == "right":
+        if row+1 <= grid.rows:
+            if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
+                return 1
+    elif dir == "left":
+        if row-1 > 0:
+            if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
+                return 1
+    elif dir == "up":
+        if column+1 <= grid.columns:
+            if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
+                return 1
+    elif dir == "down":
+        if column-1 > 0:
+            if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
     return 0 
 

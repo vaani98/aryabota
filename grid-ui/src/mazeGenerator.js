@@ -1,6 +1,6 @@
 import React from 'react';
 //IMPORT SPRITES
-import coinsweeper_img from './assets/coinsweeper.png';
+import coinsweeper_img from './assets/bot3.png';
 import obstacle_img from './assets/obstacle.png'
 import coin_stack from './assets/coin_stack.png'
 import home from './assets/home.png'
