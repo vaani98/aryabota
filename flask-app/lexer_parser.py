@@ -171,9 +171,14 @@ def t_IFCOINS(t):
     t.value = 'IFCOINS'
     return t
 
-def t_IFNOOBSTACLE(t):
-    r'if[ ]*no[ ]*obstacle'
-    t.value = 'IFNOOBSTACLE'
+def t_BEGIN(t):
+    r'begin'
+    t.value = 'BEGIN'
+    return t
+
+def t_END(t):
+    r'end'
+    t.value = 'END'
     return t
 
 def t_IFOBSTACLEAHEAD(t):
@@ -214,16 +219,6 @@ def t_SUBMIT(t):
 def t_IDENTIFIER(t):
     r'[a-zA-z_][a-zA-Z0-9]*'
     t.type = 'IDENTIFIER'
-    return t
-
-def t_BEGIN(t):
-    r'begin'
-    t.value = 'BEGIN'
-    return t
-
-def t_END(t):
-    r'end'
-    t.value = 'END'
     return t
 
 def t_LTE(t):
@@ -269,9 +264,13 @@ lexer = lex.lex()
 
 def p_commands(p):
     '''
-    expr : expr expr
+    exprs : expr expr
+        | expr
     '''
-    p[0] = p[1] + "\n" + p[2]
+    if(len(p)==3):
+        p[0] = p[1] + "\n" + p[2]
+    else:
+        p[0] = p[1]
 
 def p_command(p):
     '''
@@ -313,10 +312,10 @@ def p_value_expr(p):
                | value_expr MINUS value_expr
                | value_expr TIMES value_expr
                | value_expr DIVIDE value_expr
-               | value_expr LT value_expr
-               | value_expr GT value_expr
                | value_expr LTE value_expr
                | value_expr GTE value_expr
+               | value_expr LT value_expr
+               | value_expr GT value_expr
                | value_expr EQUALS value_expr
                | value_expr NOTEQUALS value_expr
     '''
@@ -336,12 +335,12 @@ def p_value_expr(p):
 
 def p_selection_expr(p):
     '''
-    selection_expr : IFNOOBSTACLE COMMA expr
-                   | IFOBSTACLEAHEAD COMMA expr
-                   | IFOBSTACLEBEHIND COMMA expr
-                   | IFOBSTACLELEFT COMMA expr
-                   | IFOBSTACLERIGHT COMMA expr
+    selection_expr : IFOBSTACLEAHEAD BEGIN exprs END
+                    | IFOBSTACLERIGHT BEGIN exprs END
+                    | IFOBSTACLEBEHIND BEGIN exprs END
+                    | IFOBSTACLELEFT BEGIN exprs END
     '''
+    p[3] = '\n\t' + p[3].replace('\n', '\n\t')
     python_code = convert_pseudocode_to_python(p[1])
     p[0] = python_code + " " + p[3]
 

@@ -77,7 +77,5 @@ def convert_pseudocode_to_python(command, **params):
         "GTE": "{variable1}>={variable2}",
         "EQUALS": "{variable1}=={variable2}",
         "NOTEQUALS": "{variable1}!={variable2}"
-        # "BEGIN" : "begin",
-        # "END" : "end"
     }
     return conversion_table[command].format(**params)
