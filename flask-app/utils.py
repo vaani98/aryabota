@@ -62,10 +62,22 @@ def convert_pseudocode_to_python(command, **params):
         "DIVIDE": "{variable1}/{variable2}",
         "IFCOINS": "if(get_number_of_coins()>0):",
         "IFNOOBSTACLE": "if(obstacle()==0):",
+        "IFOBSTACLEAHEAD": "if(obstacle_ahead()==1):",
+        "IFOBSTACLEBEHIND": "if(obstacle_behind()==1):",
+        "IFOBSTACLELEFT": "if(obstacle_left()==1):",
+        "IFOBSTACLERIGHT": "if(obstacle_right()==1):",
         "IDENTIFIER" : "{variable}",
         "NUMBER" : "{value}",
         "PRINT_VALUE": "print_value({expr})",
         "ASSIGNMENT": "{variable}={expr}",
-        "SUBMIT": "submit({value})"
+        "SUBMIT": "submit({value})",
+        "LT": "{variable1}<{variable2}",
+        "GT": "{variable1}>{variable2}",
+        "LTE": "{variable1}<={variable2}",
+        "GTE": "{variable1}>={variable2}",
+        "EQUALS": "{variable1}=={variable2}",
+        "NOTEQUALS": "{variable1}!={variable2}"
+        # "BEGIN" : "begin",
+        # "END" : "end"
     }
     return conversion_table[command].format(**params)

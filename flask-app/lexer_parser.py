@@ -1,6 +1,5 @@
 """Lexer and parser module for pseudo-code"""
 # pylint: disable=invalid-name,unused-argument,global-statement
-# >, >=, <, <=, =, !=
 import ply.lex as lex
 import ply.yacc as yacc
 import yaml
@@ -75,8 +74,20 @@ tokens = [
     'COMMA',
     'IFCOINS',
     'IFNOOBSTACLE',
+    'IFOBSTACLEAHEAD',
+    'IFOBSTACLEBEHIND',
+    'IFOBSTACLELEFT',
+    'IFOBSTACLERIGHT',
     'PRINT',
-    'SUBMIT'
+    'SUBMIT',
+    'BEGIN',
+    'END',
+    'LT',
+    'GT',
+    'LTE',
+    'GTE',
+    'EQUALS',
+    'NOTEQUALS'
 ]
 
 t_ignore = ' \t'
@@ -165,6 +176,26 @@ def t_IFNOOBSTACLE(t):
     t.value = 'IFNOOBSTACLE'
     return t
 
+def t_IFOBSTACLEAHEAD(t):
+    r'if[ ]*obstacle[ ]*ahead'
+    t.value = 'IFOBSTACLEAHEAD'
+    return t
+
+def t_IFOBSTACLEBEHIND(t):
+    r'if[ ]*obstacle[ ]*behind'
+    t.value = 'IFOBSTACLEBEHIND'
+    return t
+
+def t_IFOBSTACLELEFT(t):
+    r'if[ ]*obstacle[ ]*left'
+    t.value = 'IFOBSTACLELEFT'
+    return t
+
+def t_IFOBSTACLERIGHT(t):
+    r'if[ ]*obstacle[ ]*right'
+    t.value = 'IFOBSTACLERIGHT'
+    return t
+
 def t_COINS(t):
     r'number[ ]*of[ ]*coins'
     t.value = 'COINS'
@@ -183,6 +214,46 @@ def t_SUBMIT(t):
 def t_IDENTIFIER(t):
     r'[a-zA-z_][a-zA-Z0-9]*'
     t.type = 'IDENTIFIER'
+    return t
+
+def t_BEGIN(t):
+    r'begin'
+    t.value = 'BEGIN'
+    return t
+
+def t_END(t):
+    r'end'
+    t.value = 'END'
+    return t
+
+def t_LTE(t):
+    r'<='
+    t.value = 'LTE'
+    return t
+
+def t_GTE(t):
+    r'>='
+    t.value = 'GTE'
+    return t
+
+def t_LT(t):
+    r'<'
+    t.value = 'LT'
+    return t
+
+def t_GT(t):
+    r'>'
+    t.value = 'GT'
+    return t
+
+def t_EQUALS(t):
+    r'='
+    t.value = 'EQUALS'
+    return t
+
+def t_NOTEQUALS(t):
+    r'!='
+    t.value = 'NOTEQUALS'
     return t
 
 def t_newline(t):
@@ -242,6 +313,12 @@ def p_value_expr(p):
                | value_expr MINUS value_expr
                | value_expr TIMES value_expr
                | value_expr DIVIDE value_expr
+               | value_expr LT value_expr
+               | value_expr GT value_expr
+               | value_expr LTE value_expr
+               | value_expr GTE value_expr
+               | value_expr EQUALS value_expr
+               | value_expr NOTEQUALS value_expr
     '''
     if (p[1] == 'MYROW' or p[1] == 'MYCOLUMN'):
         python_code = convert_pseudocode_to_python(p[1])
@@ -257,15 +334,16 @@ def p_value_expr(p):
         python_code = convert_pseudocode_to_python("NUMBER", value = p[1])
     p[0] = python_code
 
-#obstacle dir - ahead, behind, left, right
-#begin and end
 def p_selection_expr(p):
     '''
     selection_expr : IFNOOBSTACLE COMMA expr
+                   | IFOBSTACLEAHEAD COMMA expr
+                   | IFOBSTACLEBEHIND COMMA expr
+                   | IFOBSTACLELEFT COMMA expr
+                   | IFOBSTACLERIGHT COMMA expr
     '''
-    if p[1] == 'IFNOOBSTACLE':
-        python_code = convert_pseudocode_to_python("IFNOOBSTACLE")
-        p[0] = python_code + " " + p[3]
+    python_code = convert_pseudocode_to_python(p[1])
+    p[0] = python_code + " " + p[3]
 
 def p_assign_expr(p):
     '''
