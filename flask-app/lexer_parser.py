@@ -334,8 +334,6 @@ def p_value_expr(p):
         python_code = convert_pseudocode_to_python("NUMBER", value = p[1])
     p[0] = python_code
 
-#obstacle dir - ahead, behind, left, right
-#begin and end
 def p_selection_expr(p):
     '''
     selection_expr : IFNOOBSTACLE COMMA expr
