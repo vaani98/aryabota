@@ -1,4 +1,5 @@
 app:
+  language: "kannada"
   level: 0
   problem_grid: resources/problem-grids/lvl0-basic.json
   results: temp/results.json
