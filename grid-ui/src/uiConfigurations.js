@@ -8,7 +8,7 @@ import { GithubPicker } from 'react-color';
 //MATERIAL UI ICONS FOR CONFIG BUTTONS
 import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
-import Create from '@material-ui/icons/Create';
+import Translate from '@material-ui/icons/Translate';
 import Refresh from '@material-ui/icons/Refresh';
 //MAZE STATE
 import { MazeState } from './globalStates';
@@ -31,18 +31,31 @@ function UiConfigs(props) {
      * Global context / state to manipulate character location, etc.
      * @const
      */
-     const [mazeData, setMazeData] = useContext(MazeState);
+    const [mazeData, setMazeData] = useContext(MazeState);
 
     /**
      * color sets the base color of the webpage
      * @var
      */
     let [color, setColor] = useState("");
+
     /**
      * sizes sets the size range of the text
      * @var
      */
     let [sizes, setSizes] = useState("Medium");
+
+    /**
+     * sizes sets the size range of the text
+     * @var
+     */
+    let [level, setLevel] = useState("Go Home");
+
+    /**
+     * lang sets the language of the application
+     * @var
+     */
+    let [lang, setLang] = useState("English");
 
     /**
      * Updates color
@@ -83,6 +96,24 @@ function UiConfigs(props) {
         }
     ];
 
+    /**
+     * Updates sizes
+     * @param {*} e 
+     */
+    var levelChange = e => {
+        setLevel(e.value);
+        var selectedLevel = e.value;
+        fetch('http://localhost:5000/set_problem', {
+            crossDomain: true,
+            method: 'POST',
+            body: JSON.stringify({ level: selectedLevel }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        })
+            .then(response => console.log(response));
+    }
+
     var levels = [
         {
             value: "go_home",
@@ -98,6 +129,34 @@ function UiConfigs(props) {
         }
     ];
 
+    /**
+     * Updates lang
+     * @param {*} e 
+     */
+    var langChange = e => {
+        setLang(e.label);
+        var selectedLang = e.label;
+        fetch('http://localhost:5000/set_language', {
+            crossDomain: true,
+            method: 'POST',
+            body: JSON.stringify({ lang: selectedLang }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        })
+            .then(response => console.log(response));
+    }
+
+    var langs = [
+        {
+            value: "english",
+            label: "English",
+        },
+        {
+            value: "kannada",
+            label: "Kannada",
+        }
+    ];
     /**
      * calculates colour values for highlights based on the base colour
      * @param {*} col 
@@ -212,22 +271,69 @@ function UiConfigs(props) {
                     />
      */
     const ToggleLevel = () => {
+        var [tl, setTl] = useState(false);
+        const onClick = () => {
+            if (tl === false) setTl(true);
+            else setTl(false);
+        }
+
         return (
             <div className="levelSelector">
-                <form action="http://localhost:5000/set_problem" method="get">
+                {/* <form action="http://localhost:5000/set_problem" method="get"> */}
                 <Button
+                    onClick={onClick}
                     variant="contained"
                     color="secondary"
+                // startIcon={<FormatSize />}
                 >
                     Level
                 </Button>
-                <Select
+                {tl ?
+                    <Select
                         id="LevelSelector"
-                        name = "problem"
+                        name="problem"
                         options={levels}
+                        onChange={levelChange}
                     />
-                <input type="submit" value="submit"></input>
-                </form>
+                    : null}
+                {/* <input type="submit" value="submit"></input> */}
+                {/* </form> */}
+            </div>
+        )
+    }
+
+    /**
+     * This component displays a button on the toolbar
+     * @returns ToggleLang component
+     * @example
+     * <ToggleLang />
+     */
+    const ToggleLang = () => {
+        var [tlang, setTlang] = useState(false);
+        const onClick = () => {
+            if (tlang === false) setTlang(true);
+            else setTlang(false);
+        }
+
+        return (
+
+            <div className="sizeSelector">
+                <Button
+                    onClick={onClick}
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<Translate />}
+                >
+                    Language
+                </Button>
+                {tlang ?
+                    <Select
+                        id="sizeSelector"
+                        placeholder={lang}
+                        options={langs}
+                        onChange={langChange}
+                    />
+                    : null}
             </div>
         )
     }
@@ -244,9 +350,9 @@ function UiConfigs(props) {
                 crossDomain: true,
                 method: 'POST',
                 headers: {
-                      'Content-type': 'application/json'
-                  }
-                })
+                    'Content-type': 'application/json'
+                }
+            })
                 .then(response => response.json())
                 .then(response => {
                     setMazeData(prev => ({
@@ -271,7 +377,7 @@ function UiConfigs(props) {
                     onClick={onClick}
                     variant="contained"
                     color="secondary"
-                    startIcon={<Refresh/>}
+                    startIcon={<Refresh />}
                 >
                     Reset
                 </Button>
@@ -299,6 +405,7 @@ function UiConfigs(props) {
                     <ToggleSize />
                     <ToggleColor />
                     <ToggleLevel />
+                    <ToggleLang />
                 </div>
             </div>
         </div>

@@ -67,22 +67,40 @@ def initialise_state(problem):
         obstacles_per_position = get_for_every_position(grid_state["obstacles"], rows, columns, False)
     else:
         grid_state["obstacles"] = None
+    if "homes" in grid_state:
+        # TODO: Remove this, didn't know what to put here
+        homes_per_position = get_for_every_position(grid_state["homes"], rows, columns, False)
+    else:
+        grid_state["homes"] = None
     grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, grid_state["homes"])
     problem_instance = Problem.get_instance()
     problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
 
-@app.route('/set_problem', methods = ['GET'])
+@app.route('/set_problem', methods = ['POST'])
+# @cross_origin()
 def set_problem():
-    if request.method == 'GET':
-        problem = request.args.get('problem', None)
-        print("Problem=", problem)
+    problem = request.json["level"]
+    print("Problem=", problem)
     problems = {'count_coins': 'count_number_of_coins.json', 'go_home': 'go_home.json', 'check_state': 'state_check.json'}
     problem_file_path = "../resources/problem-grids/"+problems[problem]
-    print(problem_file_path)
+    print("Path = ", problem_file_path)
     problem = validate(problem_file_path)
     initialise_state(problem)
     #return json.dumps(), 200, {'ContentType':'application/json'}
     return redirect(request.referrer)
+
+@app.route('/set_language', methods = ['POST'])
+def set_language():
+    print("Entered Lang API. Language is ", request.json)
+    # language = request.json["lang"]
+    # languages = {'english': '', 'kannada': ''}
+    # language_file_path = "../resources/langFolderName/"+languages[language]
+    # print("Lang Path = ", language_file_path)
+    # language = validate(language_file_path)
+    # initialise_state(language)
+    # #return json.dumps(), 200, {'ContentType':'application/json'}
+    # return redirect(request.referrer)
+    return "Language changed"
 
 @app.before_first_request
 def before_first_request():
