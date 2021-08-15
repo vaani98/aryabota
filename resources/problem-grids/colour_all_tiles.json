@@ -1,0 +1,85 @@
+{
+    "problem": {
+        "problem_type": "state_match",
+        "statement": "Colour all tiles in the grid."
+    },
+    "initial_state": {
+        "grid": {
+            "dimensions": {
+                "row": 3,
+                "column": 3
+            }
+        },
+        "coin_sweeper": {
+            "position": {
+                "row": 1,
+                "column": 1
+            },
+            "dir": "right"
+        }
+    },
+    "answer": {
+        "state": {
+            "grid": {
+                "coloured": [
+                    {
+                        "position": {
+                            "row": 1,
+                            "column": 1
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 1,
+                            "column": 2
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 1,
+                            "column": 3
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 2,
+                            "column": 1
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 2,
+                            "column": 2
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 2,
+                            "column": 3
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 3,
+                            "column": 1
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 3,
+                            "column": 2
+                        }
+                    },
+                    {
+                        "position": {
+                            "row": 3,
+                            "column": 3
+                        }
+                    }
+                ]
+            },
+            "coin_sweeper": {
+            }
+        }
+    }
+}

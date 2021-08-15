@@ -1,0 +1,8 @@
+
+# Default Parameters
+POSTCHECKOUT_GIT_PUSH=y
+JIRA_TRANSITION=y
+COMPONENT_UPDATE_TRANSITION=n
+GITHOOK_ENABLED=n
+# End Default Parameters
+

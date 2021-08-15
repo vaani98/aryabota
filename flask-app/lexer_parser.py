@@ -59,7 +59,7 @@ tokens = [
     'NUMBER',
     'PLUS',
     'MINUS',
-    'TIMES',
+    'MULTIPLY',
     'DIVIDE',
     'MYROW',
     'MYCOLUMN',
@@ -72,12 +72,15 @@ tokens = [
     'IDENTIFIER',
     'ASSIGN',
     'COMMA',
+    'IF',
     'IFCOINS',
     'IFNOOBSTACLE',
     'IFOBSTACLEAHEAD',
     'IFOBSTACLEBEHIND',
     'IFOBSTACLELEFT',
     'IFOBSTACLERIGHT',
+    'REPEAT',
+    'TIMES',
     'PRINT',
     'SUBMIT',
     'BEGIN',
@@ -102,9 +105,9 @@ def t_MINUS(t):
     t.value = 'MINUS'
     return t
 
-def t_TIMES(t):
+def t_MULTIPLY(t):
     r'\*'
-    t.value = 'TIMES'
+    t.value = 'MULTIPLY'
     return t
 
 def t_DIVIDE(t):
@@ -201,6 +204,21 @@ def t_IFOBSTACLERIGHT(t):
     t.value = 'IFOBSTACLERIGHT'
     return t
 
+def t_IF(t):
+    r'if'
+    t.value = 'IF'
+    return t
+
+def t_REPEAT(t):
+    r'repeat'
+    t.value = 'REPEAT'
+    return t
+
+def t_TIMES(t):
+    r'times'
+    t.value = 'TIMES'
+    return t
+
 def t_COINS(t):
     r'number[ ]*of[ ]*coins'
     t.value = 'COINS'
@@ -281,6 +299,7 @@ def p_command(p):
         | MOVE NUMBER
         | assign_expr
         | selection_expr
+        | repeat_expr
         | print_expr
         | submit_expr
     '''
@@ -310,14 +329,10 @@ def p_value_expr(p):
                | COINS
                | value_expr PLUS value_expr
                | value_expr MINUS value_expr
-               | value_expr TIMES value_expr
+               | value_expr MULTIPLY value_expr
                | value_expr DIVIDE value_expr
-               | value_expr LTE value_expr
-               | value_expr GTE value_expr
-               | value_expr LT value_expr
-               | value_expr GT value_expr
-               | value_expr EQUALS value_expr
-               | value_expr NOTEQUALS value_expr
+               | boolean_expr
+               
     '''
     if (p[1] == 'MYROW' or p[1] == 'MYCOLUMN'):
         python_code = convert_pseudocode_to_python(p[1])
@@ -333,16 +348,46 @@ def p_value_expr(p):
         python_code = convert_pseudocode_to_python("NUMBER", value = p[1])
     p[0] = python_code
 
+def p_boolean_expr(p):
+    '''
+    boolean_expr : value_expr LTE value_expr
+               | value_expr GTE value_expr
+               | value_expr LT value_expr
+               | value_expr GT value_expr
+               | value_expr EQUALS value_expr
+               | value_expr NOTEQUALS value_expr
+    '''
+    if len(p) == 4:
+        var1 = p[1]
+        var2 = p[3]
+        python_code = convert_pseudocode_to_python(p[2], variable1 = var1, variable2 = var2)
+    p[0] = python_code
+
 def p_selection_expr(p):
     '''
-    selection_expr : IFOBSTACLEAHEAD BEGIN exprs END
+    selection_expr : IF boolean_expr BEGIN exprs END
+                    | IFOBSTACLEAHEAD BEGIN exprs END
                     | IFOBSTACLERIGHT BEGIN exprs END
                     | IFOBSTACLEBEHIND BEGIN exprs END
                     | IFOBSTACLELEFT BEGIN exprs END
     '''
-    p[3] = '\n\t' + p[3].replace('\n', '\n\t')
-    python_code = convert_pseudocode_to_python(p[1])
-    p[0] = python_code + " " + p[3]
+    if len(p) == 5:
+        p[3] = '\n\t' + p[3].replace('\n', '\n\t')
+        python_code = convert_pseudocode_to_python(p[1])
+        p[0] = python_code + " " + p[3]
+    elif len(p) == 6:
+        print(list(p))
+        p[4] = '\n\t' + p[4].replace('\n', '\n\t')
+        python_code = convert_pseudocode_to_python(p[1], boolean_expr = p[2])
+        p[0] = python_code + " " + p[4] 
+
+def p_repeat_expr(p):
+    '''
+    repeat_expr : REPEAT NUMBER TIMES BEGIN exprs END
+    '''
+    p[5] = '\n\t' + p[5].replace('\n', '\n\t')
+    python_code = convert_pseudocode_to_python(p[1], times = p[2])
+    p[0] = python_code + " " + p[5]
 
 def p_assign_expr(p):
     '''

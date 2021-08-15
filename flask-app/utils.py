@@ -66,6 +66,7 @@ def convert_pseudocode_to_python(command, **params):
         "IFOBSTACLEBEHIND": "if obstacle_behind()==1:",
         "IFOBSTACLELEFT": "if obstacle_left()==1:",
         "IFOBSTACLERIGHT": "if obstacle_right()==1:",
+        "IF": "if {boolean_expr}:",
         "IDENTIFIER" : "{variable}",
         "NUMBER" : "{value}",
         "PRINT_VALUE": "print_value({expr})",

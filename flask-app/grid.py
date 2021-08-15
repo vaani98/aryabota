@@ -25,6 +25,7 @@ class Grid:
         self.rows = rows
         self.columns = columns
         zero_coins = [[0 for i in range(rows)] for j in range(columns)]
+        self.homes = []
         self.coins = self.coins_per_position = self.obstacles = self.obstacles_per_position = self.coloured = zero_coins
         if coins is not None:
             self.coins = coins
