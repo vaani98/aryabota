@@ -201,26 +201,6 @@ def t_IFOBSTACLERIGHT(t):
     t.value = 'IFOBSTACLERIGHT'
     return t
 
-def t_IFOBSTACLEAHEAD(t):
-    r'if[ ]*obstacle[ ]*ahead'
-    t.value = 'IFOBSTACLEAHEAD'
-    return t
-
-def t_IFOBSTACLEBEHIND(t):
-    r'if[ ]*obstacle[ ]*behind'
-    t.value = 'IFOBSTACLEBEHIND'
-    return t
-
-def t_IFOBSTACLELEFT(t):
-    r'if[ ]*obstacle[ ]*left'
-    t.value = 'IFOBSTACLELEFT'
-    return t
-
-def t_IFOBSTACLERIGHT(t):
-    r'if[ ]*obstacle[ ]*right'
-    t.value = 'IFOBSTACLERIGHT'
-    return t
-
 def t_COINS(t):
     r'number[ ]*of[ ]*coins'
     t.value = 'COINS'
