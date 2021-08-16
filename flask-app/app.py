@@ -56,8 +56,10 @@ def initialise_state(problem):
         bot.configure(coin_sweeper_state["position"]["row"], coin_sweeper_state["position"]["column"], coin_sweeper_state["dir"], "down")
     grid = Grid.get_instance()
     grid_state = state["grid"]
-    rows = grid_state["dimensions"]["row"]
-    columns = grid_state["dimensions"]["column"]
+    #rows = grid_state["dimensions"]["row"]
+    #columns = grid_state["dimensions"]["column"]
+    columns = grid_state["dimensions"]["row"]
+    rows = grid_state["dimensions"]["column"]
     coins_per_position = obstacles_per_position = None
     if "coins" in grid_state:
         coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
