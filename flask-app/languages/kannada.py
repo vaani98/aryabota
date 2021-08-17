@@ -27,8 +27,6 @@ tokens = [
     'NUMBER_OF_COINS',
     'IDENTIFIER',
     'ASSIGN',
-    'COMMA',
-    'IFNOOBSTACLE',
     'IFOBSTACLEAHEAD',
     'IFOBSTACLEBEHIND',
     'IFOBSTACLELEFT',
@@ -73,7 +71,7 @@ def t_COMMA(t):
     return t
 
 def t_MOVE(t):
-    r'move'
+    r'hanthagalu[ ]*munde[ ]*hogu'
     t.value = 'MOVE'
     return t
 
@@ -98,13 +96,13 @@ def t_PENDOWN(t):
     return t  
 
 def t_MYROW(t):
-    r'my[ ]*row'
+    r'nanna[ ]*row'
     t.value = "MYROW"
     return t
 
 
 def t_MYCOLUMN(t):
-    r'my[ ]*column'
+    r'nanna[ ]*column'
     t.value = "MYCOLUMN"
     return t
 
@@ -171,32 +169,32 @@ def t_IDENTIFIER(t):
     return t
 
 def t_LTE(t):
-    r'<='
+    r'kintha[ ]*kadime[ ]*athava[ ]*samave'
     t.value = 'LTE'
     return t
 
 def t_GTE(t):
-    r'>='
+    r'kintha[ ]*hecchu[ ]*athava[ ]*samave'
     t.value = 'GTE'
     return t
 
 def t_LT(t):
-    r'<'
+    r'kintha[ ]*kadime'
     t.value = 'LT'
     return t
 
 def t_GT(t):
-    r'>'
+    r'kintha[ ]*hecchu'
     t.value = 'GT'
     return t
 
 def t_EQUALS(t):
-    r'='
+    r'ige[ ]*samave'
     t.value = 'EQUALS'
     return t
 
 def t_NOTEQUALS(t):
-    r'!='
+    r'ige[ ]*asamave'
     t.value = 'NOTEQUALS'
     return t
 
@@ -227,7 +225,7 @@ def p_command(p):
         | TURNRIGHT
         | PENUP
         | PENDOWN
-        | MOVE NUMBER
+        | NUMBER MOVE
         | assign_expr
         | selection_expr
         | print_expr
@@ -239,15 +237,16 @@ def p_command(p):
     elif len(p) == 2:
         p[0] = p[1]
     elif len(p) == 3:
-        python_code = convert_kannada_pseudocode_to_python(p[1], steps = p[2])
+        python_code = convert_kannada_pseudocode_to_python(p[2], steps = p[1])
         p[0] = python_code
     return p[0]
 
 def p_print_expr(p):
     '''
-    print_expr : PRINT value_expr
+    print_expr : value_expr PRINT
     '''
-    python_code = convert_kannada_pseudocode_to_python("PRINT_VALUE", expr = p[2])
+    print(list(p))
+    python_code = convert_kannada_pseudocode_to_python("PRINT_VALUE", expr = p[1])
     p[0] = python_code
 
 def p_value_expr(p):
@@ -261,12 +260,12 @@ def p_value_expr(p):
                | value_expr MINUS value_expr
                | value_expr TIMES value_expr
                | value_expr DIVIDE value_expr
-               | value_expr LTE value_expr
-               | value_expr GTE value_expr
-               | value_expr LT value_expr
-               | value_expr GT value_expr
-               | value_expr EQUALS value_expr
-               | value_expr NOTEQUALS value_expr
+               | value_expr value_expr LTE
+               | value_expr value_expr GTE
+               | value_expr value_expr LT
+               | value_expr value_expr GT
+               | value_expr value_expr EQUALS
+               | value_expr value_expr NOTEQUALS
     '''
     if (p[1] == 'MYROW' or p[1] == 'MYCOLUMN'):
         python_code = convert_kannada_pseudocode_to_python(p[1])

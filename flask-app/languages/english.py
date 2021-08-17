@@ -27,8 +27,6 @@ tokens = [
     'NUMBER_OF_COINS',
     'IDENTIFIER',
     'ASSIGN',
-    'COMMA',
-    'IFNOOBSTACLE',
     'IFOBSTACLEAHEAD',
     'IFOBSTACLEBEHIND',
     'IFOBSTACLELEFT',

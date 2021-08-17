@@ -60,8 +60,6 @@ def convert_english_pseudocode_to_python(command, **params):
         "MINUS": "{variable1}-{variable2}",
         "TIMES": "{variable1}*{variable2}",
         "DIVIDE": "{variable1}/{variable2}",
-        "IFCOINS": "if get_number_of_coins()>0:",
-        "IFNOOBSTACLE": "if obstacle()==0:",
         "IFOBSTACLEAHEAD": "if obstacle_ahead()==1:",
         "IFOBSTACLEBEHIND": "if obstacle_behind()==1:",
         "IFOBSTACLELEFT": "if obstacle_left()==1:",
