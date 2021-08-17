@@ -56,10 +56,10 @@ def initialise_state(problem):
         bot.configure(coin_sweeper_state["position"]["row"], coin_sweeper_state["position"]["column"], coin_sweeper_state["dir"], "down")
     grid = Grid.get_instance()
     grid_state = state["grid"]
-    #rows = grid_state["dimensions"]["row"]
-    #columns = grid_state["dimensions"]["column"]
-    columns = grid_state["dimensions"]["row"]
-    rows = grid_state["dimensions"]["column"]
+    rows = grid_state["dimensions"]["row"]
+    columns = grid_state["dimensions"]["column"]
+    #columns = grid_state["dimensions"]["row"]
+    #rows = grid_state["dimensions"]["column"]
     coins_per_position = obstacles_per_position = None
     if "coins" in grid_state:
         coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
@@ -76,7 +76,7 @@ def initialise_state(problem):
 @app.before_first_request
 def before_first_request():
     """Reading and validating config against schema, initialising the grid"""
-    problem_file_path = "../resources/problem-grids/shortest_path.json"
+    problem_file_path = "../resources/problem-grids/all_homes.json"
     problem = validate(problem_file_path)
     initialise_state(problem)   
 
