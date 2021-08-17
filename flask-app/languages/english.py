@@ -212,13 +212,9 @@ english_lexer = lex.lex()
 
 def p_commands(p):
     '''
-    exprs : expr expr
-        | expr
+    expr : expr expr
     '''
-    if(len(p)==3):
-        p[0] = p[1] + "\n" + p[2]
-    else:
-        p[0] = p[1]
+    p[0] = p[1] + "\n" + p[2]
 
 def p_command(p):
     '''
@@ -232,6 +228,7 @@ def p_command(p):
         | print_expr
         | submit_expr
     '''
+    print(list(p))
     if p[1] in ['TURNLEFT', 'TURNRIGHT', 'PENUP', 'PENDOWN']:
         python_code = convert_english_pseudocode_to_python(p[1])
         p[0] = python_code
@@ -240,7 +237,6 @@ def p_command(p):
     elif len(p) == 3:
         python_code = convert_english_pseudocode_to_python(p[1], steps = p[2])
         p[0] = python_code
-    return p[0]
 
 def p_print_expr(p):
     '''
@@ -283,10 +279,10 @@ def p_value_expr(p):
 
 def p_selection_expr(p):
     '''
-    selection_expr : IFOBSTACLEAHEAD BEGIN exprs END
-                    | IFOBSTACLERIGHT BEGIN exprs END
-                    | IFOBSTACLEBEHIND BEGIN exprs END
-                    | IFOBSTACLELEFT BEGIN exprs END
+    selection_expr : IFOBSTACLEAHEAD BEGIN expr END
+                    | IFOBSTACLERIGHT BEGIN expr END
+                    | IFOBSTACLEBEHIND BEGIN expr END
+                    | IFOBSTACLELEFT BEGIN expr END
     '''
     p[3] = '\n\t' + p[3].replace('\n', '\n\t')
     python_code = convert_english_pseudocode_to_python(p[1])

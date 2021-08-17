@@ -111,7 +111,22 @@ function UiConfigs(props) {
                 'Content-type': 'application/json'
             }
         })
-            .then(response => console.log(response));
+        .then(response => response.json())
+        .then(response => {
+            setMazeData(prev => ({
+                ...prev,
+                rows: response.rows,
+                columns: response.columns,
+                coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
+                coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
+                currentDirection: response?.dir,
+                levelType: response?.type,
+                penLoc: [1],
+                prevSteps: 1
+            }))
+        })
     }
 
     var levels = [
@@ -144,7 +159,22 @@ function UiConfigs(props) {
                 'Content-type': 'application/json'
             }
         })
-            .then(response => console.log(response));
+        .then(response => response.json())
+        .then(response => {
+            setMazeData(prev => ({
+                ...prev,
+                rows: response.rows,
+                columns: response.columns,
+                coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
+                coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
+                currentDirection: response?.dir,
+                levelType: response?.type,
+                penLoc: [1],
+                prevSteps: 1
+            }))
+        })
     }
 
     var langs = [
