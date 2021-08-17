@@ -14,8 +14,12 @@
     z-index: 5;
   }
   
-  .colorSelector button, .sizeSelector button, .penToggle button, .resetButton button{
+  .colorSelector button, .sizeSelector button, .levelSelector button, .penToggle button {
     width: 200px;
+  }
+
+  .resetButton button {
+    width: 100px;
   }
   
   .penUp {
