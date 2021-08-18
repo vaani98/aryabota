@@ -1,8 +1,5 @@
-from re import sub
-from typing import Dict, List
 from grid import Grid
 from coin_sweeper import CoinSweeper
-import json
 
 class DictCompareWrapper:
     def __init__(self, json):
@@ -94,12 +91,20 @@ class Problem:
         reqd_ans = wrap(reqd_state, compare_type)
         ans = wrap(submitted_answer, compare_type)
         return reqd_ans == ans
+    
+    def compare_values(self, submitted_answer):
+        if self.answer["value_type"] != "string":
+            return self.answer["value"] == submitted_answer
+        else:
+            if not isinstance(submitted_answer, str):
+                return False
+            return self.answer["value"].lower() == submitted_answer.lower()
 
     def check_answer(self, submitted_answer):
         succeeded = None
         message = "Not implemented yet!"
         if self.type == "value_match":
-            succeeded = str(self.answer["value"]).lower() == str(submitted_answer["text_answer"]).lower()
+            succeeded = self.compare_values(submitted_answer)
         elif self.type == "state_match":
             succeeded = self.compare_states(submitted_answer)
         if succeeded: 

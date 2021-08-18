@@ -65,6 +65,7 @@
         }
     },
     "answer": {
+        "value_type": "bool",
         "value": true
     }
 }
