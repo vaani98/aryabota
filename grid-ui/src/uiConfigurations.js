@@ -201,6 +201,10 @@ function UiConfigs(props) {
         {
             value: "kannada",
             label: "Kannada",
+        },
+        {
+            value: "kanglish",
+            label: "Kanglish",
         }
     ];
     /**
