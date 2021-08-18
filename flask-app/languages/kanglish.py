@@ -189,7 +189,6 @@ def t_GT(t):
     return t
 
 def t_EQUALS(t):
-    u'ಗೆ ಸಮವೇ'
     r'ige[ ]*samave'
     t.value = 'EQUALS'
     return t
