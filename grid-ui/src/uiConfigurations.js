@@ -146,6 +146,14 @@ function UiConfigs(props) {
             value: "coins_lte",
             label: "Less than 30 coins"
         },
+        {
+            value: "Level_1_Easy",
+            label: "Level 1 - EASY"
+        },
+        {
+            value: "Level_1_Medium",
+            label: "Level 1 - MEDIUM"
+        }
         // {
         //     value: "coins_gte",
         //     label: "More than 10 coins"

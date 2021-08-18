@@ -1,11 +1,16 @@
-levels:
-  0:
-    - name: Shortest Path
-      file: resources/problem-grids/shortest_path.json
-    - name: Go Home
-      file: resources/problem-grids/go_home.json
 app:
   language: english
   level: 0
-  problem_grid: resources/problem-grids/count_number_of_coins.json
+  problem_grid: resources/problem-grids/Level_1_Medium.json
   results: temp/results.json
+levels:
+  0:
+  - file: resources/problem-grids/shortest_path.json
+    name: Shortest Path
+  - file: resources/problem-grids/go_home.json
+    name: Go Home
+  1:
+  - file: resources/problem-grids/Level_1_Easy.json
+    name: Count coins
+  - file: resources/problem-grids/Level_1_Medium.json
+    name: Difference between the number of coins in both the paths

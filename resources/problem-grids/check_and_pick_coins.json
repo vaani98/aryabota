@@ -57,6 +57,7 @@
         }
     },
     "answer": {
+        "value_type": "number",
         "value": 9
     }
 }

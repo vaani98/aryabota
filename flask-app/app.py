@@ -91,7 +91,9 @@ def set_problem():
         'go_home': 'go_home.json',
         'check_coins': 'check_and_pick_coins.json',
         'coins_lte': 'coins_lte_30.json',
-        'coins_gte': 'coins_gte_10.json'
+        'coins_gte': 'coins_gte_10.json',
+        'Level_1_Easy':'Level_1_Easy.json',
+        'Level_1_Medium':'Level_1_Medium.json',
         }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     """Opening config to read grid attributes"""
