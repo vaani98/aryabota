@@ -11,6 +11,8 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import PlayArrowRounded from '@material-ui/icons/PlayArrowRounded';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import IconButton from '@material-ui/core/IconButton';
 import Maze from './mazeGenerator';
 
 /**
@@ -34,6 +36,7 @@ export default function Controller() {
 
     const [penState, setPenState] = useState("penDown");
     const [editorFont, setEditorFont] = useState(14);
+    const [question, showQuestion] = useState(true);
 
     /**
      * local state to store interval id / game loop id
@@ -136,7 +139,7 @@ export default function Controller() {
                         currentDirection: newDir,
                         positionsSeen: currState.positionsSeen.concat(newPositionsSeen),
                         penLoc: penState === "penDown"
-                            ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps, newPositionsSeen.length-1))
+                            ? currState.penLoc.concat(newPositionsSeen.slice(currState.prevSteps, newPositionsSeen.length - 1))
                             : currState.penLoc,
                         prevSteps: newPositionsSeen.length
                     };
@@ -240,6 +243,17 @@ export default function Controller() {
         return output;
     }
 
+    const displayQuestion = function (e) {
+        if (question) {
+            document.getElementById('question').style.display = 'none';
+            showQuestion(false);
+        }
+        else {
+            document.getElementById('question').style.display = 'block';
+            showQuestion(true);
+        }
+    }
+
     const submitCode = function (e) {
         e.preventDefault();
         getSteps(editorValue, mazeData)
@@ -272,6 +286,15 @@ export default function Controller() {
             />
 
             <div className="game-info">
+                <div className="problem-div" onClick={displayQuestion}>
+                    Level 1 - Problem 2 <ThemeProvider theme={theme}>
+                        <IconButton>
+                            <ArrowDropDown />
+                        </IconButton>
+                    </ThemeProvider>
+                    <p id="question">On Monday, the robot takes the shorter path home, and counts the number of coins along the way as C1. On Tuesday, the robot takes the longer path home, and counts the number of coins as C2. What is the difference between C1 and C2?</p>
+                    <br />
+                </div>
                 <h3>Enter your code here:</h3>
                 <div className="input-div">
                     <form onSubmit={submitCode}>

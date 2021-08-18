@@ -88,7 +88,13 @@ def read_config_and_initialise():
 def set_problem():
     problem = request.json["level"]
     print("Problem = ", problem)
-    problems = {'count_coins': 'count_number_of_coins.json', 'go_home': 'go_home.json', 'check_state': 'state_check.json'}
+    problems = {
+        'count_coins': 'count_number_of_coins.json',
+        'go_home': 'go_home.json',
+        'check_coins': 'check_and_pick_coins.json',
+        'coins_lte': 'coins_lte_30.json',
+        'coins_gte': 'coins_gte_10.json'
+        }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     """Opening config to read grid attributes"""
     with open('../config.yaml') as f:

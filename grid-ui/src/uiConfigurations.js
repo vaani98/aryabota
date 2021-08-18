@@ -101,7 +101,7 @@ function UiConfigs(props) {
      * @param {*} e 
      */
     var levelChange = e => {
-        setLevel(e.value);
+        setLevel(e.label);
         var selectedLevel = e.value;
         fetch('http://localhost:5000/set_problem', {
             crossDomain: true,
@@ -136,12 +136,20 @@ function UiConfigs(props) {
         },
         {
             value: "count_coins",
-            label: "Count the number of coins",
+            label: "Count total coins",
         },
         {
-            value: "check_state",
-            label: "Checking the state",
-        }
+            value: "check_coins",
+            label: "Check & pick coins",
+        },
+        {
+            value: "coins_lte",
+            label: "Less than 30 coins"
+        },
+        // {
+        //     value: "coins_gte",
+        //     label: "More than 10 coins"
+        // }
     ];
 
     /**
@@ -322,6 +330,7 @@ function UiConfigs(props) {
                     <Select
                         id="LevelSelector"
                         name="problem"
+                        placeholder={level}
                         options={levels}
                         onChange={levelChange}
                     />
