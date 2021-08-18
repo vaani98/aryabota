@@ -1,8 +1,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
-import re as re
 
-from utils import convert_kannada_pseudocode_to_python
+from utils import convert_kanglish_pseudocode_to_python
 from control_hub import *
 from grid import Grid
 from coin_sweeper import CoinSweeper
@@ -72,128 +71,131 @@ def t_COMMA(t):
     return t
 
 def t_MOVE(t):
-    u'ಹಂತಗಳು ಮುಂದೆ ಹೋಗಿ'
+    r'hanthagalu[ ]*munde[ ]*hogi'
     t.value = 'MOVE'
     return t
 
 def t_TURNLEFT(t):
-    u'ಎಡಕ್ಕೆ ತಿರುಗಿ'
+    r'edakke[ ]*thirugi'
     t.value = 'TURNLEFT'
     return t
 
 def t_TURNRIGHT(t):
-    u'ಬಲಕ್ಕೆ ತಿರುಗಿ'
+    r'balakke[ ]*thirugi'
     t.value = 'TURNRIGHT'
     return t
 
 def t_PENUP(t):
-    u'ಪೆನ್ ಬಿಡಿ'
+    r'pen[ ]*bidi'
     t.value = 'PENUP'
     return t
 
 def t_PENDOWN(t):
-    u'ಪೆನ್ ಒತ್ತಿ'
+    r'pen[ ]*otthi'
     t.value = 'PENDOWN'
     return t  
 
 def t_MYROW(t):
-    u'ನನ್ನ ರೋ'
+    r'nanna[ ]*row'
     t.value = "MYROW"
     return t
 
+
 def t_MYCOLUMN(t):
-    u'ನನ್ನ ಕಾಲಂ'
+    r'nanna[ ]*column'
     t.value = "MYCOLUMN"
     return t
 
+
 def t_NUMBER(t):
-    u'[0-9]+'
+    r'[0-9]+'
     t.value = int(t.value)
     t.type = 'NUMBER'
     return t
 
 def t_ASSIGN(t):
-    u'ಎಂಬುಡು'
+    r'embadu'
     t.value = 'ASSIGN'
     return t
 
 def t_BEGIN(t):
-    u'ಆರಂಭ'
+    r'aarambha'
     t.value = 'BEGIN'
     return t
 
 def t_END(t):
-    u'ಅಂತ್ಯ'
+    r'anthya'
     t.value = 'END'
     return t
 
 def t_IFOBSTACLEAHEAD(t):
-    u'ಮುಂದೆ ತಡೆ ಇದ್ದರೆ'
+    r'munde[ ]*thade[ ]*iddare'
     t.value = 'IFOBSTACLEAHEAD'
     return t
 
 def t_IFOBSTACLEBEHIND(t):
-    u'ಹಿಂದೆ ತಡೆ ಇದ್ದರೆ'
+    r'hinde[ ]*thade[ ]*iddare'
     t.value = 'IFOBSTACLEBEHIND'
     return t
 
 def t_IFOBSTACLELEFT(t):
-    u'ಎಡಕ್ಕೆ ತಡೆ ಇದ್ದರೆ'
+    r'edakke[ ]*thade[ ]*iddare'
     t.value = 'IFOBSTACLELEFT'
     return t
 
 def t_IFOBSTACLERIGHT(t):
-    u'ಬಲಕ್ಕೆ ತಡೆ ಇದ್ದರೆ'
+    r'balakke[ ]*thade[ ]*iddare'
     t.value = 'IFOBSTACLERIGHT'
     return t
 
 def t_NUMBER_OF_COINS(t):
-    u'ನಾಣ್ಯಗಳ ಸಂಖ್ಯೆ'
+    r'naanyagala[ ]*sankhye'
     t.value = 'NUMBER_OF_COINS'
     return t
 
 def t_PRINT(t):
-    u'ತೋರಿಸಿ'
+    r'thorisi'
     t.value = 'PRINT'
     return t
 
 def t_SUBMIT(t):
-    u'ಸಲ್ಲಿಸಿ'
+    r'sallisi'
     t.value = 'SUBMIT'
     return t
 
 def t_IDENTIFIER(t):
-    u'[a-zA-z_][a-zA-Z0-9]*'
+    r'[a-zA-z_][a-zA-Z0-9]*'
     t.type = 'IDENTIFIER'
     return t
 
 def t_LTE(t):
-    u'ಗಿಂತ ಕಡಿಮೆ ಅಥವಾ ಸಮವೇ'
+    r'gintha[ ]*kadime[ ]*athava[ ]*samave'
     t.value = 'LTE'
     return t
 
 def t_GTE(t):
-    u'ಗಿಂತ ಹೆಚ್ಚು ಅಥವಾ ಸಮವೇ'
+    r'gintha[ ]*hecchu[ ]*athava[ ]*samave'
     t.value = 'GTE'
     return t
 
 def t_LT(t):
-    u'ಗಿಂತ ಕಡಿಮೆ'
+    r'gintha[ ]*kadime'
     t.value = 'LT'
     return t
 
 def t_GT(t):
-    u'ಗಿಂತ ಹೆಚ್ಚು'
+    r'gintha[ ]*hecchu'
     t.value = 'GT'
     return t
 
 def t_EQUALS(t):
     u'ಗೆ ಸಮವೇ'
+    r'ige[ ]*samave'
     t.value = 'EQUALS'
     return t
 
 def t_NOTEQUALS(t):
-    u'ಗೆ ಅಸಮವೇ'
+    r'ige[ ]*asamave'
     t.value = 'NOTEQUALS'
     return t
 
@@ -206,7 +208,7 @@ def t_error(t):
     print("Invalid Token: ", t.value[0])
     t.lexer.skip(1)
 
-kannada_lexer = lex.lex(reflags=re.UNICODE)
+kanglish_lexer = lex.lex()
 
 def p_commands(p):
     '''
@@ -231,12 +233,12 @@ def p_command(p):
         | submit_expr
     '''
     if p[1] in ['TURNLEFT', 'TURNRIGHT', 'PENUP', 'PENDOWN']:
-        python_code = convert_kannada_pseudocode_to_python(p[1])
+        python_code = convert_kanglish_pseudocode_to_python(p[1])
         p[0] = python_code
     elif len(p) == 2:
         p[0] = p[1]
     elif len(p) == 3:
-        python_code = convert_kannada_pseudocode_to_python(p[2], steps = p[1])
+        python_code = convert_kanglish_pseudocode_to_python(p[2], steps = p[1])
         p[0] = python_code
     return p[0]
 
@@ -245,7 +247,7 @@ def p_print_expr(p):
     print_expr : value_expr PRINT
     '''
     print(list(p))
-    python_code = convert_kannada_pseudocode_to_python("PRINT_VALUE", expr = p[1])
+    python_code = convert_kanglish_pseudocode_to_python("PRINT_VALUE", expr = p[1])
     p[0] = python_code
 
 def p_value_expr(p):
@@ -267,17 +269,17 @@ def p_value_expr(p):
                | value_expr value_expr NOTEQUALS
     '''
     if (p[1] == 'MYROW' or p[1] == 'MYCOLUMN'):
-        python_code = convert_kannada_pseudocode_to_python(p[1])
+        python_code = convert_kanglish_pseudocode_to_python(p[1])
     elif p[1] == 'IDENTIFIER':
-        python_code = convert_kannada_pseudocode_to_python("IDENTIFIER", variable = p[1])
+        python_code = convert_kanglish_pseudocode_to_python("IDENTIFIER", variable = p[1])
     elif p[1] == 'NUMBER_OF_COINS':
-        python_code = convert_kannada_pseudocode_to_python("GET_COINS")
+        python_code = convert_kanglish_pseudocode_to_python("GET_COINS")
     elif len(p) == 4:
         var1 = p[1]
         var2 = p[3]
-        python_code = convert_kannada_pseudocode_to_python(p[2], variable1 = var1, variable2 = var2)
+        python_code = convert_kanglish_pseudocode_to_python(p[2], variable1 = var1, variable2 = var2)
     else:
-        python_code = convert_kannada_pseudocode_to_python("NUMBER", value = p[1])
+        python_code = convert_kanglish_pseudocode_to_python("NUMBER", value = p[1])
     p[0] = python_code
 
 def p_selection_expr(p):
@@ -288,14 +290,14 @@ def p_selection_expr(p):
                     | IFOBSTACLELEFT BEGIN exprs END
     '''
     p[3] = '\n\t' + p[3].replace('\n', '\n\t')
-    python_code = convert_kannada_pseudocode_to_python(p[1])
+    python_code = convert_kanglish_pseudocode_to_python(p[1])
     p[0] = python_code + " " + p[3]
 
 def p_assign_expr(p):
     '''
     assign_expr : IDENTIFIER ASSIGN value_expr
     '''
-    python_code = convert_kannada_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
+    python_code = convert_kanglish_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
     p[0] = python_code
 
 def p_submit_expr(p):
@@ -304,13 +306,13 @@ def p_submit_expr(p):
                 | SUBMIT value_expr
     '''
     if len(p) == 3:
-        python_code = convert_kannada_pseudocode_to_python("SUBMIT", value = p[2])
+        python_code = convert_kanglish_pseudocode_to_python("SUBMIT", value = p[2])
     elif len(p) == 2:
-        python_code = convert_kannada_pseudocode_to_python("SUBMIT", value = '')
+        python_code = convert_kanglish_pseudocode_to_python("SUBMIT", value = '')
     p[0] = python_code
     
 def p_error(p):
     """Error in parsing command"""
     print("Syntax error in input! You entered " + str(p))
 
-kannada_parser = yacc.yacc()
+kanglish_parser = yacc.yacc()

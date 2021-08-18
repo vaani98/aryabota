@@ -9,6 +9,7 @@ from grid import Grid
 from coin_sweeper import CoinSweeper
 from languages.english import english_lexer, english_parser
 from languages.kannada import kannada_lexer, kannada_parser
+from languages.kanglish import kanglish_lexer, kanglish_parser
 
 # utilities
 class LexerError(Exception): pass
@@ -65,6 +66,9 @@ def understand(commands):
             elif config["app"]["language"] == "kannada":
                 print("Kannada")
                 python_program = kannada_parser.parse(commands, lexer=kannada_lexer)
+            elif config["app"]["language"] == "kanglish":
+                print("Kanglish")
+                python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
         except Exception as exception:
             print(exception)
             return []
