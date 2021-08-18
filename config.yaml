@@ -1,5 +1,5 @@
 app:
   language: english
   level: 0
-  problem_grid: resources/problem-grids/go_home.json
+  problem_grid: resources/problem-grids/check_and_pick_coins.json
   results: temp/results.json

@@ -1,5 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
+import re as re
 
 from utils import convert_kannada_pseudocode_to_python
 from control_hub import *
@@ -76,12 +77,13 @@ def t_MOVE(t):
     return t
 
 def t_TURNLEFT(t):
-    r'edakke[ ]*thirugu'
+    u'ಎಡಕ್ಕೆ ತಿರುಗಿ'
+    # r'edakke[ ]*thirugi'
     t.value = 'TURNLEFT'
     return t
 
 def t_TURNRIGHT(t):
-    r'balakke[ ]*thirugu'
+    r'balakke[ ]*thirugi'
     t.value = 'TURNRIGHT'
     return t
 
@@ -189,6 +191,7 @@ def t_GT(t):
     return t
 
 def t_EQUALS(t):
+    u'ಗೆ ಸಮವೇ'
     r'ige[ ]*samave'
     t.value = 'EQUALS'
     return t
@@ -207,7 +210,7 @@ def t_error(t):
     print("Invalid Token: ", t.value[0])
     t.lexer.skip(1)
 
-kannada_lexer = lex.lex()
+kannada_lexer = lex.lex(reflags=re.UNICODE)
 
 def p_commands(p):
     '''
