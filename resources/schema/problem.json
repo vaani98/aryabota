@@ -30,7 +30,16 @@
             "strict"
           ]
         },
-        "value": {},
+        "value_type": {
+          "type": "string",
+          "enum": [
+            "bool",
+            "string",
+            "number"
+          ]
+        },
+        "value": {
+        },
         "state": {
           "$ref": "problem_state.json#"
         }

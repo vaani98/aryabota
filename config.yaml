@@ -1,5 +1,11 @@
+levels:
+  0:
+    - name: Shortest Path
+      file: resources/problem-grids/shortest_path.json
+    - name: Go Home
+      file: resources/problem-grids/go_home.json
 app:
   language: english
   level: 0
-  problem_grid: resources/problem-grids/check_and_pick_coins.json
+  problem_grid: resources/problem-grids/count_number_of_coins.json
   results: temp/results.json
