@@ -7,97 +7,43 @@
         "grid": {
             "dimensions": {
                 "row": 6,
-                "column": 6
+                "column": 8
             },
             "obstacles": [
                 {
                     "position": {
-                        "row": 2,
-                        "column": 1
+                        "row": 1,
+                        "column": 2
+                    }
+                },
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 3
+                    }
+                },
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 8
                     }
                 },
                 {
                     "position": {
                         "row": 3,
-                        "column": 1
+                        "column": 3
+                    }
+                },
+                {
+                    "position": {
+                        "row": 3,
+                        "column": 7
                     }
                 },
                 {
                     "position": {
                         "row": 4,
                         "column": 1
-                    }
-                },
-                {
-                    "position": {
-                        "row": 5,
-                        "column": 1
-                    }
-                },
-                {
-                    "position": {
-                        "row": 3,
-                        "column": 3
-                    }
-                },
-                {
-                    "position": {
-                        "row": 1,
-                        "column": 3
-                    }
-                },
-                {
-                    "position": {
-                        "row": 1,
-                        "column": 4
-                    }
-                },
-                {
-                    "position": {
-                        "row": 6,
-                        "column": 1
-                    }
-                },
-                {
-                    "position": {
-                        "row": 1,
-                        "column": 6
-                    }
-                },
-                {
-                    "position": {
-                        "row": 3,
-                        "column": 1
-                    }
-                },
-                {
-                    "position": {
-                        "row": 1,
-                        "column": 5
-                    }
-                },
-                {
-                    "position": {
-                        "row": 5,
-                        "column": 3
-                    }
-                },
-                {
-                    "position": {
-                        "row": 6,
-                        "column": 5
-                    }
-                },
-                {
-                    "position": {
-                        "row": 2,
-                        "column": 6
-                    }
-                },
-                {
-                    "position": {
-                        "row": 4,
-                        "column": 3
                     }
                 },
                 {
@@ -108,13 +54,19 @@
                 },
                 {
                     "position": {
-                        "row": 4,
-                        "column": 5
+                        "row": 5,
+                        "column": 7
                     }
                 },
                 {
                     "position": {
-                        "row": 2,
+                        "row": 6,
+                        "column": 1
+                    }
+                },
+                {
+                    "position": {
+                        "row": 6,
                         "column": 5
                     }
                 }
@@ -123,7 +75,7 @@
                 {
                     "position": {
                         "row": 6,
-                        "column": 6
+                        "column": 8
                     }
                 }
             ]
@@ -143,7 +95,7 @@
             "coin_sweeper": {
                 "position": {
                     "row": 6,
-                    "column": 6
+                    "column": 8
                 }
             },
             "grid": {

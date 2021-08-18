@@ -55,6 +55,8 @@ def initialise_state(problem):
     grid_state = state["grid"]
     rows = grid_state["dimensions"]["row"]
     columns = grid_state["dimensions"]["column"]
+    #columns = grid_state["dimensions"]["row"]
+    #rows = grid_state["dimensions"]["column"]
     coins_per_position = obstacles_per_position = None
     if "coins" in grid_state:
         coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
@@ -111,6 +113,7 @@ def set_language():
 
 @app.before_first_request
 def before_first_request():
+    """Reading and validating config against schema, initialising the grid"""
     return read_config_and_initialise()
 
 @app.route("/")

@@ -96,18 +96,26 @@ def obstacle_ahead(row = bot.my_row(), column = bot.my_column()):
         if row+1 <= grid.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "up":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "right":
         if column+1 <= grid.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "left":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     return 0 
 
 def obstacle_behind(row = bot.my_row(), column = bot.my_column()):
@@ -117,18 +125,26 @@ def obstacle_behind(row = bot.my_row(), column = bot.my_column()):
         if row+1 <= grid.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "down":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "left":
         if column+1 <= grid.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "right":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     return 0 
 
 def obstacle_left(row = bot.my_row(), column = bot.my_column()):
@@ -138,19 +154,27 @@ def obstacle_left(row = bot.my_row(), column = bot.my_column()):
         if row+1 <= grid.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "right":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "down":
         print(state['obstacles'])
         if column+1 <= grid.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "up":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     return 0
 
 def obstacle_right(row = bot.my_row(), column = bot.my_column()):
@@ -160,18 +184,26 @@ def obstacle_right(row = bot.my_row(), column = bot.my_column()):
         if row+1 <= grid.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "left":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "up":
         if column+1 <= grid.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     elif dir == "down":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
+        else:
+            return 1
     return 0 
 
 def print_value(expr):

@@ -29,7 +29,7 @@ export default function Maze(props) {
    */
   const addRows = () =>{
     let rows = [];
-    for(let i=0; i<props.y; i++){
+    for(let i=0; i<props.x; i++){
       rows.push(<div className="maze-row">{addColumn(i)}</div>);
     }
     return rows;
@@ -45,9 +45,9 @@ export default function Maze(props) {
    */
   const addColumn = (row) => {
     let column = [];
-    for(let i=0; i<props.x; i++ ){
+    for(let i=0; i<props.y; i++ ){
       //generate id with row number, current column number and a constant
-      column.push(renderBlock(props.x*row + (i + 1)));
+      column.push(renderBlock(props.y*row + (i + 1)));
     }
     return column;
   }
