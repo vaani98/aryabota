@@ -1,6 +1,6 @@
 """Flask App"""
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS, cross_origin
 import yaml
 from jsonschema import RefResolver, Draft7Validator
@@ -11,9 +11,6 @@ from problem import Problem
 from lexer_parser import understand
 from utils import get_for_every_position
 
-"""Opening config to read grid attributes"""
-with open('../config.yaml') as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
 app = Flask(__name__)
 CORS(app)
 
@@ -69,16 +66,55 @@ def initialise_state(problem):
         obstacles_per_position = get_for_every_position(grid_state["obstacles"], rows, columns, False)
     else:
         grid_state["obstacles"] = None
+    if not "homes" in grid_state:
+        grid_state["homes"] = None
     grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, grid_state["homes"])
     problem_instance = Problem.get_instance()
     problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
 
+def read_config_and_initialise():
+    """Opens config, reads current problem grid set and initializes the grid"""
+    with open('../config.yaml') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        problem_file_path = "../" + config["app"]["problem_grid"]
+        """Reading and validating config against schema, initialising the grid"""
+        problem = validate(problem_file_path)
+        initialise_state(problem)
+        problem = Problem.get_instance()
+        return jsonify(problem.get_initial_state())
+
+@app.route('/set_problem', methods = ['POST'])
+@cross_origin()
+def set_problem():
+    problem = request.json["level"]
+    print("Problem = ", problem)
+    problems = {'count_coins': 'count_number_of_coins.json', 'go_home': 'go_home.json', 'check_state': 'state_check.json'}
+    problem_file_path = "resources/problem-grids/" + problems[problem]
+    """Opening config to read grid attributes"""
+    with open('../config.yaml') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        config["app"]["problem_grid"] = problem_file_path
+    with open('../config.yaml', 'w') as f:
+        yaml.dump(config, f)
+    return read_config_and_initialise()
+
+@app.route('/set_language', methods = ['POST'])
+@cross_origin()
+def set_language():
+    """Opening config to read grid attributes"""
+    with open('../config.yaml') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        language = request.json["lang"].lower()
+        print("Language being set is: ", language)
+        config["app"]["language"] = language
+    with open('../config.yaml', 'w') as f:
+        yaml.dump(config, f)
+    return read_config_and_initialise()
+
 @app.before_first_request
 def before_first_request():
     """Reading and validating config against schema, initialising the grid"""
-    problem_file_path = "../resources/problem-grids/all_homes.json"
-    problem = validate(problem_file_path)
-    initialise_state(problem)   
+    return read_config_and_initialise()
 
 @app.route("/")
 @cross_origin()
@@ -90,9 +126,8 @@ def index():
 @cross_origin()
 def reset():
     """To reset the given problem"""
-    before_first_request()
-    problem = Problem.get_instance()
-    return jsonify(problem.get_initial_state())
+    return read_config_and_initialise()
+    
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))
 @cross_origin()

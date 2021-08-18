@@ -361,26 +361,6 @@ export default function Controller() {
                     name="python-div"
                     editorProps={{ $blockScrolling: true }}
                 />
-                <ThemeProvider theme={theme}>
-                    <div className="submit-area">
-                        {mazeData.levelType === 'value_match' ? <input
-                            style={{
-                                marginTop: '30px'
-                            }}
-                            id="coinsweeper-answer"
-                            placeholder="answer" /> : null}
-                        <Button
-                            onClick={submitAnswer}
-                            style={submitButtonStyle}
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            endIcon={<PlayArrowRounded />}
-                        >
-                            Submit
-                        </Button>
-                    </div>
-                </ThemeProvider>
             </div>
             <div className="controller"></div>
         </>
