@@ -170,32 +170,32 @@ def t_IDENTIFIER(t):
     return t
 
 def t_LTE(t):
-    r'is lesser than or equal to'
+    r'<='
     t.value = 'LTE'
     return t
 
 def t_GTE(t):
-    r'is greater than or equal to'
+    r'>='
     t.value = 'GTE'
     return t
 
 def t_LT(t):
-    r'is lesser than'
+    r'<'
     t.value = 'LT'
     return t
 
 def t_GT(t):
-    r'is greater than'
+    r'>'
     t.value = 'GT'
     return t
 
 def t_EQUALS(t):
-    r'is equal to'
+    r'='
     t.value = 'EQUALS'
     return t
 
 def t_NOTEQUALS(t):
-    r'is not equal to'
+    r'!='
     t.value = 'NOTEQUALS'
     return t
 
