@@ -153,11 +153,11 @@ function UiConfigs(props) {
         {
             value: "Level_1_Medium",
             label: "Level 1 - MEDIUM"
+        },
+        {
+            value: "shortest_path",
+            label: "shortest path home"
         }
-        // {
-        //     value: "coins_gte",
-        //     label: "More than 10 coins"
-        // }
     ];
 
     /**
