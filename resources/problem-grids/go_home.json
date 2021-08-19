@@ -38,6 +38,14 @@
                         "column": 1
                     }
                 }
+            ],
+            "homes": [
+                {
+                    "position": {
+                        "row": 3,
+                        "column": 3
+                    }
+                }
             ]
         },
         "coin_sweeper": {
@@ -49,9 +57,9 @@
         }
     },
     "answer": {
+        "type": "strict",
         "state": {
-            "grid": {
-            },
+            "grid": {},
             "coin_sweeper": {
                 "position": {
                     "row": 3,
