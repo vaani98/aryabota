@@ -170,7 +170,7 @@ function UiConfigs(props) {
      */
     var langChange = e => {
         setLang(e.label);
-        var selectedLang = e.label;
+        var selectedLang = e.value;
         fetch('http://localhost:5000/set_language', {
             crossDomain: true,
             method: 'POST',
@@ -204,7 +204,7 @@ function UiConfigs(props) {
         },
         {
             value: "kannada",
-            label: "Kannada",
+            label: "ಕನ್ನಡ",
         },
         {
             value: "kanglish",
