@@ -292,7 +292,7 @@ export default function Controller() {
                             <ArrowDropDown />
                         </IconButton>
                     </ThemeProvider>
-                    <p id="question">Go Home: You need to navigate the bot through a maze of obstacles and reach home.</p>
+                    <p id="question">Go home: Navigate the bot through a maze of obstacles and reach home.</p>
                     <br />
                 </div>
                 <h3>Enter your code here:</h3>

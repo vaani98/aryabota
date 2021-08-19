@@ -153,11 +153,11 @@ function UiConfigs(props) {
         },
         {
             value: "Level_1_Easy",
-            label: "Level 1 - EASY"
+            label: "Level 1 - Count coins"
         },
         {
             value: "Level_1_Medium",
-            label: "Level 1 - MEDIUM"
+            label: "Level 1 - Arithmetic"
         },
         {
             value: "shortest_path",

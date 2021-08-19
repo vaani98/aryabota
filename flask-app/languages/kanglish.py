@@ -211,8 +211,7 @@ kanglish_lexer = lex.lex()
 
 def p_commands(p):
     '''
-    exprs : expr expr
-        | expr
+    expr : expr expr
     '''
     if(len(p)==3):
         p[0] = p[1] + "\n" + p[2]
@@ -283,10 +282,10 @@ def p_value_expr(p):
 
 def p_selection_expr(p):
     '''
-    selection_expr : IFOBSTACLEAHEAD BEGIN exprs END
-                    | IFOBSTACLERIGHT BEGIN exprs END
-                    | IFOBSTACLEBEHIND BEGIN exprs END
-                    | IFOBSTACLELEFT BEGIN exprs END
+    selection_expr : IFOBSTACLEAHEAD BEGIN expr END
+                    | IFOBSTACLERIGHT BEGIN expr END
+                    | IFOBSTACLEBEHIND BEGIN expr END
+                    | IFOBSTACLELEFT BEGIN expr END
     '''
     p[3] = '\n\t' + p[3].replace('\n', '\n\t')
     python_code = convert_kanglish_pseudocode_to_python(p[1])
