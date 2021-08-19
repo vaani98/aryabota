@@ -1,0 +1,57 @@
+{
+    "problem": {
+        "problem_type": "value_match",
+        "statement": "Find if the total number of coins in this grid is greater than 10."
+    },
+    "initial_state": {
+        "grid": {
+            "dimensions": {
+                "row": 1,
+                "column": 8
+            },
+            "coins": [
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 6
+                    },
+                    "number": 1
+                },
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 4
+                    },
+                    "number": 3
+                },
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 2
+                    },
+                    "number": 5
+                }
+            ],
+            "obstacles": [],
+            "homes": [
+                {
+                    "position": {
+                        "row": 1,
+                        "column": 8
+                    }
+                }
+            ]
+        },
+        "coin_sweeper": {
+            "position": {
+                "row": 1,
+                "column": 1
+            },
+            "dir": "down"
+        }
+    },
+    "answer": {
+        "value_type": "bool",
+        "value": false
+    }
+}
