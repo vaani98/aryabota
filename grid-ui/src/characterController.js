@@ -287,12 +287,12 @@ export default function Controller() {
 
             <div className="game-info">
                 <div className="problem-div" onClick={displayQuestion}>
-                    Level 1 - Problem 2 <ThemeProvider theme={theme}>
+                    Level 0 - Problem 1 <ThemeProvider theme={theme}>
                         <IconButton>
                             <ArrowDropDown />
                         </IconButton>
                     </ThemeProvider>
-                    <p id="question">On Monday, the robot takes the shorter path home, and counts the number of coins along the way as C1. On Tuesday, the robot takes the longer path home, and counts the number of coins as C2. What is the difference between C1 and C2?</p>
+                    <p id="question">Go Home: You need to navigate the bot through a maze of obstacles and reach home.</p>
                     <br />
                 </div>
                 <h3>Enter your code here:</h3>

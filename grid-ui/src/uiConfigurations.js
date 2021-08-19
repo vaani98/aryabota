@@ -123,6 +123,7 @@ function UiConfigs(props) {
                 positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
                 currentDirection: response?.dir,
                 levelType: response?.type,
+                home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
                 penLoc: [1],
                 prevSteps: 1
             }))
@@ -192,6 +193,7 @@ function UiConfigs(props) {
                 currentDirection: response?.dir,
                 levelType: response?.type,
                 penLoc: [1],
+                home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
                 prevSteps: 1
             }))
         })
@@ -421,6 +423,7 @@ function UiConfigs(props) {
                         currentDirection: response?.dir,
                         levelType: response?.type,
                         penLoc: [1],
+                        home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
                         prevSteps: 1
                     }))
                 })

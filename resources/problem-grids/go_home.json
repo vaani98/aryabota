@@ -9,22 +9,6 @@
                 "row": 3,
                 "column": 3
             },
-            "coins": [
-                {
-                    "position": {
-                        "row": 1,
-                        "column": 2
-                    },
-                    "number": 5
-                },
-                {
-                    "position": {
-                        "row": 2,
-                        "column": 2
-                    },
-                    "number": 2
-                }
-            ],
             "obstacles": [
                 {
                     "position": {
