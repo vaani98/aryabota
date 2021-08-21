@@ -1,7 +1,7 @@
 app:
   language: english
   level: 0
-  problem_grid: resources/problem-grids/check_and_pick_coins.json
+  problem_grid: resources/problem-grids/colour_boundary.json
   results: temp/results.json
 levels:
   0:
