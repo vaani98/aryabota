@@ -1,7 +1,8 @@
 {
     "problem": {
         "problem_type": "value_match",
-        "statement": "Find the total number of coins in this grid."
+        "problem_spec": "Level 1: Problem 1",
+        "statement": "Count the total number of coins in the grid."
     },
     "initial_state": {
         "grid": {

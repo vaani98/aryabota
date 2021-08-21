@@ -1,7 +1,8 @@
 {
     "problem": {
         "problem_type": "value_match",
-        "statement": "Find if the total number of coins in this grid is greater than 10."
+        "problem_spec": "Level 2: Problem 2",
+        "statement": "At every box with coins, add the number of coins to the total only if there are more than 3. The answer is the total number of coins counted this way."
     },
     "initial_state": {
         "grid": {

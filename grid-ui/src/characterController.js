@@ -287,12 +287,12 @@ export default function Controller() {
 
             <div className="game-info">
                 <div className="problem-div" onClick={displayQuestion}>
-                    Level 0 - Problem 1 <ThemeProvider theme={theme}>
+                    {mazeData.problemSpec} <ThemeProvider theme={theme}>
                         <IconButton>
                             <ArrowDropDown />
                         </IconButton>
                     </ThemeProvider>
-                    <p id="question">Go home: Navigate the bot through a maze of obstacles and reach home.</p>
+                    <p id="question">{mazeData.statement}</p>
                     <br />
                 </div>
                 <h3>Enter your code here:</h3>
