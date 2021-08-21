@@ -65,6 +65,8 @@ function Game() {
         currentDirection: response?.dir,
         levelType: response?.type,
         home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+        statement: response?.statement,
+        problemSpec: response?.problem_spec,
         //TODO: Might want to set these two values from backend
         penLoc: [1],
         prevSteps: 1
