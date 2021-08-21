@@ -176,6 +176,10 @@ function UiConfigs(props) {
         {
             value: "colour_coin_locations",
             label: "Colour Coin Locations"
+        },
+        {
+            value: "boolean_easy",
+            label: "count alternate coins"
         }
 ];
 

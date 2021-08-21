@@ -99,8 +99,9 @@ def set_problem():
         'shortest_path': 'shortest_path.json',
         'colour_border': 'colour_boundary.json',
         'colour_alternate': 'colour_alternate.json',
-        'colour_coin_locations': 'colour_coin_locations.json'
-    }
+        'colour_coin_locations': 'colour_coin_locations.json',
+        'boolean_easy': 'boolean_easy.json'
+        }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     """Opening config to read grid attributes"""
     with open('../config.yaml') as f:
