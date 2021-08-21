@@ -94,8 +94,11 @@ def set_problem():
         'coins_gte': 'coins_gte_10.json',
         'Level_1_Easy':'Level_1_Easy.json',
         'Level_1_Medium':'Level_1_Medium.json',
-        'shortest_path': 'shortest_path.json'
-        }
+        'shortest_path': 'shortest_path.json',
+        'colour_border': 'colour_boundary.json',
+        'colour_alternate': 'colour_alternate.json',
+        'colour_coin_locations': 'colour_coin_locations.json'
+    }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     """Opening config to read grid attributes"""
     with open('../config.yaml') as f:

@@ -11,7 +11,7 @@
             }
         },
         "coin_sweeper": {
-            "pen": "down",
+            "pen": "up",
             "position": {
                 "row": 1,
                 "column": 1

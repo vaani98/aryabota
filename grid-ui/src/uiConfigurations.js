@@ -161,9 +161,21 @@ function UiConfigs(props) {
         },
         {
             value: "shortest_path",
-            label: "shortest path home"
+            label: "Shortest Path Home"
+        },
+        {
+            value: "colour_border",
+            label: "Colour Border"
+        },
+        {
+            value: "colour_alternate",
+            label: "Colour Alternate"
+        },
+        {
+            value: "colour_coin_locations",
+            label: "Colour Coin Locations"
         }
-    ];
+];
 
     /**
      * Updates lang
