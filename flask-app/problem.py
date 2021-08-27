@@ -1,7 +1,9 @@
+"""Importing Grid Module"""
 from grid import Grid
 from coin_sweeper import CoinSweeper
 
 class DictCompareWrapper:
+    """Comparing dictionaries"""
     def __init__(self, json):
         self.json = json
     def __eq__(self, other):
@@ -18,6 +20,7 @@ class DictCompareWrapper:
         return comp
 
 class ListCompareWrapper:
+    """Comparing lists"""
     def __init__(self, array, compare_type):
         self.array = array
         self.compare_type = compare_type
@@ -48,6 +51,7 @@ class ListCompareWrapper:
             return self.array == other.array
 
 def wrap(obj, compare_type):
+    """Wrappers"""
     if isinstance(obj, dict):
         for key in obj.keys():
             obj[key] = wrap(obj[key], compare_type)
@@ -58,8 +62,8 @@ def wrap(obj, compare_type):
         obj = ListCompareWrapper(obj, compare_type)
     return obj
 
-""" the Singleton Problem, its attributes and state"""
 class Problem:
+    """ the Singleton Problem, its attributes and state"""
     __instance = None
     @staticmethod
     def get_instance():
@@ -74,25 +78,30 @@ class Problem:
         # it happens twice
         if Problem.__instance is not None:
             raise Exception("This class is a singleton!")
-        Problem.__instance = self
+        # Problem.__instance = self
+        self.type = self.statement = ""
+        self.answer = []
 
     def get_type(self):
+        """return problem type"""
         return self.type
 
-    def configure(self, type, statement, answer):
+    def configure(self, problem_type, statement, answer):
         """Configure attributes"""
-        self.type = type
+        self.type = problem_type
         self.statement = statement
         self.answer = answer
 
     def compare_states(self, submitted_answer):
+        """Comparing states"""
         reqd_state = self.answer["state"]
         compare_type = self.answer["type"]
         reqd_ans = wrap(reqd_state, compare_type)
         ans = wrap(submitted_answer, compare_type)
         return reqd_ans == ans
-    
+
     def compare_values(self, submitted_answer):
+        """Comparing values"""
         if self.answer["value_type"] != "string":
             return self.answer["value"] == submitted_answer
         else:
@@ -101,15 +110,16 @@ class Problem:
             return self.answer["value"].lower() == submitted_answer.lower()
 
     def check_answer(self, submitted_answer):
+        """Checking answer"""
         succeeded = None
         message = "Not implemented yet!"
         if self.type == "value_match":
             succeeded = self.compare_values(submitted_answer)
         elif self.type == "state_match":
             succeeded = self.compare_states(submitted_answer)
-        if succeeded: 
+        if succeeded:
             message = 'Correct answer!'
-        else: 
+        else:
             message = 'Wrong answer, please try again'
         return {
             "succeeded": succeeded,
@@ -117,6 +127,7 @@ class Problem:
         }
 
     def get_initial_state(self):
+        """Return intial state of problem"""
         grid = Grid.get_instance()
         bot = CoinSweeper.get_instance()
         grid_state = grid.get_state()

@@ -1,10 +1,9 @@
 """Lexer and parser module for pseudo-code"""
 # pylint: disable=invalid-name,unused-argument,global-statement
-import ply.yacc as yacc
-import yaml
 import json
+import yaml
 
-from control_hub import *
+# from control_hub import *
 from grid import Grid
 from coin_sweeper import CoinSweeper
 from languages.english import english_lexer, english_parser
@@ -12,7 +11,9 @@ from languages.kannada import kannada_lexer, kannada_parser
 from languages.kanglish import kanglish_lexer, kanglish_parser
 
 # utilities
-class LexerError(Exception): pass
+class LexerError(Exception):
+    """Lexer error"""
+    # pass
 
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
@@ -53,7 +54,7 @@ grid = Grid.get_instance()
 def understand(commands):
     """Convert pseudo-code to Python code to execute"""
     # reinitialize response file
-    """Opening config to read grid attributes"""
+    # Opening config to read grid attributes
     with open('../config.yaml') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
         with open(config["app"]["results"], "w") as results_file:
@@ -69,7 +70,7 @@ def understand(commands):
             elif config["app"]["language"] == "kanglish":
                 print("Kanglish")
                 python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
-        except Exception as exception:
+        except Exception as exception: # pylint: disable=broad-except
             print(exception)
             return []
     print("Python program: ", python_program)
@@ -79,7 +80,7 @@ def understand(commands):
         exception_raised = None
         try:
             exec(python_program)
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             exception_raised = e
             print("Exception raised while parsing: ", e)
     with open(config["app"]["results"]) as results_file:

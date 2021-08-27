@@ -1,7 +1,7 @@
 """the Singleton CoinSweeper robot, its attributes and state"""
 from grid import Grid
 
-grid = Grid.get_instance()
+GRID = Grid.get_instance()
 
 class CoinSweeper:
     """CoinSweeper robot class
@@ -30,11 +30,11 @@ class CoinSweeper:
         self.pen = "up"
         self.append_position_to_trail()
 
-    def configure(self, row, column, dir, pen = None):
+    def configure(self, row, column, direction, pen = None):
         """Configure attributes"""
         self.row = row
         self.column = column
-        self.dir = dir
+        self.dir = direction
         self.trail.clear()
         self.append_position_to_trail()
         if pen is not None:
@@ -65,6 +65,7 @@ class CoinSweeper:
         }
 
     def append_position_to_trail(self, row = None, column = None):
+        """Append current position to trail"""
         if row is None and column is None:
             pos = {
                 "row": self.row,
@@ -78,7 +79,7 @@ class CoinSweeper:
         print(pos)
         self.trail.append(pos)
         if self.pen == "down":
-            grid.colour({
+            GRID.colour({
                 "position": pos
             })
 
@@ -95,7 +96,7 @@ class CoinSweeper:
     def move(self, steps):
         """Move the CoinSweeper robot in the direction in which it is facing
         steps: specified number of steps to move it by"""
-        state = grid.get_state()
+        state = GRID.get_state()
         obstacle_message = "There's an obstacle, cannot move ahead"
         boundary_message = "This position does not exist on the grid!"
         if self.dir == "up" or self.dir == "down":
@@ -106,7 +107,7 @@ class CoinSweeper:
             else:
                 to_move = curr_row + steps
                 offset = 1
-            if to_move >=1 and to_move <= grid.rows:
+            if to_move >=1 and to_move <= GRID.rows:
                 for i in range(curr_row, to_move, offset):
                     curr_row  = curr_row + offset
                     pos_obj = {'position': {'row': curr_row, 'column': self.column}}
@@ -126,7 +127,7 @@ class CoinSweeper:
             else:
                 to_move = curr_column - steps
                 offset = -1
-            if to_move >=1 and to_move <= grid.columns:
+            if to_move >=1 and to_move <= GRID.columns:
                 for i in range(curr_column, to_move, offset):
                     curr_column = curr_column + offset
                     pos_obj = {'position': {'row': self.row, 'column': curr_column}}
@@ -152,7 +153,7 @@ class CoinSweeper:
             self.dir = "up"
         elif self.dir == "left":
             self.dir = "down"
-            
+
     def turn_right(self):
         """Turn the CoinSweeper robot to its right"""
         if self.dir == "up":
