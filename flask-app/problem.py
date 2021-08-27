@@ -78,7 +78,7 @@ class Problem:
         # it happens twice
         if Problem.__instance is not None:
             raise Exception("This class is a singleton!")
-        # Problem.__instance = self
+        Problem.__instance = self
         self.type = self.statement = ""
         self.answer = []
 
