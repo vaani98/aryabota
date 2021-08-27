@@ -1,5 +1,5 @@
 """Lexer and parser module for pseudo-code"""
-# pylint: disable=invalid-name,unused-argument,global-statement,unused-wildcard-import,wildcard-import
+# pylint: disable=invalid-name,unused-argument,global-statement
 import json
 import yaml
 
@@ -70,7 +70,7 @@ def understand(commands):
             elif configs["app"]["language"] == "kanglish":
                 print("Kanglish")
                 python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
-        except Exception as exception: # pylint: disable=broad-except
+        except Exception as exception:
             print(exception)
             return []
     print("Python program: ", python_program)
@@ -79,8 +79,8 @@ def understand(commands):
     else:
         exception_raised = None
         try:
-            exec(python_program)
-        except Exception as e: # pylint: disable=broad-except
+            exec(python_program) # pylint: disable=exec-used
+        except Exception as e:
             exception_raised = e
             print("Exception raised while parsing: ", e)
     with open(config["app"]["results"]) as results_file:

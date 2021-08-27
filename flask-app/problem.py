@@ -57,7 +57,7 @@ def wrap(obj, compare_type):
             obj[key] = wrap(obj[key], compare_type)
         obj = DictCompareWrapper(obj)
     elif isinstance(obj, list):
-        for i in range(len(obj)):
+        for i in range(len(obj)): #pylint: disable=consider-using-enumerate
             obj[i] = wrap(obj[i], compare_type)
         obj = ListCompareWrapper(obj, compare_type)
     return obj
