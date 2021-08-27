@@ -1,9 +1,9 @@
 """Lexer and parser module for pseudo-code"""
-# pylint: disable=invalid-name,unused-argument,global-statement
+# pylint: disable=invalid-name,unused-argument,global-statement,unused-wildcard-import,wildcard-import
 import json
 import yaml
 
-# from control_hub import *
+from control_hub import *
 from grid import Grid
 from coin_sweeper import CoinSweeper
 from languages.english import english_lexer, english_parser
@@ -55,19 +55,19 @@ def understand(commands):
     """Convert pseudo-code to Python code to execute"""
     # reinitialize response file
     # Opening config to read grid attributes
-    with open('../config.yaml') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-        with open(config["app"]["results"], "w") as results_file:
+    with open('../config.yaml') as req_file:
+        configs = yaml.load(req_file, Loader=yaml.FullLoader)
+        with open(configs["app"]["results"], "w") as results_file:
             results_file.write(json.dumps([]))
         try:
-            if config["app"]["language"] == "english":
+            if configs["app"]["language"] == "english":
                 print("English")
                 # print(commands)
                 python_program = english_parser.parse(commands, lexer=english_lexer)
-            elif config["app"]["language"] == "kannada":
+            elif configs["app"]["language"] == "kannada":
                 print("Kannada")
                 python_program = kannada_parser.parse(commands, lexer=kannada_lexer)
-            elif config["app"]["language"] == "kanglish":
+            elif configs["app"]["language"] == "kanglish":
                 print("Kanglish")
                 python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
         except Exception as exception: # pylint: disable=broad-except
