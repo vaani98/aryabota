@@ -30,22 +30,24 @@ def lint_problem_grid(problem_grid):
     return problem_grid
 
 def get_for_every_position(objects, rows, columns, coins = True):
+    """Return values for each position"""
     per_position = [[0 for i in range(columns)] for j in range(rows)]
-    for object in objects:
-        print(object)
-        loc_row = object["position"]["row"]
-        loc_column = object["position"]["column"]
+    for obj in objects:
+        print(obj)
+        loc_row = obj["position"]["row"]
+        loc_column = obj["position"]["column"]
         if loc_row < 1 or loc_row > rows:
             return False
         if loc_column < 1 or loc_column > columns:
             return False
         if coins:
-            per_position[loc_row - 1][loc_column - 1] = object["number"]
+            per_position[loc_row - 1][loc_column - 1] = obj["number"]
         else:
             per_position[loc_row - 1][loc_column - 1] = -1
     return per_position
 
 def convert_english_pseudocode_to_python(command, **params):
+    """Converting pseudocode to python"""
     # TODO move this table to a JSON/YAML configuration file?
     conversion_table = {
         "MYROW": "get_my_row()",
@@ -79,6 +81,7 @@ def convert_english_pseudocode_to_python(command, **params):
     return conversion_table[command].format(**params)
 
 def convert_kannada_pseudocode_to_python(command, **params):
+    """Converting kannada pseudocode to python"""
     # TODO move this table to a JSON/YAML configuration file?
     conversion_table = {
         "MYROW": "get_my_row()",
@@ -114,6 +117,7 @@ def convert_kannada_pseudocode_to_python(command, **params):
     return conversion_table[command].format(**params)
 
 def convert_kanglish_pseudocode_to_python(command, **params):
+    """Converting Kanglish pseudocode to python"""
     # TODO move this table to a JSON/YAML configuration file?
     conversion_table = {
         "MYROW": "get_my_row()",
