@@ -56,6 +56,8 @@ def initialise_state(problem):
     rows = grid_state["dimensions"]["row"]
     columns = grid_state["dimensions"]["column"]
     coins_per_position = obstacles_per_position = None
+    statement = problem_details["statement"]
+    problem_spec = problem_details["problem_spec"]
     if "coins" in grid_state:
         coins_per_position = get_for_every_position(grid_state["coins"], rows, columns)
     else:
@@ -66,7 +68,7 @@ def initialise_state(problem):
         grid_state["obstacles"] = None
     if not "homes" in grid_state:
         grid_state["homes"] = None
-    grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, grid_state["homes"])
+    grid.configure(rows, columns, grid_state["coins"], coins_per_position, grid_state["obstacles"], obstacles_per_position, grid_state["homes"], statement, problem_spec)
     problem_instance = Problem.get_instance()
     problem_instance.configure(problem_details["problem_type"], problem_details["statement"], problem["answer"])
 
@@ -97,8 +99,9 @@ def set_problem():
         'shortest_path': 'shortest_path.json',
         'colour_border': 'colour_boundary.json',
         'colour_alternate': 'colour_alternate.json',
-        'colour_coin_locations': 'colour_coin_locations.json'
-    }
+        'colour_coin_locations': 'colour_coin_locations.json',
+        'boolean_easy': 'boolean_easy.json'
+        }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     """Opening config to read grid attributes"""
     with open('../config.yaml') as f:

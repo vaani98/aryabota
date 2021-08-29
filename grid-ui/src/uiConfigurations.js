@@ -124,6 +124,8 @@ function UiConfigs(props) {
                 currentDirection: response?.dir,
                 levelType: response?.type,
                 home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                statement: response?.statement,
+                problemSpec: response?.problem_spec,
                 penLoc: [1],
                 prevSteps: 1
             }))
@@ -174,6 +176,10 @@ function UiConfigs(props) {
         {
             value: "colour_coin_locations",
             label: "Colour Coin Locations"
+        },
+        {
+            value: "boolean_easy",
+            label: "count alternate coins"
         }
 ];
 
@@ -206,6 +212,8 @@ function UiConfigs(props) {
                 levelType: response?.type,
                 penLoc: [1],
                 home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                statement: response?.statement,
+                problemSpec: response?.problem_spec,
                 prevSteps: 1
             }))
         })
@@ -436,6 +444,8 @@ function UiConfigs(props) {
                         levelType: response?.type,
                         penLoc: [1],
                         home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+                        statement: response?.statement,
+                        problemSpec: response?.problem_spec,
                         prevSteps: 1
                     }))
                 })
