@@ -31,6 +31,7 @@ tokens = [
     'IDENTIFIER',
     'ASSIGN',
     'IF',
+    'ELSE',
     'OBSTACLEAHEAD',
     'OBSTACLEBEHIND',
     'OBSTACLELEFT',
@@ -139,6 +140,11 @@ def t_END(t):
 def t_IF(t):
     r'if'
     t.value = 'IF'
+    return t
+
+def t_ELSE(t):
+    r'else'
+    t.value = 'ELSE'
     return t
 
 def t_OBSTACLEAHEAD(t):
@@ -323,11 +329,19 @@ def p_operator(p):
 
 def p_selection_expr(p):
     '''
-    selection_expr : IF value_expr BEGIN expr END
+    selection_expr : IF value_expr BEGIN expr END ELSE BEGIN expr END
+                    | IF value_expr BEGIN expr END
     '''
-    p[4] = '\n\t' + p[4].replace('\n', '\n\t')
-    python_code = convert_english_pseudocode_to_python(p[1], expr = p[2])
-    p[0] = python_code + " " + p[4]
+    if len(p) == 6:
+        p[4] = '\n\t' + p[4].replace('\n', '\n\t')
+        python_code = convert_english_pseudocode_to_python(p[1], expr = p[2])
+        p[0] = python_code + " " + p[4]
+    else:
+        p[4] = '\n\t' + p[4].replace('\n', '\n\t')
+        p[8] = '\n\t' + p[8].replace('\n', '\n\t')
+        python_code_if = convert_english_pseudocode_to_python(p[1], expr = p[2])
+        python_code_else = convert_english_pseudocode_to_python(p[6])
+        p[0] = python_code_if + " " + p[4] + "\n" + python_code_else + " " + p[8]
 
 def p_repeat_expr(p):
     '''

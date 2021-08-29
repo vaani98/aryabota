@@ -66,6 +66,7 @@ def convert_english_pseudocode_to_python(command, **params):
         "OBSTACLELEFT": "obstacle_left()",
         "OBSTACLERIGHT": "obstacle_right()",
         "IF": "if {expr}:",
+        "ELSE": "else:",
         "REPEAT": "for repeat in range({times}):",
         "IDENTIFIER" : "{variable}",
         "NUMBER" : "{value}",
