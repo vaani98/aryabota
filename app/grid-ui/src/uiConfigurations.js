@@ -480,8 +480,6 @@ function UiConfigs(props) {
                     <ResetButton />
                     <ToggleSize />
                     <ToggleColor />
-                    <ToggleLevel />
-                    <ToggleLang />
                 </div>
             </div>
         </div>

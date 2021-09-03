@@ -285,15 +285,9 @@ export default function Controller() {
                 onPenChange={setPenState}
                 onSizeChange={setEditorFont}
             />
-            <LevelMap />
 
             <div className="game-info">
                 <div className="problem-div" onClick={displayQuestion}>
-                    {mazeData.problemSpec} <ThemeProvider theme={theme}>
-                        <IconButton>
-                            <ArrowDropDown />
-                        </IconButton>
-                    </ThemeProvider>
                     <p id="question">{mazeData.statement}</p>
                     <br />
                 </div>
