@@ -14,6 +14,7 @@ import PlayArrowRounded from '@material-ui/icons/PlayArrowRounded';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import IconButton from '@material-ui/core/IconButton';
 import Maze from './mazeGenerator';
+import LevelMap from './levelMap';
 
 /**
  * Component for controlling character/player
@@ -284,6 +285,7 @@ export default function Controller() {
                 onPenChange={setPenState}
                 onSizeChange={setEditorFont}
             />
+            <LevelMap />
 
             <div className="game-info">
                 <div className="problem-div" onClick={displayQuestion}>
@@ -335,7 +337,7 @@ export default function Controller() {
                 </div>
             </div>
             <div className="separator"></div>
-            <div>
+            <div width="200px">
                 <Maze
                     x={mazeData.rows}
                     y={mazeData.columns}
