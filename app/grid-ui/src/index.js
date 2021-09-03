@@ -10,6 +10,7 @@ import Controller from './characterController';
 import MessageModal from './modals/MessageModal';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from './globalStates';
+import LevelMap from './levelMap';
 
 /**
  * generate a ~center location for character and 
@@ -87,9 +88,6 @@ function Game() {
     //set maze and controller component with required props
     maze = (
       <>
-        {/* <UiConfigs
-          penLoc = {mazeData.penLoc}        
-        /> */}
         <div className="game">
           <MazeState.Provider value={[mazeData, setMazeData]}>
             {messageModal}

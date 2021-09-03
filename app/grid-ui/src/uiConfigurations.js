@@ -283,10 +283,10 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    color="secondary"
+                    
                     startIcon={<PaletteTwoTone />}
                 >
-                    Edit Color
+                    Color
                 </Button>
                 {tc ?
                     <GithubPicker
@@ -315,10 +315,10 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    color="secondary"
+                    
                     startIcon={<FormatSize />}
                 >
-                    Edit Font Size
+                    Font Size
                 </Button>
                 {ts ?
                     <Select
@@ -355,7 +355,7 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    color="secondary"
+                    
                 // startIcon={<FormatSize />}
                 >
                     Level
@@ -394,7 +394,7 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    color="secondary"
+                    // 
                     startIcon={<Translate />}
                 >
                     Language
@@ -452,7 +452,7 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    color="secondary"
+                    
                     startIcon={<Refresh />}
                 >
                     Reset
