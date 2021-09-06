@@ -15,8 +15,9 @@ tokens = [
     'NUMBER',
     'PLUS',
     'MINUS',
-    'TIMES',
+    'MULTIPLY',
     'DIVIDE',
+    'MODULO',
     'MYROW',
     'MYCOLUMN',
     'MOVE',
@@ -25,12 +26,16 @@ tokens = [
     'PENUP',
     'PENDOWN',
     'NUMBER_OF_COINS',
+    'REPEAT',
+    'TIMES',
     'IDENTIFIER',
     'ASSIGN',
-    'IFOBSTACLEAHEAD',
-    'IFOBSTACLEBEHIND',
-    'IFOBSTACLELEFT',
-    'IFOBSTACLERIGHT',
+    'IF',
+    'ELSE',
+    'OBSTACLEAHEAD',
+    'OBSTACLEBEHIND',
+    'OBSTACLELEFT',
+    'OBSTACLERIGHT',
     'PRINT',
     'SUBMIT',
     'BEGIN',
@@ -55,14 +60,19 @@ def t_MINUS(t):
     t.value = 'MINUS'
     return t
 
-def t_TIMES(t):
+def t_MULTIPLY(t):
     r'\*'
-    t.value = 'TIMES'
+    t.value = 'MULTIPLY'
     return t
 
 def t_DIVIDE(t):
     r'\/'
     t.value = 'DIVIDE'
+    return t
+
+def t_MODULO(t):
+    r'%'
+    t.value = 'MODULO'
     return t
 
 def t_COMMA(t):
@@ -74,7 +84,6 @@ def t_MOVE(t):
     r'move'
     t.value = 'MOVE'
     return t
-
 
 def t_TURNLEFT(t):
     r'turn[ ]*left'
@@ -122,24 +131,34 @@ def t_END(t):
     t.value = 'END'
     return t
 
-def t_IFOBSTACLEAHEAD(t):
-    r'if[ ]*obstacle[ ]*ahead'
-    t.value = 'IFOBSTACLEAHEAD'
+def t_IF(t):
+    r'if'
+    t.value = 'IF'
     return t
 
-def t_IFOBSTACLEBEHIND(t):
-    r'if[ ]*obstacle[ ]*behind'
-    t.value = 'IFOBSTACLEBEHIND'
+def t_ELSE(t):
+    r'else'
+    t.value = 'ELSE'
     return t
 
-def t_IFOBSTACLELEFT(t):
-    r'if[ ]*obstacle[ ]*left'
-    t.value = 'IFOBSTACLELEFT'
+def t_OBSTACLEAHEAD(t):
+    r'obstacle[ ]*ahead'
+    t.value = 'OBSTACLEAHEAD'
     return t
 
-def t_IFOBSTACLERIGHT(t):
-    r'if[ ]*obstacle[ ]*right'
-    t.value = 'IFOBSTACLERIGHT'
+def t_OBSTACLEBEHIND(t):
+    r'obstacle[ ]*behind'
+    t.value = 'OBSTACLEBEHIND'
+    return t
+
+def t_OBSTACLELEFT(t):
+    r'obstacle[ ]*left'
+    t.value = 'OBSTACLELEFT'
+    return t
+
+def t_OBSTACLERIGHT(t):
+    r'obstacle[ ]*right'
+    t.value = 'OBSTACLERIGHT'
     return t
 
 def t_NUMBER_OF_COINS(t):
@@ -155,6 +174,21 @@ def t_PRINT(t):
 def t_SUBMIT(t):
     r'submit'
     t.value = 'SUBMIT'
+    return t
+
+def t_REPEAT(t):
+    r'repeat'
+    t.value = 'REPEAT'
+    return t
+
+def t_TIMES(t):
+    r'times'
+    t.value = 'TIMES'
+    return t
+
+def t_IDENTIFIER(t):
+    r'[a-zA-z_][a-zA-Z0-9]*'
+    t.type = 'IDENTIFIER'
     return t
 
 def t_LTE(t):
@@ -223,6 +257,7 @@ def p_command(p):
         | MOVE NUMBER
         | assign_expr
         | selection_expr
+        | repeat_expr
         | print_expr
         | submit_expr
     '''
@@ -245,51 +280,86 @@ def p_print_expr(p):
 
 def p_value_expr(p):
     '''
-    value_expr : MYROW
+    value_expr : value_expr operator value_expr
+                | operand
+    '''
+    print(list(p))
+    if len(p) == 4:
+        var1 = p[1]
+        var2 = p[3]
+        python_code = convert_english_pseudocode_to_python(p[2], variable1 = var1, variable2 = var2)
+    else:
+        python_code = p[1]
+    p[0] = python_code
+
+def p_operand(p):
+    '''
+    operand :   MYROW
                | MYCOLUMN
                | IDENTIFIER
                | NUMBER
                | NUMBER_OF_COINS
-               | value_expr PLUS value_expr
-               | value_expr MINUS value_expr
-               | value_expr TIMES value_expr
-               | value_expr DIVIDE value_expr
-               | value_expr LTE value_expr
-               | value_expr GTE value_expr
-               | value_expr LT value_expr
-               | value_expr GT value_expr
-               | value_expr EQUALS value_expr
-               | value_expr NOTEQUALS value_expr
+               | OBSTACLEAHEAD
+               | OBSTACLERIGHT
+               | OBSTACLEBEHIND
+               | OBSTACLELEFT
     '''
-    if (p[1] == 'MYROW' or p[1] == 'MYCOLUMN'):
+    if (p[1] in ['MYROW', 'MYCOLUMN', 'OBSTACLEAHEAD', 'OBSTACLERIGHT', 'OBSTACLEBEHIND', 'OBSTACLELEFT']):
         python_code = convert_english_pseudocode_to_python(p[1])
     elif p[1] == 'IDENTIFIER':
         python_code = convert_english_pseudocode_to_python("IDENTIFIER", variable = p[1])
     elif p[1] == 'NUMBER_OF_COINS':
         python_code = convert_english_pseudocode_to_python("GET_COINS")
-    elif len(p) == 4:
-        var1 = p[1]
-        var2 = p[3]
-        python_code = convert_english_pseudocode_to_python(p[2], variable1 = var1, variable2 = var2)
-    else:
+    else: # case NUMBER
         python_code = convert_english_pseudocode_to_python("NUMBER", value = p[1])
     p[0] = python_code
 
+
+def p_operator(p):
+    '''
+    operator :   PLUS
+               | MINUS
+               | MULTIPLY
+               | DIVIDE
+               | MODULO
+               | LT
+               | GT
+               | LTE
+               | GTE
+               | EQUALS
+               | NOTEQUALS
+    '''
+    p[0] = p[1]
+
 def p_selection_expr(p):
     '''
-    selection_expr : IFOBSTACLEAHEAD BEGIN expr END
-                    | IFOBSTACLERIGHT BEGIN expr END
-                    | IFOBSTACLEBEHIND BEGIN expr END
-                    | IFOBSTACLELEFT BEGIN expr END
+    selection_expr : IF value_expr BEGIN expr END ELSE BEGIN expr END
+                    | IF value_expr BEGIN expr END
     '''
-    p[3] = '\n\t' + p[3].replace('\n', '\n\t')
-    python_code = convert_english_pseudocode_to_python(p[1])
-    p[0] = python_code + " " + p[3]
+    if len(p) == 6:
+        p[4] = '\n\t' + p[4].replace('\n', '\n\t')
+        python_code = convert_english_pseudocode_to_python(p[1], expr = p[2])
+        p[0] = python_code + " " + p[4]
+    else:
+        p[4] = '\n\t' + p[4].replace('\n', '\n\t')
+        p[8] = '\n\t' + p[8].replace('\n', '\n\t')
+        python_code_if = convert_english_pseudocode_to_python(p[1], expr = p[2])
+        python_code_else = convert_english_pseudocode_to_python(p[6])
+        p[0] = python_code_if + " " + p[4] + "\n" + python_code_else + " " + p[8]
+
+def p_repeat_expr(p):
+    '''
+    repeat_expr : REPEAT NUMBER TIMES BEGIN expr END
+    '''
+    p[5] = '\n\t' + p[5].replace('\n', '\n\t')
+    python_code = convert_english_pseudocode_to_python(p[1], times = p[2])
+    p[0] = python_code + " " + p[5]
 
 def p_assign_expr(p):
     '''
     assign_expr : IDENTIFIER ASSIGN value_expr
     '''
+    print(list(p))
     python_code = convert_english_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
     p[0] = python_code
 

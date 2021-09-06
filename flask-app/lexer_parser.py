@@ -61,7 +61,7 @@ def understand(commands):
         try:
             if config["app"]["language"] == "english":
                 print("English")
-                print(commands)
+                # print(commands)
                 python_program = english_parser.parse(commands, lexer=english_lexer)
             elif config["app"]["language"] == "kannada":
                 print("Kannada")
