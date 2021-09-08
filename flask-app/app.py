@@ -1,6 +1,6 @@
 """Flask App"""
 import json
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import yaml
 from jsonschema import RefResolver, Draft7Validator
@@ -15,9 +15,9 @@ app = Flask(__name__)
 CORS(app)
 
 
-"""Utils"""
-"""Build the JSON Schema and Store for Resolver and Draft7Validator"""
+# Utils
 def build_schema_and_store():
+    """Build the JSON Schema and Store for Resolver and Draft7Validator"""
     schema_file = open("../resources/schema/problem.json")
     schema = json.loads(schema_file.read())
     state_schema_file = open("../resources/schema/problem_state.json")
@@ -31,8 +31,8 @@ def build_schema_and_store():
     }
     return schema, schema_store
 
-"""Validate the input problem file"""
 def validate(problem_file_path):
+    """Validate the input problem file"""
     problem_file = open(problem_file_path)
     problem = json.loads(problem_file.read())
     schema, schema_store = build_schema_and_store()
@@ -41,8 +41,8 @@ def validate(problem_file_path):
     validator.validate(problem)
     return problem
 
-"""Initialise the state of the grid"""
 def initialise_state(problem):
+    """Initialise the state of the grid"""
     problem_details = problem["problem"]
     state = problem["initial_state"]
     bot = CoinSweeper.get_instance()
@@ -74,10 +74,10 @@ def initialise_state(problem):
 
 def read_config_and_initialise():
     """Opens config, reads current problem grid set and initializes the grid"""
-    with open('../config.yaml') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    with open('../config.yaml') as req_file:
+        config = yaml.load(req_file, Loader=yaml.FullLoader)
         problem_file_path = "../" + config["app"]["problem_grid"]
-        """Reading and validating config against schema, initialising the grid"""
+        # Reading and validating config against schema, initialising the grid
         problem = validate(problem_file_path)
         initialise_state(problem)
         problem = Problem.get_instance()
@@ -86,6 +86,7 @@ def read_config_and_initialise():
 @app.route('/set_problem', methods = ['POST'])
 @cross_origin()
 def set_problem():
+    """Set Problem API"""
     problem = request.json["level"]
     print("Problem = ", problem)
     problems = {
@@ -102,25 +103,25 @@ def set_problem():
         'coins_lte': 'L2_P3.json',
         }
     problem_file_path = "resources/problem-grids/" + problems[problem]
-    """Opening config to read grid attributes"""
-    with open('../config.yaml') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    # Opening config to read grid attributes
+    with open('../config.yaml') as req_file:
+        config = yaml.load(req_file, Loader=yaml.FullLoader)
         config["app"]["problem_grid"] = problem_file_path
-    with open('../config.yaml', 'w') as f:
-        yaml.dump(config, f)
+    with open('../config.yaml', 'w') as req_file:
+        yaml.dump(config, req_file)
     return read_config_and_initialise()
 
 @app.route('/set_language', methods = ['POST'])
 @cross_origin()
 def set_language():
     """Opening config to read grid attributes"""
-    with open('../config.yaml') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    with open('../config.yaml') as req_file:
+        config = yaml.load(req_file, Loader=yaml.FullLoader)
         language = request.json["lang"].lower()
         print("Language being set is: ", language)
         config["app"]["language"] = language
-    with open('../config.yaml', 'w') as f:
-        yaml.dump(config, f)
+    with open('../config.yaml', 'w') as req_file:
+        yaml.dump(config, req_file)
     return read_config_and_initialise()
 
 @app.before_first_request
@@ -139,7 +140,6 @@ def index():
 def reset():
     """To reset the given problem"""
     return read_config_and_initialise()
-    
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))
 @cross_origin()
@@ -161,6 +161,7 @@ def coin_sweeper():
 @app.route('/submitAnswer', methods=(['POST']))
 @cross_origin()
 def submit_answer():
+    """Submit Answer API"""
     print("@@", request, request.json)
     submitted_answer = request.json
     problem = Problem.get_instance()

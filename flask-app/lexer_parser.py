@@ -1,8 +1,7 @@
 """Lexer and parser module for pseudo-code"""
 # pylint: disable=invalid-name,unused-argument,global-statement
-import ply.yacc as yacc
-import yaml
 import json
+import yaml
 
 from control_hub import *
 from grid import Grid
@@ -12,7 +11,9 @@ from languages.kannada import kannada_lexer, kannada_parser
 from languages.kanglish import kanglish_lexer, kanglish_parser
 
 # utilities
-class LexerError(Exception): pass
+class LexerError(Exception):
+    """Lexer error"""
+    # pass
 
 def make_command(command, value = None):
     """Wrap command in JSON response format"""
@@ -53,20 +54,20 @@ grid = Grid.get_instance()
 def understand(commands):
     """Convert pseudo-code to Python code to execute"""
     # reinitialize response file
-    """Opening config to read grid attributes"""
-    with open('../config.yaml') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-        with open(config["app"]["results"], "w") as results_file:
+    # Opening config to read grid attributes
+    with open('../config.yaml') as req_file:
+        configs = yaml.load(req_file, Loader=yaml.FullLoader)
+        with open(configs["app"]["results"], "w") as results_file:
             results_file.write(json.dumps([]))
         try:
-            if config["app"]["language"] == "english":
+            if configs["app"]["language"] == "english":
                 print("English")
                 # print(commands)
                 python_program = english_parser.parse(commands, lexer=english_lexer)
-            elif config["app"]["language"] == "kannada":
+            elif configs["app"]["language"] == "kannada":
                 print("Kannada")
                 python_program = kannada_parser.parse(commands, lexer=kannada_lexer)
-            elif config["app"]["language"] == "kanglish":
+            elif configs["app"]["language"] == "kanglish":
                 print("Kanglish")
                 python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
         except Exception as exception:
@@ -78,7 +79,7 @@ def understand(commands):
     else:
         exception_raised = None
         try:
-            exec(python_program)
+            exec(python_program) # pylint: disable=exec-used
         except Exception as e:
             exception_raised = e
             print("Exception raised while parsing: ", e)

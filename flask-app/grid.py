@@ -19,6 +19,10 @@ class Grid:
         if Grid.__instance is not None:
             raise Exception("This class is a singleton!")
         Grid.__instance = self
+        self.rows = 1
+        self.columns = 1
+        self.homes = self.coins = self.coloured = self.coins_per_position = self.obstacles = self.obstacles_per_position = []
+        self.statement = self.problem_spec = ""
 
     def configure(self, rows, columns, coins = None, coins_per_position = None, obstacles = None, obstacles_per_position = None, homes = None, statement = None, problem_spec = None):
         """Configure attributes"""
@@ -38,10 +42,11 @@ class Grid:
             self.obstacles = obstacles
         if obstacles_per_position is not None:
             self.obstacles_per_position = obstacles_per_position
-        if homes is not None: 
+        if homes is not None:
             self.homes = homes
 
     def colour(self, pos):
+        """Colouring the trail as required"""
         if pos not in self.coloured:
             self.coloured.append(pos)
 
@@ -55,6 +60,7 @@ class Grid:
         raise Exception("No coins are present in this grid!")
 
     def get_state(self):
+        """get current state"""
         if self.__instance:
             return {
                 "rows": self.rows,
@@ -70,6 +76,7 @@ class Grid:
         return {}
 
     def get_state_for_answer(self):
+        """Returning state for answer check"""
         if self.__instance:
             return {
                 "dimensions": {

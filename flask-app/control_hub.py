@@ -1,169 +1,179 @@
 """Control Hub that makes changes to the CoinSweeper environment - grid and robot"""
-"""Writes outcomes to a result file"""
-import yaml
+# Writes outcomes to a result file
 import json
+import yaml
 
 from grid import Grid
 from coin_sweeper import CoinSweeper
 from problem import Problem
 
-"""Opening config to read grid attributes"""
+# Opening config to read grid attributes
 with open('../config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
-bot = CoinSweeper.get_instance()
-grid = Grid.get_instance()
+BOT = CoinSweeper.get_instance()
+GRID = Grid.get_instance()
 results_file_path = config["app"]["results"]
 
 def make_response(response_type, response):
+    """create a response object"""
     if response_type == "value":
         return {
             "value": response
         }
-    elif response_type == "state":
+    if response_type == "state":
         return {
             "stateChanges": [response]
         }
-    elif response_type == "error":
+    if response_type == "error":
         return {
             "error_message": response
         }
-    elif response_type == "submit":
+    if response_type == "submit":
         return response
 
 def get_my_row():
-    return bot.my_row()
+    """return current row"""
+    return BOT.my_row()
 
 def get_my_column():
-    return bot.my_column()
+    """return current column"""
+    return BOT.my_column()
 
 def move(steps):
-    (success, message) = bot.move(steps)
+    """move ahead on grid"""
+    (success, message) = BOT.move(steps)
     with open(results_file_path) as results_file:
         results = json.loads(results_file.read())
         if success:
-            results.append(make_response("state", bot.get_state()))
+            results.append(make_response("state", BOT.get_state()))
         else:
             results.append(make_response("error", message))
-            # TODO: specific error raising
+            # TODO: add specific error raising
             raise Exception("Hitting obstacles or falling off the grid ;_;")
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
 
 def turn(direction = "left"):
+    """turn left on grid"""
     if direction == "left":
-        bot.turn_left()
+        BOT.turn_left()
     elif direction == "right":
-        bot.turn_right()
+        BOT.turn_right()
     with open(results_file_path) as results_file:
         results = json.loads(results_file.read())
-        results.append(make_response("state", bot.get_state()))
+        results.append(make_response("state", BOT.get_state()))
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))
 
 def set_pen(status = "up"):
-    bot.set_pen(status)
+    """change pen status"""
+    BOT.set_pen(status)
 
 def get_number_of_coins(row = None, column = None):
+    """return number of coins at current position"""
     if row is None:
-        row = bot.my_row()
+        row = BOT.my_row()
     if column is None:
-        column = bot.my_column()
-    return grid.get_number_of_coins(row,column)
+        column = BOT.my_column()
+    return GRID.get_number_of_coins(row,column)
 
 def obstacle_ahead(row = None, column = None):
+    """return if obstacle ahead"""
     if row is None:
-        row = bot.my_row()
+        row = BOT.my_row()
     if column is None:
-        column = bot.my_column()
-    state = grid.get_state()
-    dir = bot.get_dir()
-    if dir == "down":
-        if row+1 <= grid.rows:
+        column = BOT.my_column()
+    state = GRID.get_state()
+    direction = BOT.get_dir()
+    if direction == "down":
+        if row+1 <= GRID.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "up":
+    elif direction == "up":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "right":
-        if column+1 <= grid.columns:
+    elif direction == "right":
+        if column+1 <= GRID.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "left":
+    elif direction == "left":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    return 0 
+    return 0
 
 def obstacle_behind(row = None, column = None):
+    """return if obstacle behind"""
     if row is None:
-        row = bot.my_row()
+        row = BOT.my_row()
     if column is None:
-        column = bot.my_column()
-    state = grid.get_state()
-    dir = bot.get_dir()
-    if dir == "up":
-        if row+1 <= grid.rows:
+        column = BOT.my_column()
+    state = GRID.get_state()
+    direction = BOT.get_dir()
+    if direction == "up":
+        if row+1 <= GRID.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "down":
+    elif direction == "down":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "left":
-        if column+1 <= grid.columns:
+    elif direction == "left":
+        if column+1 <= GRID.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "right":
+    elif direction == "right":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    return 0 
+    return 0
 
 def obstacle_left(row = None, column = None):
+    """return if obstacle to the left"""
     if row is None:
-        row = bot.my_row()
+        row = BOT.my_row()
     if column is None:
-        column = bot.my_column()
-    state = grid.get_state()
-    dir = bot.get_dir()
-    if dir == "left":
-        if row+1 <= grid.rows:
+        column = BOT.my_column()
+    state = GRID.get_state()
+    direction = BOT.get_dir()
+    if direction == "left":
+        if row+1 <= GRID.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "right":
+    elif direction == "right":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "down":
+    elif direction == "down":
         print(state['obstacles'])
-        if column+1 <= grid.columns:
+        if column+1 <= GRID.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "up":
+    elif direction == "up":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
@@ -172,39 +182,41 @@ def obstacle_left(row = None, column = None):
     return 0
 
 def obstacle_right(row = None, column = None):
+    """return if obstacle to the right"""
     if row is None:
-        row = bot.my_row()
+        row = BOT.my_row()
     if column is None:
-        column = bot.my_column()
-    state = grid.get_state()
-    dir = bot.get_dir()
-    if dir == "right":
-        if row+1 <= grid.rows:
+        column = BOT.my_column()
+    state = GRID.get_state()
+    direction = BOT.get_dir()
+    if direction == "right":
+        if row+1 <= GRID.rows:
             if({'position': {'row': row+1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "left":
+    elif direction == "left":
         if row-1 > 0:
             if({'position': {'row': row-1, 'column': column}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "up":
-        if column+1 <= grid.columns:
+    elif direction == "up":
+        if column+1 <= GRID.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    elif dir == "down":
+    elif direction == "down":
         if column-1 > 0:
             if({'position': {'row': row, 'column': column-1}} in state['obstacles']):
                 return 1
         else:
             return 1
-    return 0 
+    return 0
 
 def print_value(expr):
+    """print value"""
     with open(results_file_path) as results_file:
         results = json.loads(results_file.read())
     response = expr
@@ -213,6 +225,7 @@ def print_value(expr):
         results_file.write(json.dumps(results))
 
 def submit(value = None):
+    """submit answer"""
     with open(results_file_path) as results_file:
         results = json.loads(results_file.read())
     problem = Problem.get_instance()
@@ -220,8 +233,8 @@ def submit(value = None):
         response = problem.check_answer(value)
     else:
         current_state = {
-            "coin_sweeper": bot.get_state_for_answer(),
-            "grid": grid.get_state_for_answer()
+            "coin_sweeper": BOT.get_state_for_answer(),
+            "grid": GRID.get_state_for_answer()
         }
         response = problem.check_answer(current_state)
     results.append(make_response("submit", response))
