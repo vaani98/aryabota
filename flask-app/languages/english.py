@@ -51,6 +51,10 @@ tokens = [
 
 t_ignore = ' \t'
 
+def t_COMMENT(t):
+    r'\#(.)*\n'
+    pass
+
 def t_PYTHON(t):
     r'python[ ]*begin(.|\n)*python[ ]*end'
     t.type = 'PYTHON'
