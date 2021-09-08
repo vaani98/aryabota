@@ -1,7 +1,7 @@
 app:
   language: english
   level: 0
-  problem_grid: resources/problem-grids/colour_boundary.json
+  problem_grid: resources/problem-grids/L2_P2.json
   results: temp/results.json
 levels:
   0:

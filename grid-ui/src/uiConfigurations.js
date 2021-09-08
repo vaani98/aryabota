@@ -138,12 +138,16 @@ function UiConfigs(props) {
             label: "Go home",
         },
         {
-            value: "count_coins",
-            label: "Count total coins",
-        },
-        {
             value: "check_coins",
             label: "Check & pick coins",
+        },
+        {
+            value: "check_and_colour",
+            label: "Check & colour",
+        },
+        {
+            value: "all_homes",
+            label: "Visit all homes",
         },
         {
             value: "coins_lte",
@@ -155,11 +159,11 @@ function UiConfigs(props) {
         },
         {
             value: "Level_1_Easy",
-            label: "Level 1 - Count coins"
+            label: "Count coins"
         },
         {
             value: "Level_1_Medium",
-            label: "Level 1 - Arithmetic"
+            label: "Arithmetic"
         },
         {
             value: "shortest_path",
@@ -171,16 +175,8 @@ function UiConfigs(props) {
         },
         {
             value: "colour_alternate",
-            label: "Colour Alternate"
+            label: "Colour Alternate Boxes"
         },
-        {
-            value: "colour_coin_locations",
-            label: "Colour Coin Locations"
-        },
-        {
-            value: "boolean_easy",
-            label: "count alternate coins"
-        }
 ];
 
     /**

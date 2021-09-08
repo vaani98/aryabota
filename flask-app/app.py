@@ -89,18 +89,17 @@ def set_problem():
     problem = request.json["level"]
     print("Problem = ", problem)
     problems = {
-        'count_coins': 'count_number_of_coins.json',
-        'go_home': 'go_home.json',
-        'check_coins': 'check_and_pick_coins.json',
-        'coins_lte': 'coins_lte_30.json',
-        'coins_gte': 'coins_gte_10.json',
-        'Level_1_Easy':'Level_1_Easy.json',
-        'Level_1_Medium':'Level_1_Medium.json',
-        'shortest_path': 'shortest_path.json',
-        'colour_border': 'colour_boundary.json',
-        'colour_alternate': 'colour_alternate.json',
-        'colour_coin_locations': 'colour_coin_locations.json',
-        'boolean_easy': 'boolean_easy.json'
+        'go_home': 'L0_P1.json',
+        'all_homes': 'L0_P2.json',
+        'shortest_path': 'L0_P3.json',
+        'Level_1_Easy':'L1_P1.json',
+        'Level_1_Medium':'L1_P2.json',
+        'colour_border': 'L1.5_P1.json',
+        'colour_alternate': 'L1.5_P2.json',
+        'check_and_color': 'L1.5_P3.json',
+        'check_coins': 'L2_P1.json',
+        'coins_gte': 'L2_P2.json',
+        'coins_lte': 'L2_P3.json',
         }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     """Opening config to read grid attributes"""
