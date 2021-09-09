@@ -363,8 +363,8 @@ export default function Controller() {
                     />
                 </div>
             </div>
-            <div className="separator"></div>
-            <div className="game-info">
+            <div className="separator" id="separator-2"></div>
+            <div className="game-info" id="python-pane">
                 <h3>Translated Code: Python</h3>
                 <AceEditor
                     style={{

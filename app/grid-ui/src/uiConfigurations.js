@@ -14,6 +14,8 @@ import Refresh from '@material-ui/icons/Refresh';
 import { MazeState } from './globalStates';
 //UTILS
 import { convertToContinuousNumbering } from './utils';
+import pes_logo_white_text from './assets/pes_logo_white_text.png';
+import CodeIcon from '@material-ui/icons/Code';
 
 /**
  * UI Configuration Toolbar Component
@@ -410,6 +412,40 @@ function UiConfigs(props) {
             </div>
         )
     }
+    /**
+     * This component displays a button on the toolbar
+     * @returns TogglePane component
+     * @example
+     * <TogglePane />
+     */
+     const TogglePane = () => {
+        var [tp, setTp] = useState(true);
+        const onClick = () => {
+            
+            if (tp === false) {
+                setTp(true);
+                document.getElementById("python-pane").style.display = "block";
+                document.getElementById("separator-2").style.display = "block";
+            }
+            else {
+                setTp(false);
+                document.getElementById("python-pane").style.display = "none";
+                document.getElementById("separator-2").style.display = "none";
+            }
+        }
+
+        return (
+            <div className="pythonViewer">
+                <Button
+                    onClick={onClick}
+                    variant="contained"
+                    startIcon={<CodeIcon/>}
+                >
+                    Show Python
+                </Button>
+            </div>
+        )
+    }
 
     /**
      * This component displays a reset button on the toolbar
@@ -477,9 +513,11 @@ function UiConfigs(props) {
             </style>
             <div className="toolbar" id="toolbar-div">
                 <div className="configs">
+                    <img className="pes-logo" src={pes_logo_white_text} height="45px"/>
                     <ResetButton />
                     <ToggleSize />
                     <ToggleColor />
+                    <TogglePane />
                 </div>
             </div>
         </div>

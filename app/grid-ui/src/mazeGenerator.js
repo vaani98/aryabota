@@ -121,7 +121,7 @@ function Block(props) {
 
   //background image style
   var blockStyle = {
-    backgroundSize: "27px",
+    backgroundSize: "75%",
     backgroundRepeat  : 'no-repeat',
     backgroundPosition: 'center',
     backgroundImage: props.image,
