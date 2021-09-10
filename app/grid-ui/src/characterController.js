@@ -102,7 +102,6 @@ export default function Controller() {
         }))
         let steps = [];
         response.response?.forEach(step => {
-            console.log(step)
             if (step.error_message) {
                 steps.push({
                     error_message: step.error_message
@@ -174,7 +173,6 @@ export default function Controller() {
     }
 
     const submitAnswer = () => {
-        console.log(mazeData)
         if (mazeData.levelType === 'value_match') {
             const text_answer = document.getElementById("coinsweeper-answer").value;
             fetch('http://localhost:5000/submitAnswer', {
@@ -223,7 +221,6 @@ export default function Controller() {
         })
             .then(response => response.json())
             .then(response => {
-                console.log(response)
                 parseResponse(response, currState)
             });
     }
