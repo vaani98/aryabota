@@ -5,3 +5,6 @@ import React from 'react';
  * @exports
  */
 export const MazeState = React.createContext([{}, () => {}]);
+export const Constants = {
+    informationMessage: 'Welcome! We hope you enjoyed learning with AryaBota. To join our discord server, go to https://discord.gg/nEHKaXBn!'
+};

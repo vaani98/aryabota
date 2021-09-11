@@ -1,4 +1,6 @@
 import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { GoogleLogout } from 'react-google-login';
 import './styles/uiConfigurations.css';
 //BUTTON and DROPDOWN COMPONENTS
 import Select from 'react-select';
@@ -8,14 +10,16 @@ import { GithubPicker } from 'react-color';
 //MATERIAL UI ICONS FOR CONFIG BUTTONS
 import PaletteTwoTone from '@material-ui/icons/PaletteTwoTone';
 import FormatSize from '@material-ui/icons/FormatSize';
-import Translate from '@material-ui/icons/Translate';
 import Refresh from '@material-ui/icons/Refresh';
+import CodeIcon from '@material-ui/icons/Code';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+// import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 //MAZE STATE
-import { MazeState } from './globalStates';
+import { MazeState, Constants } from './globalStates';
 //UTILS
 import { convertToContinuousNumbering } from './utils';
 import pes_logo_white_text from './assets/pes_logo_white_text.png';
-import CodeIcon from '@material-ui/icons/Code';
+
 
 /**
  * UI Configuration Toolbar Component
@@ -46,18 +50,6 @@ function UiConfigs(props) {
      * @var
      */
     let [sizes, setSizes] = useState("Medium");
-
-    /**
-     * sizes sets the size range of the text
-     * @var
-     */
-    let [level, setLevel] = useState("Go Home");
-
-    /**
-     * lang sets the language of the application
-     * @var
-     */
-    let [lang, setLang] = useState("English");
 
     /**
      * Updates color
@@ -98,139 +90,6 @@ function UiConfigs(props) {
         }
     ];
 
-    /**
-     * Updates sizes
-     * @param {*} e 
-     */
-    var levelChange = e => {
-        setLevel(e.label);
-        var selectedLevel = e.value;
-        fetch('http://localhost:5000/set_problem', {
-            crossDomain: true,
-            method: 'POST',
-            body: JSON.stringify({ level: selectedLevel }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(response => {
-            setMazeData(prev => ({
-                ...prev,
-                rows: response.rows,
-                columns: response.columns,
-                coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
-                coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
-                currentDirection: response?.dir,
-                levelType: response?.type,
-                home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                statement: response?.statement,
-                problemSpec: response?.problem_spec,
-                penLoc: [1],
-                prevSteps: 1
-            }))
-        })
-    }
-
-    var levels = [
-        {
-            value: "go_home",
-            label: "Go home",
-        },
-        {
-            value: "check_coins",
-            label: "Check & pick coins",
-        },
-        {
-            value: "check_and_colour",
-            label: "Check & colour",
-        },
-        {
-            value: "all_homes",
-            label: "Visit all homes",
-        },
-        {
-            value: "coins_lte",
-            label: "Less than 30 coins"
-        },
-        {
-            value: "coins_gte",
-            label: "More than 10 coins"
-        },
-        {
-            value: "Level_1_Easy",
-            label: "Count coins"
-        },
-        {
-            value: "Level_1_Medium",
-            label: "Arithmetic"
-        },
-        {
-            value: "shortest_path",
-            label: "Shortest Path Home"
-        },
-        {
-            value: "colour_border",
-            label: "Colour Border"
-        },
-        {
-            value: "colour_alternate",
-            label: "Colour Alternate Boxes"
-        },
-];
-
-    /**
-     * Updates lang
-     * @param {*} e 
-     */
-    var langChange = e => {
-        setLang(e.label);
-        var selectedLang = e.value;
-        fetch('http://localhost:5000/set_language', {
-            crossDomain: true,
-            method: 'POST',
-            body: JSON.stringify({ lang: selectedLang }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(response => {
-            setMazeData(prev => ({
-                ...prev,
-                rows: response.rows,
-                columns: response.columns,
-                coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
-                coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
-                currentDirection: response?.dir,
-                levelType: response?.type,
-                penLoc: [1],
-                home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                statement: response?.statement,
-                problemSpec: response?.problem_spec,
-                prevSteps: 1
-            }))
-        })
-    }
-
-    var langs = [
-        {
-            value: "english",
-            label: "English",
-        },
-        {
-            value: "kannada",
-            label: "ಕನ್ನಡ",
-        },
-        {
-            value: "kanglish",
-            label: "Kanglish",
-        }
-    ];
     /**
      * calculates colour values for highlights based on the base colour
      * @param {*} col 
@@ -285,7 +144,7 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    
+
                     startIcon={<PaletteTwoTone />}
                 >
                     Color
@@ -317,7 +176,7 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    
+
                     startIcon={<FormatSize />}
                 >
                     Font Size
@@ -336,92 +195,14 @@ function UiConfigs(props) {
 
     /**
      * This component displays a button on the toolbar
-     * @returns TogglePen component
-     * @example
-     * <TogglePen />
-     * <Select
-                        id="LevelSelector"
-                        options={levels}
-                    />
-     */
-    const ToggleLevel = () => {
-        var [tl, setTl] = useState(false);
-        const onClick = () => {
-            if (tl === false) setTl(true);
-            else setTl(false);
-        }
-
-        return (
-            <div className="levelSelector">
-                {/* <form action="http://localhost:5000/set_problem" method="get"> */}
-                <Button
-                    onClick={onClick}
-                    variant="contained"
-                    
-                // startIcon={<FormatSize />}
-                >
-                    Level
-                </Button>
-                {tl ?
-                    <Select
-                        id="LevelSelector"
-                        name="problem"
-                        placeholder={level}
-                        options={levels}
-                        onChange={levelChange}
-                    />
-                    : null}
-                {/* <input type="submit" value="submit"></input> */}
-                {/* </form> */}
-            </div>
-        )
-    }
-
-    /**
-     * This component displays a button on the toolbar
-     * @returns ToggleLang component
-     * @example
-     * <ToggleLang />
-     */
-    const ToggleLang = () => {
-        var [tlang, setTlang] = useState(false);
-        const onClick = () => {
-            if (tlang === false) setTlang(true);
-            else setTlang(false);
-        }
-
-        return (
-
-            <div className="sizeSelector">
-                <Button
-                    onClick={onClick}
-                    variant="contained"
-                    // 
-                    startIcon={<Translate />}
-                >
-                    Language
-                </Button>
-                {tlang ?
-                    <Select
-                        id="sizeSelector"
-                        placeholder={lang}
-                        options={langs}
-                        onChange={langChange}
-                    />
-                    : null}
-            </div>
-        )
-    }
-    /**
-     * This component displays a button on the toolbar
      * @returns TogglePane component
      * @example
      * <TogglePane />
      */
-     const TogglePane = () => {
+    const TogglePane = () => {
         var [tp, setTp] = useState(true);
         const onClick = () => {
-            
+
             if (tp === false) {
                 setTp(true);
                 document.getElementById("python-pane").style.display = "block";
@@ -439,11 +220,73 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    startIcon={<CodeIcon/>}
+                    startIcon={<CodeIcon />}
                 >
                     Show Python
                 </Button>
             </div>
+        )
+    }
+
+    const InfoButton = () => {
+        const history = useHistory();
+        const onClick = () => {
+            let path = 'home';
+            history.push(path);
+            console.log('pushed history: ', history);
+        }
+
+        return (
+            <div className="pythonViewer">
+                <InfoOutlinedIcon
+                    onClick={onClick}
+                />
+            </div>
+        )
+    }
+
+    const LogoutButton = () => {
+        const history = useHistory();
+        console.log('history: ', history);
+
+        const logout = (response) => {
+            console.log("logged out:", response);
+            let path = '/';
+            history.push(path);
+            console.log('pushed history: ', history);
+        }
+
+        return (
+            <GoogleLogout
+                render={renderProps => (
+                    <Button variant="contained" startIcon={<CodeIcon />} onClick={renderProps.onClick} disabled={renderProps.disabled}>Logout</Button>
+                )}
+                clientId={Constants.clientId}
+                buttonText="Logout"
+                onLogoutSuccess={logout}
+            />
+        )
+    }
+
+    const GridButton = () => {
+        const history = useHistory();
+        console.log('history: ', history);
+
+        const about = (response) => {
+            console.log("about:", response);
+            let path = 'grid';
+            history.push(path);
+            console.log('pushed history: ', history);
+        }
+
+        return (
+            <Button
+                onClick={about}
+                variant="contained"
+                startIcon="?"
+            >
+                Grid
+            </Button>
         )
     }
 
@@ -488,7 +331,7 @@ function UiConfigs(props) {
                 <Button
                     onClick={onClick}
                     variant="contained"
-                    
+
                     startIcon={<Refresh />}
                 >
                     Reset
@@ -513,11 +356,15 @@ function UiConfigs(props) {
             </style>
             <div className="toolbar" id="toolbar-div">
                 <div className="configs">
-                    <img className="pes-logo" src={pes_logo_white_text} height="45px"/>
+                    <img className="pes-logo" alt="PES University Logo" src={pes_logo_white_text} height="45px" />
+                    {/* <GridButton /> */}
+                    {/* <AboutButton /> */}
                     <ResetButton />
                     <ToggleSize />
                     <ToggleColor />
                     <TogglePane />
+                    <InfoButton />
+                    <LogoutButton />
                 </div>
             </div>
         </div>

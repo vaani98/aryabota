@@ -284,7 +284,7 @@ export default function Controller() {
             />
 
             <div className="game-info">
-                <div className="problem-div" onClick={displayQuestion}>
+                <div className="problem-div">
                     <p id="question">{mazeData.statement}</p>
                     <br />
                 </div>

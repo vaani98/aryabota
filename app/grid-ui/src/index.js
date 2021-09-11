@@ -9,7 +9,7 @@ import Maze from './mazeGenerator';
 import Controller from './characterController';
 import MessageModal from './modals/MessageModal';
 //GLOBAL CONTEXT / STATE
-import { MazeState } from './globalStates';
+import { MazeState, Constants } from './globalStates';
 import LevelMap from './levelMap';
 
 /**
@@ -47,44 +47,47 @@ function Game() {
      * making request to get initial state of the grid and CoinSweeper robot 
      */
     fetch('http://localhost:5000/coinSweeper', {
-    crossDomain: true,
-    method: 'GET',
-    headers: {
-          'Content-type': 'application/json'
+      crossDomain: true,
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json'
       }
     })
-    .then(response => response.json())
-    .then(response => {
-      setMazeData(mazeData => ({
-        ...mazeData,
-        rows: response?.rows,
-        columns: response?.columns,
-        coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
-        coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-        obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-        positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
-        currentDirection: response?.dir,
-        levelType: response?.type,
-        home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-        statement: response?.statement,
-        problemSpec: response?.problem_spec,
-        //TODO: Might want to set these two values from backend
-        penLoc: [1],
-        prevSteps: 1
-      }))
-    });
+      .then(response => response.json())
+      .then(response => {
+        setMazeData(mazeData => ({
+          ...mazeData,
+          rows: response?.rows,
+          columns: response?.columns,
+          coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
+          coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+          obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+          positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
+          currentDirection: response?.dir,
+          levelType: response?.type,
+          home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
+          statement: response?.statement,
+          problemSpec: response?.problem_spec,
+          //TODO: Might want to set these two values from backend
+          penLoc: [1],
+          prevSteps: 1,
+          infoMessage: { show: true, message: Constants.informationMessage }
+        }))
+      });
   }, []);
 
   //check if player location is generated
   let maze;
   let messageModal = null;
-  if(mazeData.error_message || mazeData.message) {
-    const modalMessage = mazeData.error_message 
+  if (mazeData.error_message || mazeData.message || mazeData.infoMessage?.show) {
+    const modalMessage = mazeData.error_message
       ? mazeData.error_message
-      : mazeData.message
-    messageModal = <MessageModal error_message={modalMessage}/>;
+      : mazeData.infoMessage.show
+        ? mazeData.infoMessage.message
+        : mazeData.message;
+    messageModal = <MessageModal error_message={modalMessage} />;
   }
-  if(mazeData.coinSweeper) {
+  if (mazeData.coinSweeper) {
     //set maze and controller component with required props
     maze = (
       <>

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
+import Linkify from 'react-linkify';
 import '../styles/ErrorModal.css';
-import { MazeState } from '../globalStates';
+import { MazeState, Constants } from '../globalStates';
 import Button from '@material-ui/core/Button';
 
 /**
@@ -15,23 +16,28 @@ import Button from '@material-ui/core/Button';
  */
 function MessageModal(props) {
     const [mazeData, setMazeData] = useContext(MazeState);
+
+    const dismissModal = () => {
+        setMazeData(prev => ({
+            ...prev,
+            error_message: null,
+            message: null,
+            succeeded: null,
+            infoMessage: { show: false, message: Constants.informationMessage }
+        }))
+    }
     return (
-        <div className="modal">
+        <div className="modal" onClick={dismissModal}>
             <div className="modal-content">
-                <p style={{
-                    marginBottom: '20px'
-                }}>{props.error_message}</p>
-                <Button 
+                <Linkify>
+                    <div>{props.error_message}</div>
+                </Linkify>
+                <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => {
-                        setMazeData(prev => ({
-                            ...prev,
-                            error_message: null,
-                            message: null,
-                            succeeded: null,
-                        }))
-                }}>OK</Button>
+                    onClick={dismissModal}>
+                    OK
+                </Button>
             </div>
         </div>
     )

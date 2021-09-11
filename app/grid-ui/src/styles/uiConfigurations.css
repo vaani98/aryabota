@@ -44,9 +44,12 @@
     display: flex;
     flex-direction: row;
     flex-grow: 1;
-    justify-content: space-around;
-    margin-left: 10%;
+    justify-content: right;
+    align-items: inherit;
+    margin: 0 4% 0 15%;
+    column-gap: 3%;
   }
+
   .pes-logo {
     position: fixed;
     top:  1.5vh;
