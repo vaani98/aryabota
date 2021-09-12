@@ -226,11 +226,6 @@ def t_ASSIGN(t):
     t.value = 'ASSIGN'
     return t
 
-def t_IDENTIFIER(t):
-    r'[a-zA-z_][a-zA-Z0-9]*'
-    t.type = 'IDENTIFIER'
-    return t
-
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
