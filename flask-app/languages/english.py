@@ -186,9 +186,9 @@ def t_TIMES(t):
     t.value = 'TIMES'
     return t
 
-def t_IDENTIFIER(t):
-    r'[a-zA-z_][a-zA-Z0-9]*'
-    t.type = 'IDENTIFIER'
+def t_ASSIGN(t):
+    r'is'
+    t.value = 'ASSIGN'
     return t
 
 def t_LTE(t):
@@ -221,9 +221,9 @@ def t_NOTEQUALS(t):
     t.value = 'NOTEQUALS'
     return t
 
-def t_ASSIGN(t):
-    r'is'
-    t.value = 'ASSIGN'
+def t_IDENTIFIER(t):
+    r'[a-zA-z_][a-zA-Z0-9]*'
+    t.type = 'IDENTIFIER'
     return t
 
 def t_newline(t):
