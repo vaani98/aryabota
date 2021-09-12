@@ -55,7 +55,7 @@ def understand(commands):
     """Convert pseudo-code to Python code to execute"""
     # reinitialize response file
     # Opening config to read grid attributes
-    with open('../config.yaml') as req_file:
+    with open('config.yaml') as req_file:
         configs = yaml.load(req_file, Loader=yaml.FullLoader)
         with open(configs["app"]["results"], "w") as results_file:
             results_file.write(json.dumps([]))

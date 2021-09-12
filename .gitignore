@@ -1,4 +1,5 @@
 venv/
+**/*githookrc*
 **/__pycache__
 **/parser.out
 **/parsetab.py
@@ -6,3 +7,4 @@ venv/
 **/netlify.toml
 **/node_modules
 **/.vscode
+**/.DS_Store

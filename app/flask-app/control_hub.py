@@ -8,7 +8,7 @@ from coin_sweeper import CoinSweeper
 from problem import Problem
 
 # Opening config to read grid attributes
-with open('../config.yaml') as f:
+with open('config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 BOT = CoinSweeper.get_instance()

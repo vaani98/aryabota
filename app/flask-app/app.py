@@ -18,11 +18,11 @@ CORS(app)
 # Utils
 def build_schema_and_store():
     """Build the JSON Schema and Store for Resolver and Draft7Validator"""
-    schema_file = open("../resources/schema/problem.json")
+    schema_file = open("resources/schema/problem.json")
     schema = json.loads(schema_file.read())
-    state_schema_file = open("../resources/schema/problem_state.json")
+    state_schema_file = open("resources/schema/problem_state.json")
     state_schema = json.loads(state_schema_file.read())
-    position_schema_file = open("../resources/schema/position.json")
+    position_schema_file = open("resources/schema/position.json")
     position_schema = json.loads(position_schema_file.read())
     schema_store = {
         schema['$id'] : schema,
@@ -74,9 +74,9 @@ def initialise_state(problem):
 
 def read_config_and_initialise():
     """Opens config, reads current problem grid set and initializes the grid"""
-    with open('../config.yaml') as req_file:
+    with open('config.yaml') as req_file:
         config = yaml.load(req_file, Loader=yaml.FullLoader)
-        problem_file_path = "../" + config["app"]["problem_grid"]
+        problem_file_path = config["app"]["problem_grid"]
         # Reading and validating config against schema, initialising the grid
         problem = validate(problem_file_path)
         initialise_state(problem)
@@ -104,10 +104,10 @@ def set_problem():
         }
     problem_file_path = "resources/problem-grids/" + problems[problem]
     # Opening config to read grid attributes
-    with open('../config.yaml') as req_file:
+    with open('config.yaml') as req_file:
         config = yaml.load(req_file, Loader=yaml.FullLoader)
         config["app"]["problem_grid"] = problem_file_path
-    with open('../config.yaml', 'w') as req_file:
+    with open('config.yaml', 'w') as req_file:
         yaml.dump(config, req_file)
     return read_config_and_initialise()
 
@@ -115,12 +115,12 @@ def set_problem():
 @cross_origin()
 def set_language():
     """Opening config to read grid attributes"""
-    with open('../config.yaml') as req_file:
+    with open('config.yaml') as req_file:
         config = yaml.load(req_file, Loader=yaml.FullLoader)
         language = request.json["lang"].lower()
         print("Language being set is: ", language)
         config["app"]["language"] = language
-    with open('../config.yaml', 'w') as req_file:
+    with open('config.yaml', 'w') as req_file:
         yaml.dump(config, req_file)
     return read_config_and_initialise()
 
