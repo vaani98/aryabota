@@ -5,16 +5,20 @@ services:
     build:
       context: app/grid-ui
       dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
     expose:
-      - 3000
+      - 80
     ports:
-      - 3000:3000
+      - 80:80
 
   flask-app:
     container_name: flask-app
     build:
       context: app/flask-app
       dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
     expose:
     - 5000
     ports:
