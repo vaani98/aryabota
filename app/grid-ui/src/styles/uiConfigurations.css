@@ -1,12 +1,11 @@
 .toolbar {
+    /* display: none; */
     height: max-content;
     width: 100%;
-    /* float: right; */
     position: fixed;
     top: 0;
     left: 0;
     background-color: #044850;
-    /* background-color: rgb(83, 131, 28); */
     display: flex;
     flex-direction: row;
     justify-content: space-between;

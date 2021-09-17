@@ -282,103 +282,103 @@ export default function Controller() {
                 onPenChange={setPenState}
                 onSizeChange={setEditorFont}
             />
+                {/* <LevelMap /> */}
+                <div className="game-info">
+                    <div className="problem-div">
+                        <p id="question">{mazeData.statement}</p>
+                        <br />
+                    </div>
+                    <h3>Enter your code here:</h3>
+                    <div className="input-div">
+                        <form onSubmit={submitCode}>
+                            <div style={{
+                                marginRight: '50px'
+                            }}>
+                                <AceEditor
+                                    style={{
+                                        width: '116%',
+                                        height: '300px'
+                                    }}
+                                    classname="editor"
+                                    mode="java"
+                                    theme="github"
+                                    fontSize={editorFont}
+                                    onChange={onChange}
+                                    name="editor-div"
+                                    editorProps={{ $blockScrolling: true }}
+                                />
+                            </div>
 
-            <div className="game-info">
-                <div className="problem-div">
-                    <p id="question">{mazeData.statement}</p>
+                            <ThemeProvider theme={theme}>
+                                <Button
+                                    style={{
+                                        marginTop: '30px',
+                                        float: 'right',
+                                        marginRight: '4%'
+                                    }}
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    endIcon={<PlayArrowRounded />}
+                                >
+                                    Run
+                                </Button>
+                            </ThemeProvider>
+                        </form>
+                    </div>
+                </div>
+                <div className="separator"></div>
+                <div width="200px">
+                    <Maze
+                        x={mazeData.rows}
+                        y={mazeData.columns}
+                        coinLoc={mazeData.coinLoc}
+                        obstacleLoc={mazeData.obstacleLoc}
+                        coinSweeper={mazeData.coinSweeper}
+                        currentDirection={mazeData.currentDirection}
+                        positionsSeen={mazeData.positionsSeen}
+                        penLoc={mazeData.penLoc}
+                        prevSteps={mazeData.prevSteps}
+                        home={mazeData.home}
+                    />
                     <br />
+                    <div className="output-div">
+                        <h3 className="output-title">Output:</h3>
+                        <AceEditor
+                            style={{
+                                width: '100%',
+                                height: '100px'
+                            }}
+                            classname="editor"
+                            mode="java"
+                            theme="github"
+                            value={getOutputValue()}
+                            fontSize={editorFont}
+                            readOnly={true}
+                            name="output-div"
+                            editorProps={{ $blockScrolling: true }}
+                        />
+                    </div>
                 </div>
-                <h3>Enter your code here:</h3>
-                <div className="input-div">
-                    <form onSubmit={submitCode}>
-                        <div style={{
-                            marginRight: '50px'
-                        }}>
-                            <AceEditor
-                                style={{
-                                    width: '116%',
-                                    height: '300px'
-                                }}
-                                classname="editor"
-                                mode="java"
-                                theme="github"
-                                fontSize={editorFont}
-                                onChange={onChange}
-                                name="editor-div"
-                                editorProps={{ $blockScrolling: true }}
-                            />
-                        </div>
-
-                        <ThemeProvider theme={theme}>
-                            <Button
-                                style={{
-                                    marginTop: '30px',
-                                    float: 'right',
-                                    marginRight: '4%'
-                                }}
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                endIcon={<PlayArrowRounded />}
-                            >
-                                Run
-                            </Button>
-                        </ThemeProvider>
-                    </form>
-                </div>
-            </div>
-            <div className="separator"></div>
-            <div width="200px">
-                <Maze
-                    x={mazeData.rows}
-                    y={mazeData.columns}
-                    coinLoc={mazeData.coinLoc}
-                    obstacleLoc={mazeData.obstacleLoc}
-                    coinSweeper={mazeData.coinSweeper}
-                    currentDirection={mazeData.currentDirection}
-                    positionsSeen={mazeData.positionsSeen}
-                    penLoc={mazeData.penLoc}
-                    prevSteps={mazeData.prevSteps}
-                    home={mazeData.home}
-                />
-                <br />
-                <div className="output-div">
-                    <h3 className="output-title">Output:</h3>
+                <div className="separator" id="separator-2"></div>
+                <div className="game-info" id="python-pane">
+                    <h3>Translated Code: Python</h3>
                     <AceEditor
                         style={{
                             width: '100%',
-                            height: '100px'
+                            height: '300px'
                         }}
                         classname="editor"
                         mode="java"
                         theme="github"
-                        value={getOutputValue()}
+                        value={getPythonicCode()}
                         fontSize={editorFont}
                         readOnly={true}
-                        name="output-div"
+                        name="python-div"
                         editorProps={{ $blockScrolling: true }}
                     />
                 </div>
-            </div>
-            <div className="separator" id="separator-2"></div>
-            <div className="game-info" id="python-pane">
-                <h3>Translated Code: Python</h3>
-                <AceEditor
-                    style={{
-                        width: '100%',
-                        height: '300px'
-                    }}
-                    classname="editor"
-                    mode="java"
-                    theme="github"
-                    value={getPythonicCode()}
-                    fontSize={editorFont}
-                    readOnly={true}
-                    name="python-div"
-                    editorProps={{ $blockScrolling: true }}
-                />
-            </div>
-            <div className="controller"></div>
-        </>
+                <div className="controller"></div>
+       </>
     );
 }
