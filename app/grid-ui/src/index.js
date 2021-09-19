@@ -11,6 +11,8 @@ import './styles/index.css';
 import React, { useState, useLayoutEffect } from 'react';
 import About from './about';
 import { Game } from './grid';
+import bot_img from './assets/bot3.png';
+import pes_logo from './assets/pes_logo.png';
 // Constants
 import { Constants } from './globalStates';
 
@@ -39,6 +41,37 @@ const LoginButton = () => {
 	)
 }
 
+const Content = () => {
+	return (
+		<div className="login-content">
+			<div style={{ display: "flex", flexDirection: "row" }}>
+				<img height="100px" src={pes_logo} />
+				<img height="100px" src={bot_img} />
+			</div>
+			<div>
+				<br />
+				Hello, welcome to AryaBota!
+			</div>
+			<div>
+				<br />
+				We hope you enjoy the experience, and learn programming.
+				{/* <ul>
+					<li><Link className="router" to="/home">Home</Link></li>
+					<li><Link className="router" to="/grid">Game</Link></li>
+				</ul> */}
+			</div>
+			<div className="google-login">
+				<br /><br />
+				To use the tool, please sign in here:
+				<br /><br />
+			</div>
+			<div>
+				<LoginButton />
+			</div>
+
+		</div>
+	)
+}
 
 ReactDOM.render(
 	<Router className="router">
@@ -54,12 +87,8 @@ ReactDOM.render(
 				{/* <LogoutButton /> */}
 			</Route>
 			<Route path="/">
-				<LoginButton />
-				<ul>
-					<li><Link className="router" to="/home">Home</Link></li>
-					<li><Link className="router" to="/grid">Game</Link></li>
-					<li><Link className="router" to="/">Login/Signup</Link></li>
-				</ul>
+				{/* <LoginButton /> */}
+				<Content />
 			</Route>
 		</Switch>
 	</Router>

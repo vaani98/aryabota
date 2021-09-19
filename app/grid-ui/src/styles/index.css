@@ -3,6 +3,7 @@
 
 body {
   font-family: 'Oswald', sans-serif;
+  /* font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; */
   width: 98vw;
   background-color: #006b76; /* rgb(139, 195, 74); #fcc663; */
   color: whitesmoke;
@@ -51,8 +52,8 @@ h3 {
 
 .game-maze{
   color: #3f3e3e;
-  font-family: "Oswald";
-  font-weight: bolder;
+  /* font-family: "Oswald"; */
+  /* font-weight: bolder;  */
   user-select: none;
 }
 
@@ -66,7 +67,7 @@ h3 {
   border: 1px solid #999;
   float: left;
   font-size: 24px;
-  font-weight: bold;
+  /* font-weight: bold; */
   line-height: 50px;
   height: 50px;
   margin-right: -1px;
@@ -139,4 +140,24 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.login-content {
+  max-width: 30%;
+  text-align: center;
+  width: fit-content;
+  color: black;
+  background-color: white;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: x-large;
+  padding: 5% 2%;
+  margin: 3% auto ;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.google-login {
+  font-size: large;
 }
