@@ -1,4 +1,33 @@
+import json
+from jsonschema import RefResolver, Draft7Validator
+
 """Common Utilities"""
+
+# Utils
+def build_schema_and_store():
+    """Build the JSON Schema and Store for Resolver and Draft7Validator"""
+    schema_file = open("resources/schema/problem.json")
+    schema = json.loads(schema_file.read())
+    state_schema_file = open("resources/schema/problem_state.json")
+    state_schema = json.loads(state_schema_file.read())
+    position_schema_file = open("resources/schema/position.json")
+    position_schema = json.loads(position_schema_file.read())
+    schema_store = {
+        schema['$id'] : schema,
+        state_schema['$id'] : state_schema,
+        position_schema['$id'] : position_schema
+    }
+    return schema, schema_store
+
+def validate(problem_file_path):
+    """Validate the input problem file"""
+    problem_file = open(problem_file_path)
+    problem = json.loads(problem_file.read())
+    schema, schema_store = build_schema_and_store()
+    resolver = RefResolver.from_schema(schema, store = schema_store)
+    validator = Draft7Validator(schema, resolver = resolver)
+    validator.validate(problem)
+    return problem
 
 def lint_problem_grid(problem_grid):
     """Lint problem grid, returns False if there is an error, else the linted grid on success"""
