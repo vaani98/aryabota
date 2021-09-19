@@ -1,21 +1,13 @@
 import ReactDOM from 'react-dom';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import './styles/index.css';
+import '../styles/grid.css';
 import React, { useState, useLayoutEffect } from 'react';
 //UTILITY FUNCTIONS SCRIPT
-import { convertToContinuousNumbering } from './utils';
-//MAZE GENERATOR COMPONENT
-import Maze from './mazeGenerator';
+import { convertToContinuousNumbering } from '../utils';
 //CHARACTER CONTROLLER COMPONENT
-import Controller from './characterController';
-import MessageModal from './modals/MessageModal';
+import Controller from '../characterController';
+import MessageModal from '../modals/MessageModal';
 //GLOBAL CONTEXT / STATE
-import { MazeState, Constants } from './globalStates';
+import { MazeState } from '../globalStates';
 
 
 /**
@@ -71,8 +63,7 @@ export function Game() {
           problemSpec: response?.problem_spec,
           //TODO: Might want to set these two values from backend
           penLoc: [1],
-          prevSteps: 1,
-          infoMessage: { show: true, message: Constants.informationMessage }
+          prevSteps: 1
         }))
       });
   }, []);
@@ -80,12 +71,10 @@ export function Game() {
   //check if player location is generated
   let maze;
   let messageModal = null;
-  if (mazeData.error_message || mazeData.message || mazeData.infoMessage?.show) {
+  if (mazeData.error_message || mazeData.message) {
     const modalMessage = mazeData.error_message
       ? mazeData.error_message
-      : mazeData.infoMessage.show
-        ? mazeData.infoMessage.message
-        : mazeData.message;
+      : mazeData.message;
     messageModal = <MessageModal error_message={modalMessage} />;
   }
   if (mazeData.coinSweeper) {

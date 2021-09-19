@@ -9,9 +9,9 @@ import {
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import './styles/index.css';
 import React, { useState, useLayoutEffect } from 'react';
-import About from './about';
-import { Game } from './grid';
-import bot_img from './assets/bot3.png';
+import About from './pages/about';
+import { Game } from './pages/grid';
+import bot_img from './assets/aryabota-icon.jpeg';
 import pes_logo from './assets/pes_logo.png';
 // Constants
 import { Constants } from './globalStates';
@@ -45,8 +45,8 @@ const Content = () => {
 	return (
 		<div className="login-content">
 			<div style={{ display: "flex", flexDirection: "row" }}>
-				<img height="100px" src={pes_logo} />
-				<img height="100px" src={bot_img} />
+				<img style = {{borderRadius: '100px'}} height="100px" src={bot_img} />
+				{/* <img height="100px" src={pes_logo} /> */}
 			</div>
 			<div>
 				<br />
@@ -55,10 +55,6 @@ const Content = () => {
 			<div>
 				<br />
 				We hope you enjoy the experience, and learn programming.
-				{/* <ul>
-					<li><Link className="router" to="/home">Home</Link></li>
-					<li><Link className="router" to="/grid">Game</Link></li>
-				</ul> */}
 			</div>
 			<div className="google-login">
 				<br /><br />
@@ -68,7 +64,6 @@ const Content = () => {
 			<div>
 				<LoginButton />
 			</div>
-
 		</div>
 	)
 }

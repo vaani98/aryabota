@@ -23,7 +23,6 @@ function MessageModal(props) {
             error_message: null,
             message: null,
             succeeded: null,
-            infoMessage: { show: false, message: Constants.informationMessage }
         }))
     }
     return (

@@ -5,7 +5,7 @@ import {
     Route,
     Link
 } from "react-router-dom";
-import About from './about';
+import About from './pages/about';
 import { Game } from './index';
 import './styles/levelMap.css';
 
