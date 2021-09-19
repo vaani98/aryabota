@@ -1,6 +1,6 @@
-# CoinSweeper
+# AryaBota
 A visual tool for teaching introduction to programming, that slowly allows students to transition from using commands similar to natural language, to more Pythonic constructs.   
-The experience is gamified through a visual component called CoinSweeper - a bot in a grid that detects and picks up coins while navigating its way around obstacles.
+The experience is gamified through a visual component called AryaBota (AB) - a bot in a grid that detects and picks up coins while navigating its way around obstacles.
 This tool is still under development.
 
 ## Set-Up - With Docker
