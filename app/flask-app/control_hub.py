@@ -167,7 +167,6 @@ def obstacle_left(row = None, column = None):
         else:
             return 1
     elif direction == "down":
-        print(state['obstacles'])
         if column+1 <= GRID.columns:
             if({'position': {'row': row, 'column': column+1}} in state['obstacles']):
                 return 1

@@ -33,7 +33,6 @@ def get_for_every_position(objects, rows, columns, coins = True):
     """Return values for each position"""
     per_position = [[0 for i in range(columns)] for j in range(rows)]
     for obj in objects:
-        print(obj)
         loc_row = obj["position"]["row"]
         loc_column = obj["position"]["column"]
         if loc_row < 1 or loc_row > rows:

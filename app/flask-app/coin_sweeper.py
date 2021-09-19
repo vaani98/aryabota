@@ -76,7 +76,6 @@ class CoinSweeper:
                 "row": row,
                 "column": column
             }
-        print(pos)
         self.trail.append(pos)
         if self.pen == "down":
             GRID.colour({

@@ -1,5 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
+import logging
 
 from utils import convert_kanglish_pseudocode_to_python
 from control_hub import *
@@ -204,7 +205,7 @@ def t_newline(t):
 
 def t_error(t):
     """Error in lexing token"""
-    print("Invalid Token: ", t.value[0])
+    logging.error(f'Invalid token: {t.value[0]}')
     t.lexer.skip(1)
 
 kanglish_lexer = lex.lex()
@@ -244,7 +245,6 @@ def p_print_expr(p):
     '''
     print_expr : value_expr PRINT
     '''
-    print(list(p))
     python_code = convert_kanglish_pseudocode_to_python("PRINT_VALUE", expr = p[1])
     p[0] = python_code
 
@@ -311,6 +311,6 @@ def p_submit_expr(p):
     
 def p_error(p):
     """Error in parsing command"""
-    print("Syntax error in input! You entered " + str(p))
+    logging.error(f'Syntax error in input: {str(p)}')
 
 kanglish_parser = yacc.yacc()

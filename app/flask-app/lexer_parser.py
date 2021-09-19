@@ -2,6 +2,7 @@
 # pylint: disable=invalid-name,unused-argument,global-statement
 import json
 import yaml
+import logging
 
 from control_hub import *
 from grid import Grid
@@ -61,19 +62,14 @@ def understand(commands):
             results_file.write(json.dumps([]))
         try:
             if configs["app"]["language"] == "english":
-                print("English")
-                # print(commands)
                 python_program = english_parser.parse(commands, lexer=english_lexer)
             elif configs["app"]["language"] == "kannada":
-                print("Kannada")
                 python_program = kannada_parser.parse(commands, lexer=kannada_lexer)
             elif configs["app"]["language"] == "kanglish":
-                print("Kanglish")
                 python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
         except Exception as exception:
-            print(exception)
+            logging.error(f'Exception occured', exc_info=True)
             return []
-    print("Python program: ", python_program)
     if python_program is None:
         exception_raised = "Syntax Error (check the selected language and the corresponding syntax)"
     else:
@@ -82,7 +78,7 @@ def understand(commands):
             exec(python_program) # pylint: disable=exec-used
         except Exception as e:
             exception_raised = e
-            print("Exception raised while parsing: ", e)
+            logging.error(f'Exception while executing Python program, {e}', exc_info=True)
     with open(config["app"]["results"]) as results_file:
         response = json.loads(results_file.read())
     if exception_raised is not None:
@@ -93,5 +89,4 @@ def understand(commands):
         "python": python_program,
         "response": response
     }
-    # print("Response and python program:", response_and_python_program)
     return response_and_python_program

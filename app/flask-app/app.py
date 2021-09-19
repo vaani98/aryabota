@@ -3,6 +3,7 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import yaml
+import logging
 from jsonschema import RefResolver, Draft7Validator
 
 from grid import Grid
@@ -13,7 +14,7 @@ from utils import get_for_every_position
 
 app = Flask(__name__)
 CORS(app)
-
+logging.basicConfig(level=logging.DEBUG, filename="app.log", format="%(levelname)s-%(funcName)s-%(asctime)s: %(message)s")
 
 # Utils
 def build_schema_and_store():
@@ -83,12 +84,23 @@ def read_config_and_initialise():
         problem = Problem.get_instance()
         return jsonify(problem.get_initial_state())
 
+@app.before_first_request
+def before_first_request():
+    """Reading and validating config against schema, initialising the grid"""
+    return read_config_and_initialise()
+
+# Endpoints
+@app.route("/")
+@cross_origin()
+def index():
+    """Hello World"""
+    return "Hello World!"
+
 @app.route('/set_problem', methods = ['POST'])
 @cross_origin()
 def set_problem():
     """Set Problem API"""
     problem = request.json["level"]
-    print("Problem = ", problem)
     problems = {
         'go_home': 'L0_P1.json',
         'all_homes': 'L0_P2.json',
@@ -109,6 +121,7 @@ def set_problem():
         config["app"]["problem_grid"] = problem_file_path
     with open('config.yaml', 'w') as req_file:
         yaml.dump(config, req_file)
+    logging.info(f'Setting problem to {problem}')
     return read_config_and_initialise()
 
 @app.route('/set_language', methods = ['POST'])
@@ -118,42 +131,33 @@ def set_language():
     with open('config.yaml') as req_file:
         config = yaml.load(req_file, Loader=yaml.FullLoader)
         language = request.json["lang"].lower()
-        print("Language being set is: ", language)
         config["app"]["language"] = language
     with open('config.yaml', 'w') as req_file:
         yaml.dump(config, req_file)
+    logging.info(f'Setting language to {language}')
     return read_config_and_initialise()
-
-@app.before_first_request
-def before_first_request():
-    """Reading and validating config against schema, initialising the grid"""
-    return read_config_and_initialise()
-
-@app.route("/")
-@cross_origin()
-def index():
-    """Hello World"""
-    return "Hello World!"
 
 @app.route('/reset', methods=(['POST']))
 @cross_origin()
 def reset():
     """To reset the given problem"""
+    logging.info(f'Resetting problem')
     return read_config_and_initialise()
 
 @app.route('/coinSweeper', methods=(['POST', 'GET', 'OPTIONS']))
 @cross_origin()
 def coin_sweeper():
     """Execute commands input in pseudo-code"""
-    print("@@", request)
     if request.method == 'OPTIONS':
         return ("", 200)
     if request.method == 'GET':
+        logging.info(f'Getting problem state')
         problem = Problem.get_instance()
         return jsonify(problem.get_initial_state())
     if request.method == 'POST':
         # getting raw data in JSON format, needs header Content-Type = application/json
         commands = request.json
+        logging.info(f'Received commands to execute:\n{commands}')
         response = understand(commands)
         return jsonify(response)
     return ("", 405)
@@ -162,7 +166,7 @@ def coin_sweeper():
 @cross_origin()
 def submit_answer():
     """Submit Answer API"""
-    print("@@", request, request.json)
+    logging.info(f'Answer submitted, checking')
     submitted_answer = request.json
     problem = Problem.get_instance()
     response = problem.check_answer(submitted_answer)

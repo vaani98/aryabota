@@ -1,5 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
+import logging
 
 from utils import convert_english_pseudocode_to_python
 from control_hub import *
@@ -232,7 +233,7 @@ def t_newline(t):
 
 def t_error(t):
     """Error in lexing token"""
-    print("Invalid Token: ", t.value[0])
+    logging.error(f'Invalid token: {t.value[0]}')
     t.lexer.skip(1)
 
 english_lexer = lex.lex()
@@ -256,8 +257,6 @@ def p_command(p):
         | print_expr
         | submit_expr
     '''
-    print(list(p))
-    print("hello here first")
     if p[1] in ['TURNLEFT', 'TURNRIGHT', 'PENUP', 'PENDOWN']:
         python_code = convert_english_pseudocode_to_python(p[1])
         p[0] = python_code
@@ -279,7 +278,6 @@ def p_value_expr(p):
     value_expr : value_expr operator value_expr
                 | operand
     '''
-    print(list(p))
     if len(p) == 4:
         var1 = p[1]
         var2 = p[3]
@@ -300,13 +298,11 @@ def p_operand(p):
                | OBSTACLEBEHIND
                | OBSTACLELEFT
     '''
-    print(list(p))
     if (p[1] in ['MYROW', 'MYCOLUMN', 'OBSTACLEAHEAD', 'OBSTACLERIGHT', 'OBSTACLEBEHIND', 'OBSTACLELEFT']):
         python_code = convert_english_pseudocode_to_python(p[1])
     elif p[1] == 'IDENTIFIER':
         python_code = convert_english_pseudocode_to_python("IDENTIFIER", variable = p[1])
     elif p[1] == 'NUMBER_OF_COINS':
-        print("hello?")
         python_code = convert_english_pseudocode_to_python("GET_COINS")
     else: # case NUMBER
         python_code = convert_english_pseudocode_to_python("NUMBER", value = p[1])
@@ -357,8 +353,6 @@ def p_assign_expr(p):
     '''
     assign_expr : IDENTIFIER ASSIGN value_expr
     '''
-    print("hello came here")
-    print(list(p))
     python_code = convert_english_pseudocode_to_python("ASSIGNMENT", variable = p[1], expr = p[3])
     p[0] = python_code
 
@@ -375,6 +369,6 @@ def p_submit_expr(p):
     
 def p_error(p):
     """Error in parsing command"""
-    print("Syntax error in input! You entered " + str(p))
+    logging.error(f'Syntax error in input: {str(p)}')
 
 english_parser = yacc.yacc()
