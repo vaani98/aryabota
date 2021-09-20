@@ -18,9 +18,6 @@ def get_initial_state(problem):
     grid_state.update(coin_sweeper_state)
     problem_type = problem_details["problem_type"]
     grid_state["type"] = problem_type
-    if problem_type == "state_match":
-        if "coin_sweeper" in problem["answer"]["state"]:
-            grid_state["homes"] = [problem["answer"]["state"]["coin_sweeper"]]
     return grid_state
 
 def setup_grid_and_bot(problem):

@@ -8,5 +8,5 @@ levels:
     file: resources/problem-grids/L0_P3.json
     name: Shortest Path
   '0.2':
-    file: resources/problem-grids/L0_P1.json
+    file: resources/problem-grids/L0_P2.json
     name: Go Home
