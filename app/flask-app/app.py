@@ -21,12 +21,14 @@ def index():
 @app.route('/api/user', methods = ['POST','GET'])
 @cross_origin()
 def user_endpoint():
+    print("User")
     """ Create and Exists operations for User """
     if request.method == 'GET':
         # Checking if user exists
         email = request.args.get('email')
         if user.exists(email):
-            return True
+            return jsonify(True)
+        return jsonify(False)
     if request.method == 'POST':
         # Storing user survey details
         return user.create(request.json)

@@ -2,10 +2,10 @@ import ply.lex as lex
 import ply.yacc as yacc
 import logging
 
-from utils import convert_english_pseudocode_to_python
+from services.utils import convert_english_pseudocode_to_python
 from control_hub import *
-from grid import Grid
-from coin_sweeper import CoinSweeper
+from services.grid import Grid
+from services.coin_sweeper import CoinSweeper
 
 bot = CoinSweeper.get_instance()
 grid = Grid.get_instance()

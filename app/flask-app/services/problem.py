@@ -2,9 +2,9 @@ import yaml
 import json
 import logging
 
-from coin_sweeper import CoinSweeper
-from grid import Grid
-from utils import get_for_every_position
+from services.coin_sweeper import CoinSweeper
+from services.grid import Grid
+from services.utils import get_for_every_position
 
 """ Problem Service """
 
@@ -25,6 +25,9 @@ def get_initial_state(problem):
 
 def setup_grid_and_bot(problem):
     """Initialise the state of the grid"""
+    problem_details = problem["problem"]
+    statement = problem_details["statement"]
+    problem_spec = problem_details["problem_spec"]
     state = problem["initial_state"]
     bot = CoinSweeper.get_instance()
     coin_sweeper_state = state["coin_sweeper"]
