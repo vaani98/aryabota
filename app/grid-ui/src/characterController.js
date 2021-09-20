@@ -169,49 +169,11 @@ export default function Controller() {
 
     }
 
-    const submitAnswer = () => {
-        if (mazeData.levelType === 'value_match') {
-            const text_answer = document.getElementById("coinsweeper-answer").value;
-            fetch('http://localhost:5000/submitAnswer', {
-                crossDomain: true,
-                method: 'POST',
-                body: JSON.stringify({ text_answer: text_answer }),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(response => {
-                    setMazeData(prev => ({
-                        ...prev,
-                        ...response,
-                    }))
-                }
-                )
-        } else if (mazeData.levelType === 'state_match') {
-            fetch('http://localhost:5000/submitAnswer', {
-                crossDomain: true,
-                method: 'POST',
-                body: JSON.stringify(convertToProblemState(mazeData)),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(response => {
-                    setMazeData(prev => ({
-                        ...prev,
-                        ...response,
-                    }))
-                })
-        }
-    }
-
     function getSteps(code, currState) {
-        fetch('http://localhost:5000/coinSweeper', {
+        fetch('http://localhost:5000/api/problem?level=0.1', {
             crossDomain: true,
             method: 'POST',
-            body: JSON.stringify(code),
+            body: JSON.stringify({commands: code, level: '0.1'}),
             headers: {
                 'Content-type': 'application/json'
             }

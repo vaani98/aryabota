@@ -6,15 +6,16 @@ import {
 	Link,
 	useHistory
 } from "react-router-dom";
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import './styles/index.css';
-import React, { useState, useLayoutEffect } from 'react';
+import React from 'react';
 import About from './pages/about';
 import { Game } from './pages/grid';
 import bot_img from './assets/aryabota-icon.jpeg';
-import pes_logo from './assets/pes_logo.png';
+import SignupForm from './pages/signUpForm';
 // Constants
 import { Constants } from './globalStates';
+import { TOP_LEVEL_PATHS } from './constants/routeConstants';
 
 const failed = (response) => {
 	console.log("failed:", response);
@@ -25,10 +26,21 @@ const LoginButton = () => {
 	console.log('history: ', history);
 
 	const routeChange = (response) => {
-		console.log("success:", response);
-		let path = 'home';
-		history.push(path);
-		console.log('pushed history: ', history);
+		fetch(`http://localhost:5000/api/user?email=${response.profileObj.email}`, {
+			crossDomain: true,
+			method: 'GET',
+			headers: {
+			  'Content-type': 'application/json'
+			}
+		}).then(response => response.json())
+		.then(userExists => {
+			let path = TOP_LEVEL_PATHS.HOME;
+			if(!userExists) {
+				path = TOP_LEVEL_PATHS.SIGNUP;
+			}
+			history.push(path);
+			console.log('pushed history: ', history);
+		});
 	}
 
 	return (
@@ -46,7 +58,6 @@ const Content = () => {
 		<div className="login-content">
 			<div style={{ display: "flex", flexDirection: "row" }}>
 				<img style = {{borderRadius: '100px'}} height="100px" src={bot_img} />
-				{/* <img height="100px" src={pes_logo} /> */}
 			</div>
 			<div>
 				<br />
@@ -71,18 +82,18 @@ const Content = () => {
 ReactDOM.render(
 	<Router className="router">
 		<Switch>
-			<Route path="/home">
-				<Link className="router" to="/grid">Game</Link>
+			<Route path={`/${TOP_LEVEL_PATHS.HOME}`}>
+				<Link className="router" to={`/${TOP_LEVEL_PATHS.GRID}`}>Game</Link>
 				<About />
-				{/* <LogoutButton /> */}
 			</Route>
-			<Route path="/grid">
-				<Link className="router" to="/home">Home</Link>
+			<Route path={`/${TOP_LEVEL_PATHS.GRID}`}>
+				<Link className="router" to={`/${TOP_LEVEL_PATHS.HOME}`}>Home</Link>
 				<Game />
-				{/* <LogoutButton /> */}
+			</Route>
+			<Route path={`/${TOP_LEVEL_PATHS.SIGNUP}`}>
+				<SignupForm />
 			</Route>
 			<Route path="/">
-				{/* <LoginButton /> */}
 				<Content />
 			</Route>
 		</Switch>

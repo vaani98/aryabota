@@ -1,10 +1,12 @@
 import React from 'react';
-import { useFormik } from 'formik';
 import '../styles/signUpForm.css';
+import { TOP_LEVEL_PATHS } from '../constants/routeConstants';
+import { useHistory } from 'react-router';
 
 const SignupForm = () => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
+    const history = useHistory();
     function enableDisableTextBox(class1, class2) {
         var chkYes = document.getElementById(class1);
         var txtPassportNumber = document.getElementById(class2);
@@ -13,8 +15,30 @@ const SignupForm = () => {
             txtPassportNumber.focus();
         }
     }
+    const registerUser = () => {
+        var formData = new FormData(document.getElementById('sign-up-form'))
+
+        console.log('!!', formData);
+        fetch('http://localhost:5000/api/user', {
+            crossDomain: true,
+            method: 'POST',
+            body: JSON.stringify({email: 'vaani6798@gmail.com'}),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(response => {
+                console.log('!! response form', response);
+                // if(response) {
+                    let path = TOP_LEVEL_PATHS.HOME;
+                    history.push(path);
+                    console.log('pushed history: ', history);        
+                // }
+            });
+        }
     return (
-        <form class="sign-up-form">
+        <form class="sign-up-form" id = "sign-up-form" onSubmit = {registerUser}>
             <ul class="form-style-1">
                 <li><label>Full Name <span class="required">*</span></label><input type="text" name="field1" class="field-divided" placeholder="First" /> <input type="text" name="field2" class="field-divided" placeholder="Last" /></li>
                 <li>

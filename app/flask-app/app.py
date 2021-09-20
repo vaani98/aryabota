@@ -31,10 +31,10 @@ def user_endpoint():
         return jsonify(False)
     if request.method == 'POST':
         # Storing user survey details
-        return user.create(request.json)
+        return jsonify(user.create(request.json))
 
 # Problem Endpoint
-@app.route('/api/problem', methods = ['GET'])
+@app.route('/api/problem', methods = ['GET', 'POST'])
 @cross_origin()
 def problem_endpoint():
     """ Render specified problem grid """
@@ -43,10 +43,11 @@ def problem_endpoint():
         level = request.args.get('level')
         return jsonify(problem.render(level))
     if request.method == 'POST':
+        print('!! post', request.json)
         level = request.json['level']
         problem.render(level)
-        user_email = request.json['email']
+        # user_email = request.json['email']
         commands = request.json['commands']
-        logging.info(f'User email {user_email}, received commands to execute:\n{commands}')
+        # logging.info(f'User email {user_email}, received commands to execute:\n{commands}')
         response = understand(commands)
         return jsonify(response)

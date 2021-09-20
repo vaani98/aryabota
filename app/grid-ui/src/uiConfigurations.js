@@ -268,78 +268,6 @@ function UiConfigs(props) {
         )
     }
 
-    const GridButton = () => {
-        const history = useHistory();
-        console.log('history: ', history);
-
-        const about = (response) => {
-            console.log("about:", response);
-            let path = 'grid';
-            history.push(path);
-            console.log('pushed history: ', history);
-        }
-
-        return (
-            <Button
-                onClick={about}
-                variant="contained"
-                startIcon="?"
-            >
-                Grid
-            </Button>
-        )
-    }
-
-    /**
-     * This component displays a reset button on the toolbar
-     * @returns ResetButton component
-     * @example
-     * <ResetButton />
-     */
-    const ResetButton = () => {
-        const onClick = () => {
-            fetch('http://localhost:5000/reset', {
-                crossDomain: true,
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(response => {
-                    setMazeData(prev => ({
-                        ...prev,
-                        rows: response.rows,
-                        columns: response.columns,
-                        coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
-                        coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                        obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                        positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
-                        currentDirection: response?.dir,
-                        levelType: response?.type,
-                        penLoc: [1],
-                        home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-                        statement: response?.statement,
-                        problemSpec: response?.problem_spec,
-                        prevSteps: 1
-                    }))
-                })
-        }
-
-        return (
-            <div className="resetButton">
-                <Button
-                    onClick={onClick}
-                    variant="contained"
-
-                    startIcon={<Refresh />}
-                >
-                    Reset
-                </Button>
-            </div>
-        )
-    }
-
     return (
         <div>
             <style>
@@ -359,7 +287,7 @@ function UiConfigs(props) {
                     <img className="pes-logo" alt="PES University Logo" src={pes_logo_white_text} height="45px" />
                     {/* <GridButton /> */}
                     {/* <AboutButton /> */}
-                    <ResetButton />
+                    {/* <ResetButton /> */}
                     <ToggleSize />
                     <ToggleColor />
                     <TogglePane />
