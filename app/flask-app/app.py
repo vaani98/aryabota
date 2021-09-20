@@ -2,9 +2,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import logging
+import time
 
 from lexer_parser import understand
-from services import user, problem
+from services import user, problem, mongodb, properties
 
 app = Flask(__name__)
 CORS(app)
@@ -48,6 +49,12 @@ def problem_endpoint():
         problem.render(level)
         # user_email = request.json['email']
         commands = request.json['commands']
-        # logging.info(f'User email {user_email}, received commands to execute:\n{commands}')
+        to_log = {
+            "email": user_email,
+            "timestamp": str(time.time()),
+            "commands": commands
+        }
+        logging.info(f'Received commands to execute: {to_log}')
+        mongodb.insert_one(properties.COMMANDS_COLLECTION, to_log)
         response = understand(commands)
         return jsonify(response)

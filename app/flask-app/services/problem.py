@@ -65,9 +65,3 @@ def render(level):
         problem_name = config['levels'][level]['name']
     logging.info(f'Setting problem to {problem_name}')
     return initialise(problem_file_path)
-
-def exists(email):
-    """ Does the User exist? """
-    if email == "abcd@gmail.com":
-        return True
-    return False

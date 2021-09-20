@@ -1,5 +1,6 @@
 venv/
 **/app.log
+**/secrets*
 **/*githookrc*
 **/__pycache__
 **/parser.out
