@@ -47,7 +47,7 @@ def problem_endpoint():
         print('!! post', request.json)
         level = request.json['level']
         problem.render(level)
-        # user_email = request.json['email']
+        user_email = request.json['email']
         commands = request.json['commands']
         to_log = {
             "email": user_email,

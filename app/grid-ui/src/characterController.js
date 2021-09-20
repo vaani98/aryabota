@@ -173,7 +173,7 @@ export default function Controller() {
         fetch('http://localhost:5000/api/problem?level=0.1', {
             crossDomain: true,
             method: 'POST',
-            body: JSON.stringify({commands: code, level: '0.1'}),
+            body: JSON.stringify({commands: code, level: '0.1', email: 'abc@gmail.com'}),
             headers: {
                 'Content-type': 'application/json'
             }
