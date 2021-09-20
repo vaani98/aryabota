@@ -11,10 +11,7 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import PlayArrowRounded from '@material-ui/icons/PlayArrowRounded';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import IconButton from '@material-ui/core/IconButton';
 import Maze from './mazeGenerator';
-import LevelMap from './levelMap';
 
 /**
  * Component for controlling character/player
