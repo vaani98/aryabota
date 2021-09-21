@@ -1,18 +1,22 @@
-""" User Service """
+from flask import Flask, request
+from services.mongodb import insert_one, exists
 
-def create(details):
-    """ Create User """
-    """
-    {
-        "email": "abcd@gmail.com",
-        "age": 18,
-        "python_programming_experience": "none"
-    }
-    """
+import json
+
+app = Flask(__name__)
+
+@app.route('/create_record', methods=['PUT'])
+def create_record():
+    record = json.loads(request.data)
+    input = {"email": record['email'],
+            "age": record['age'],
+            "python_programming_experience": record['python_programming_experience']}
+    insert_one("User",input)
     return True
 
-def exists(email):
-    """ Does the User exist? """
-    if email == "vaani6798@gmail.com":
-        return True
-    return False
+@app.route('/find_record', methods=['PUT'])
+def find_record():
+    record = json.loads(request.data)
+    input_email = record['email']
+    #print(exists(input_email))
+    return exists(input_email)
