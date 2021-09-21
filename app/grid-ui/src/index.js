@@ -16,6 +16,10 @@ import SignupForm from './pages/signUpForm';
 // Constants
 import { Constants } from './globalStates';
 import { TOP_LEVEL_PATHS } from './constants/routeConstants';
+import { Provider } from 'react-redux';
+import store from './reducers';
+import { useDispatch } from 'react-redux'
+import {addEmail} from './reducers/actions';
 
 const failed = (response) => {
 	console.log("failed:", response);
@@ -23,7 +27,7 @@ const failed = (response) => {
 
 const LoginButton = () => {
 	const history = useHistory();
-	console.log('history: ', history);
+	const dispatch = useDispatch();
 
 	const routeChange = (response) => {
 		fetch(`http://localhost:5000/api/user?email=${response.profileObj.email}`, {
@@ -38,8 +42,8 @@ const LoginButton = () => {
 			if(!userExists) {
 				path = TOP_LEVEL_PATHS.SIGNUP;
 			}
+			dispatch(addEmail(response.profileObj.email));
 			history.push(path);
-			console.log('pushed history: ', history);
 		});
 	}
 
@@ -80,23 +84,25 @@ const Content = () => {
 }
 
 ReactDOM.render(
-	<Router className="router">
-		<Switch>
-			<Route path={`/${TOP_LEVEL_PATHS.HOME}`}>
-				<Link className="router" to={`/${TOP_LEVEL_PATHS.GRID}`}>Game</Link>
-				<About />
-			</Route>
-			<Route path={`/${TOP_LEVEL_PATHS.GRID}`}>
-				<Link className="router" to={`/${TOP_LEVEL_PATHS.HOME}`}>Home</Link>
-				<Game />
-			</Route>
-			<Route path={`/${TOP_LEVEL_PATHS.SIGNUP}`}>
-				<SignupForm />
-			</Route>
-			<Route path="/">
-				<Content />
-			</Route>
-		</Switch>
-	</Router>
+	<Provider store={store}>
+		<Router className="router">
+			<Switch>
+				<Route path={`/${TOP_LEVEL_PATHS.HOME}`}>
+					<Link className="router" to={`/${TOP_LEVEL_PATHS.GRID}`}>Game</Link>
+					<About />
+				</Route>
+				<Route path={`/${TOP_LEVEL_PATHS.GRID}`}>
+					<Link className="router" to={`/${TOP_LEVEL_PATHS.HOME}`}>Home</Link>
+					<Game />
+				</Route>
+				<Route path={`/${TOP_LEVEL_PATHS.SIGNUP}`}>
+					<SignupForm />
+				</Route>
+				<Route path="/">
+					<Content />
+				</Route>
+			</Switch>
+		</Router>
+	</Provider>
 	, document.getElementById('root')
 );

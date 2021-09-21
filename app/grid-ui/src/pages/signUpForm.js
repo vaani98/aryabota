@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/signUpForm.css';
 import { TOP_LEVEL_PATHS } from '../constants/routeConstants';
 import { useHistory } from 'react-router';
+import { useSelector } from 'react-redux';
 
 const SignupForm = () => {
     // Pass the useFormik() hook initial form values and a submit function that will
@@ -15,14 +16,15 @@ const SignupForm = () => {
             txtPassportNumber.focus();
         }
     }
-    const registerUser = () => {
-        var formData = new FormData(document.getElementById('sign-up-form'))
+    const userEmail = useSelector((state) => state.user.email)
 
-        console.log('!!', formData);
+    const registerUser = event => {
+        event.preventDefault();
+        var formData = new FormData(document.getElementById('sign-up-form'))
         fetch('http://localhost:5000/api/user', {
             crossDomain: true,
             method: 'POST',
-            body: JSON.stringify({email: 'vaani6798@gmail.com'}),
+            body: JSON.stringify({email: userEmail}),
             headers: {
                 'Content-type': 'application/json'
             }

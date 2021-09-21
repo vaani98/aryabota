@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import {useSelector} from 'react-redux';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
@@ -35,6 +36,8 @@ export default function Controller() {
     const [penState, setPenState] = useState("penDown");
     const [editorFont, setEditorFont] = useState(14);
     const [question, showQuestion] = useState(true);
+    const userEmail = useSelector((state) => state.user.email)
+    const currentLevel = useSelector((state) => state.user.currentLevel);
 
     /**
      * local state to store interval id / game loop id
@@ -166,14 +169,13 @@ export default function Controller() {
             //     }));
             // }
         })
-
     }
 
     function getSteps(code, currState) {
-        fetch('http://localhost:5000/api/problem?level=0.1', {
+        fetch(`http://localhost:5000/api/problem?level=${currentLevel}`, {
             crossDomain: true,
             method: 'POST',
-            body: JSON.stringify({commands: code, level: '0.1', email: 'abc@gmail.com'}),
+            body: JSON.stringify({commands: code, level: currentLevel.toString(), email: userEmail}),
             headers: {
                 'Content-type': 'application/json'
             }
@@ -198,17 +200,6 @@ export default function Controller() {
         output = output.replace(/\n\n*/g, '\n');
         output = output.replace(/^\s*\n+|\s*\n+$/g, '');
         return output;
-    }
-
-    const displayQuestion = function (e) {
-        if (question) {
-            document.getElementById('question').style.display = 'none';
-            showQuestion(false);
-        }
-        else {
-            document.getElementById('question').style.display = 'block';
-            showQuestion(true);
-        }
     }
 
     const submitCode = function (e) {

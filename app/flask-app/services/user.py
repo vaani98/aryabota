@@ -13,6 +13,6 @@ def create(details):
 
 def exists(email):
     """ Does the User exist? """
-    if email == "vaani6798@gmail.com":
+    if email == "abc@gmail.com":
         return True
     return False

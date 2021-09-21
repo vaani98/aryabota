@@ -9,7 +9,6 @@ import MessageModal from '../modals/MessageModal';
 //GLOBAL CONTEXT / STATE
 import { MazeState } from '../globalStates';
 
-
 /**
  * Main Game Component
  * This component:
@@ -27,9 +26,6 @@ export function Game() {
    */
   const [mazeData, setMazeData] = useState({});
 
-  const [penState, setPenState] = useState("penDown");
-  const [editorFont, setEditorFont] = useState(14);
-
   /**
    * Game's useEffect:
    * this initializes mazeData
@@ -39,7 +35,7 @@ export function Game() {
     /**
      * making request to get initial state of the grid and CoinSweeper robot 
      */
-    fetch('http://localhost:5000/api/problem?level=0.1', {
+    fetch(`http://localhost:5000/api/problem?level=0.1`, {
       crossDomain: true,
       method: 'GET',
       headers: {
@@ -101,19 +97,6 @@ export function Game() {
 }
 ReactDOM.render(
   <>
-    {/* <Router className="router">
-        <Link className="router" to="/">Home</Link>
-        <Link className="router" to="/about">About</Link>
-        <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/">
-            <Game />
-          </Route>
-        </Switch>
-      </Router> */}
-
     <Game />
   </>,
   document.getElementById('root')
