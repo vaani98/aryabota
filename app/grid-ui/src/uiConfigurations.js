@@ -253,6 +253,7 @@ function UiConfigs(props) {
         }
 
         return (
+            <div className="googleLogout">
             <GoogleLogout
                 render={renderProps => (
                     <Button variant="contained" startIcon={<CodeIcon />} onClick={renderProps.onClick} disabled={renderProps.disabled}>Logout</Button>
@@ -261,6 +262,7 @@ function UiConfigs(props) {
                 buttonText="Logout"
                 onLogoutSuccess={logout}
             />
+            </div>
         )
     }
 

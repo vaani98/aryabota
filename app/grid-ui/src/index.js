@@ -19,7 +19,7 @@ import { TOP_LEVEL_PATHS } from './constants/routeConstants';
 import { Provider } from 'react-redux';
 import store from './reducers';
 import { useDispatch } from 'react-redux'
-import {addEmail} from './reducers/actions';
+import {addEmail, addName} from './reducers/actions';
 
 const failed = (response) => {
 	console.log("failed:", response);
@@ -43,6 +43,7 @@ const LoginButton = () => {
 				path = TOP_LEVEL_PATHS.SIGNUP;
 			}
 			dispatch(addEmail(response.profileObj.email));
+			dispatch(addName(response.profileObj.givenName, response.profileObj.familyName));
 			history.push(path);
 		});
 	}

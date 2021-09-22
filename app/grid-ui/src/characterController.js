@@ -13,6 +13,7 @@ import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import PlayArrowRounded from '@material-ui/icons/PlayArrowRounded';
 import Maze from './mazeGenerator';
+import LevelMap from './levelMap';
 
 /**
  * Component for controlling character/player
@@ -227,12 +228,13 @@ export default function Controller() {
 
     return (
         <>
+                        <LevelMap />
             <UiConfigs
                 penLoc={mazeData.penLoc}
                 onPenChange={setPenState}
                 onSizeChange={setEditorFont}
             />
-                {/* <LevelMap /> */}
+
                 <div className="game-info">
                     <div className="problem-div">
                         <p id="question">{mazeData.statement}</p>
