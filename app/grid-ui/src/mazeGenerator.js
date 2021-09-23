@@ -100,7 +100,7 @@ export default function Maze(props) {
   return (
     <div className="grid-container">
       {/* <div className="status">{status}</div> */}
-      <h3>CoinSweeper</h3>
+      <h3>AryaBota</h3>
       {addRows()}
     </div>
   );
@@ -121,7 +121,7 @@ function Block(props) {
 
   //background image style
   var blockStyle = {
-    backgroundSize: "20px",
+    backgroundSize: "75%",
     backgroundRepeat  : 'no-repeat',
     backgroundPosition: 'center',
     backgroundImage: props.image,

@@ -81,16 +81,18 @@ class Problem:
         Problem.__instance = self
         self.type = self.statement = ""
         self.answer = []
+        self.custom_answer = ""
 
     def get_type(self):
         """return problem type"""
         return self.type
 
-    def configure(self, problem_type, statement, answer):
+    def configure(self, problem_type, statement, answer, answer_message):
         """Configure attributes"""
         self.type = problem_type
         self.statement = statement
         self.answer = answer
+        self.custom_answer = answer_message
 
     def compare_states(self, submitted_answer):
         """Comparing states"""
@@ -119,6 +121,8 @@ class Problem:
             succeeded = self.compare_states(submitted_answer)
         if succeeded:
             message = 'Correct answer!'
+            if self.custom_answer['message']:
+                message = self.custom_answer['message']
         else:
             message = 'Wrong answer, please try again'
         return {

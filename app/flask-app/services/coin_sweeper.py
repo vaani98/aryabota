@@ -1,5 +1,5 @@
 """the Singleton CoinSweeper robot, its attributes and state"""
-from grid import Grid
+from services.grid import Grid
 
 GRID = Grid.get_instance()
 

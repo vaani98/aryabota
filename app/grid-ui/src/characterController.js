@@ -11,8 +11,6 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blueGrey } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import PlayArrowRounded from '@material-ui/icons/PlayArrowRounded';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import IconButton from '@material-ui/core/IconButton';
 import Maze from './mazeGenerator';
 
 /**
@@ -101,7 +99,6 @@ export default function Controller() {
         }))
         let steps = [];
         response.response?.forEach(step => {
-            console.log(step)
             if (step.error_message) {
                 steps.push({
                     error_message: step.error_message
@@ -172,57 +169,17 @@ export default function Controller() {
 
     }
 
-    const submitAnswer = () => {
-        console.log(mazeData)
-        if (mazeData.levelType === 'value_match') {
-            const text_answer = document.getElementById("coinsweeper-answer").value;
-            fetch('http://localhost:5000/submitAnswer', {
-                crossDomain: true,
-                method: 'POST',
-                body: JSON.stringify({ text_answer: text_answer }),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(response => {
-                    setMazeData(prev => ({
-                        ...prev,
-                        ...response,
-                    }))
-                }
-                )
-        } else if (mazeData.levelType === 'state_match') {
-            fetch('http://localhost:5000/submitAnswer', {
-                crossDomain: true,
-                method: 'POST',
-                body: JSON.stringify(convertToProblemState(mazeData)),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(response => {
-                    setMazeData(prev => ({
-                        ...prev,
-                        ...response,
-                    }))
-                })
-        }
-    }
-
     function getSteps(code, currState) {
-        fetch('http://localhost:5000/coinSweeper', {
+        fetch('http://localhost:5000/api/problem?level=0.1', {
             crossDomain: true,
             method: 'POST',
-            body: JSON.stringify(code),
+            body: JSON.stringify({commands: code, level: '0.1', email: 'abc@gmail.com'}),
             headers: {
                 'Content-type': 'application/json'
             }
         })
             .then(response => response.json())
             .then(response => {
-                console.log(response)
                 parseResponse(response, currState)
             });
     }
@@ -284,108 +241,103 @@ export default function Controller() {
                 onPenChange={setPenState}
                 onSizeChange={setEditorFont}
             />
+                {/* <LevelMap /> */}
+                <div className="game-info">
+                    <div className="problem-div">
+                        <p id="question">{mazeData.statement}</p>
+                        <br />
+                    </div>
+                    <h3>Enter your code here:</h3>
+                    <div className="input-div">
+                        <form onSubmit={submitCode}>
+                            <div style={{
+                                marginRight: '50px'
+                            }}>
+                                <AceEditor
+                                    style={{
+                                        width: '116%',
+                                        height: '300px'
+                                    }}
+                                    classname="editor"
+                                    mode="java"
+                                    theme="github"
+                                    fontSize={editorFont}
+                                    onChange={onChange}
+                                    name="editor-div"
+                                    editorProps={{ $blockScrolling: true }}
+                                />
+                            </div>
 
-            <div className="game-info">
-                <div className="problem-div" onClick={displayQuestion}>
-                    {mazeData.problemSpec} <ThemeProvider theme={theme}>
-                        <IconButton>
-                            <ArrowDropDown />
-                        </IconButton>
-                    </ThemeProvider>
-                    <p id="question">{mazeData.statement}</p>
+                            <ThemeProvider theme={theme}>
+                                <Button
+                                    style={{
+                                        marginTop: '30px',
+                                        float: 'right',
+                                        marginRight: '4%'
+                                    }}
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    endIcon={<PlayArrowRounded />}
+                                >
+                                    Run
+                                </Button>
+                            </ThemeProvider>
+                        </form>
+                    </div>
+                </div>
+                <div className="separator"></div>
+                <div width="200px">
+                    <Maze
+                        x={mazeData.rows}
+                        y={mazeData.columns}
+                        coinLoc={mazeData.coinLoc}
+                        obstacleLoc={mazeData.obstacleLoc}
+                        coinSweeper={mazeData.coinSweeper}
+                        currentDirection={mazeData.currentDirection}
+                        positionsSeen={mazeData.positionsSeen}
+                        penLoc={mazeData.penLoc}
+                        prevSteps={mazeData.prevSteps}
+                        home={mazeData.home}
+                    />
                     <br />
+                    <div className="output-div">
+                        <h3 className="output-title">Output:</h3>
+                        <AceEditor
+                            style={{
+                                width: '100%',
+                                height: '100px'
+                            }}
+                            classname="editor"
+                            mode="java"
+                            theme="github"
+                            value={getOutputValue()}
+                            fontSize={editorFont}
+                            readOnly={true}
+                            name="output-div"
+                            editorProps={{ $blockScrolling: true }}
+                        />
+                    </div>
                 </div>
-                <h3>Enter your code here:</h3>
-                <div className="input-div">
-                    <form onSubmit={submitCode}>
-                        <div style={{
-                            marginRight: '50px'
-                        }}>
-                            <AceEditor
-                                style={{
-                                    width: '116%',
-                                    height: '300px'
-                                }}
-                                classname="editor"
-                                mode="java"
-                                theme="github"
-                                fontSize={editorFont}
-                                onChange={onChange}
-                                name="editor-div"
-                                editorProps={{ $blockScrolling: true }}
-                            />
-                        </div>
-
-                        <ThemeProvider theme={theme}>
-                            <Button
-                                style={{
-                                    marginTop: '30px',
-                                    float: 'right',
-                                    marginRight: '4%'
-                                }}
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                endIcon={<PlayArrowRounded />}
-                            >
-                                Run
-                            </Button>
-                        </ThemeProvider>
-                    </form>
-                </div>
-            </div>
-            <div className="separator"></div>
-            <div>
-                <Maze
-                    x={mazeData.rows}
-                    y={mazeData.columns}
-                    coinLoc={mazeData.coinLoc}
-                    obstacleLoc={mazeData.obstacleLoc}
-                    coinSweeper={mazeData.coinSweeper}
-                    currentDirection={mazeData.currentDirection}
-                    positionsSeen={mazeData.positionsSeen}
-                    penLoc={mazeData.penLoc}
-                    prevSteps={mazeData.prevSteps}
-                    home={mazeData.home}
-                />
-                <br />
-                <div className="output-div">
-                    <h3 className="output-title">Output:</h3>
+                <div className="separator" id="separator-2"></div>
+                <div className="game-info" id="python-pane">
+                    <h3>Translated Code: Python</h3>
                     <AceEditor
                         style={{
                             width: '100%',
-                            height: '100px'
+                            height: '300px'
                         }}
                         classname="editor"
                         mode="java"
                         theme="github"
-                        value={getOutputValue()}
+                        value={getPythonicCode()}
                         fontSize={editorFont}
                         readOnly={true}
-                        name="output-div"
+                        name="python-div"
                         editorProps={{ $blockScrolling: true }}
                     />
                 </div>
-            </div>
-            <div className="separator"></div>
-            <div className="game-info">
-                <h3>Translated Code: Python</h3>
-                <AceEditor
-                    style={{
-                        width: '100%',
-                        height: '300px'
-                    }}
-                    classname="editor"
-                    mode="java"
-                    theme="github"
-                    value={getPythonicCode()}
-                    fontSize={editorFont}
-                    readOnly={true}
-                    name="python-div"
-                    editorProps={{ $blockScrolling: true }}
-                />
-            </div>
-            <div className="controller"></div>
-        </>
+                <div className="controller"></div>
+       </>
     );
 }

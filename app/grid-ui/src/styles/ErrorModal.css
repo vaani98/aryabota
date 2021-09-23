@@ -10,6 +10,7 @@
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    color: black;
   }
   
   /* Modal Content/Box */
@@ -22,6 +23,7 @@
     width: 31%;
     height: 30%;
     align-items: center;
+    row-gap: 5%;
     justify-content: center;
+    font-family: monospace;
   }
-  

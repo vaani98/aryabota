@@ -1,114 +1,102 @@
 import ReactDOM from 'react-dom';
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	useHistory
+} from "react-router-dom";
+import { GoogleLogin } from 'react-google-login';
 import './styles/index.css';
-import React, { useState, useLayoutEffect } from 'react';
-//UTILITY FUNCTIONS SCRIPT
-import { randomPositions, convertToContinuousNumbering } from './utils';
-//MAZE GENERATOR COMPONENT
-import Maze from './mazeGenerator';
-//CHARACTER CONTROLLER COMPONENT
-import Controller from './characterController';
-import MessageModal from './modals/MessageModal';
-//GLOBAL CONTEXT / STATE
-import { MazeState } from './globalStates';
+import React from 'react';
+import About from './pages/about';
+import { Game } from './pages/grid';
+import bot_img from './assets/aryabota-icon.jpeg';
+import SignupForm from './pages/signUpForm';
+// Constants
+import { Constants } from './globalStates';
+import { TOP_LEVEL_PATHS } from './constants/routeConstants';
 
-/**
- * generate a ~center location for character and 
- * random locations for food.
- * @returns [array of numbers], number 
- */
-const randomFoods = randomPositions(3, 3);
-
-
-/**
- * Main Game Component
- * This component:
- * 1. initialize global state
- * 2. wrap that global state on maze and controller
- * 3. serve main page html
- * @component
- * @example
- * <Game />
- */
-function Game() {
-  /**
-   * mazeData contains the entire state of the maze
-   * @const
-   */
-  const [mazeData, setMazeData] = useState({});
-
-  /**
-   * Game's useEffect:
-   * this initializes mazeData
-   * @public
-   */
-  useLayoutEffect(() => {
-    /**
-     * making request to get initial state of the grid and CoinSweeper robot 
-     */
-    fetch('http://localhost:5000/coinSweeper', {
-    crossDomain: true,
-    method: 'GET',
-    headers: {
-          'Content-type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(response => {
-      setMazeData(mazeData => ({
-        ...mazeData,
-        rows: response?.rows,
-        columns: response?.columns,
-        coinSweeper: convertToContinuousNumbering(response?.row, response?.column, response?.columns),
-        coinLoc: response?.coins?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-        obstacleLoc: response?.obstacles?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-        positionsSeen: response?.trail?.map(trailObj => convertToContinuousNumbering(trailObj?.row, trailObj?.column, response?.columns)),
-        currentDirection: response?.dir,
-        levelType: response?.type,
-        home: response?.homes?.map(obj => convertToContinuousNumbering(obj?.position?.row, obj?.position?.column, response?.columns)),
-        statement: response?.statement,
-        problemSpec: response?.problem_spec,
-        //TODO: Might want to set these two values from backend
-        penLoc: [1],
-        prevSteps: 1
-      }))
-    });
-  }, []);
-
-  //check if player location is generated
-  let maze;
-  let messageModal = null;
-  if(mazeData.error_message || mazeData.message) {
-    const modalMessage = mazeData.error_message 
-      ? mazeData.error_message
-      : mazeData.message
-    messageModal = <MessageModal error_message={modalMessage}/>;
-  }
-  if(mazeData.coinSweeper) {
-    //set maze and controller component with required props
-    maze = (
-      <>
-        {/* <UiConfigs
-          penLoc = {mazeData.penLoc}        
-        /> */}
-        <div className="game">
-          <MazeState.Provider value={[mazeData, setMazeData]}>
-            {messageModal}
-            <Controller />
-          </MazeState.Provider>
-        </div>
-      </>
-    );
-  } else {
-    maze = <p>Loading...</p>
-  }
-
-  return (
-    <>
-      {maze}
-    </>
-  );
+const failed = (response) => {
+	console.log("failed:", response);
 }
+
+const LoginButton = () => {
+	const history = useHistory();
+	console.log('history: ', history);
+
+	const routeChange = (response) => {
+		fetch(`http://localhost:5000/api/user?email=${response.profileObj.email}`, {
+			crossDomain: true,
+			method: 'GET',
+			headers: {
+			  'Content-type': 'application/json'
+			}
+		}).then(response => response.json())
+		.then(userExists => {
+			let path = TOP_LEVEL_PATHS.HOME;
+			if(!userExists) {
+				path = TOP_LEVEL_PATHS.SIGNUP;
+			}
+			history.push(path);
+			console.log('pushed history: ', history);
+		});
+	}
+
+	return (
+		<GoogleLogin
+			clientId={Constants.clientId}
+			buttonText="Sign In With Google"
+			onSuccess={routeChange}
+			onFailure={failed}
+		/>
+	)
+}
+
+const Content = () => {
+	return (
+		<div className="login-content">
+			<div style={{ display: "flex", flexDirection: "row" }}>
+				<img style = {{borderRadius: '100px'}} height="100px" src={bot_img} />
+			</div>
+			<div>
+				<br />
+				Hello, welcome to AryaBota!
+			</div>
+			<div>
+				<br />
+				We hope you enjoy the experience, and learn programming.
+			</div>
+			<div className="google-login">
+				<br /><br />
+				To use the tool, please sign in here:
+				<br /><br />
+			</div>
+			<div>
+				<LoginButton />
+			</div>
+		</div>
+	)
+}
+
 ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
+	<Router className="router">
+		<Switch>
+			<Route path={`/${TOP_LEVEL_PATHS.HOME}`}>
+				<Link className="router" to={`/${TOP_LEVEL_PATHS.GRID}`}>Game</Link>
+				<About />
+			</Route>
+			<Route path={`/${TOP_LEVEL_PATHS.GRID}`}>
+				<Link className="router" to={`/${TOP_LEVEL_PATHS.HOME}`}>Home</Link>
+				<Game />
+			</Route>
+			<Route path={`/${TOP_LEVEL_PATHS.SIGNUP}`}>
+				<SignupForm />
+			</Route>
+			<Route path="/">
+				<Content />
+			</Route>
+		</Switch>
+	</Router>
+	, document.getElementById('root')
 );

@@ -3,9 +3,9 @@
 import json
 import yaml
 
-from grid import Grid
-from coin_sweeper import CoinSweeper
-from problem import Problem
+from services.grid import Grid
+from services.coin_sweeper import CoinSweeper
+from services.utils import check_answer
 
 # Opening config to read grid attributes
 with open('config.yaml') as f:
@@ -227,15 +227,14 @@ def submit(value = None):
     """submit answer"""
     with open(results_file_path) as results_file:
         results = json.loads(results_file.read())
-    problem = Problem.get_instance()
     if value is not None:
-        response = problem.check_answer(value)
+        response = check_answer(value)
     else:
         current_state = {
             "coin_sweeper": BOT.get_state_for_answer(),
             "grid": GRID.get_state_for_answer()
         }
-        response = problem.check_answer(current_state)
+        response = check_answer(current_state)
     results.append(make_response("submit", response))
     with open(results_file_path, "w") as results_file:
         results_file.write(json.dumps(results))

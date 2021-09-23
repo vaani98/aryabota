@@ -102,5 +102,8 @@
                 ]
             }
         }
+    },
+    "custom_answer": {
+        "message": "To join our discord server, go to https://discord.gg/nEHKaXBn!"
     }
 }

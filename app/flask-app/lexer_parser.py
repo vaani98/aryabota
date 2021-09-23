@@ -5,11 +5,9 @@ import yaml
 import logging
 
 from control_hub import *
-from grid import Grid
-from coin_sweeper import CoinSweeper
+from services.grid import Grid
+from services.coin_sweeper import CoinSweeper
 from languages.english import english_lexer, english_parser
-from languages.kannada import kannada_lexer, kannada_parser
-from languages.kanglish import kanglish_lexer, kanglish_parser
 
 # utilities
 class LexerError(Exception):
@@ -56,17 +54,13 @@ def understand(commands):
     """Convert pseudo-code to Python code to execute"""
     # reinitialize response file
     # Opening config to read grid attributes
-    with open('config.yaml') as req_file:
-        configs = yaml.load(req_file, Loader=yaml.FullLoader)
-        with open(configs["app"]["results"], "w") as results_file:
+    with open('config.yaml') as config_file:
+        config = yaml.load(config_file, Loader=yaml.FullLoader)
+        with open(config["app"]["results"], "w") as results_file:
             results_file.write(json.dumps([]))
         try:
-            if configs["app"]["language"] == "english":
+            if config["app"]["language"] == "english":
                 python_program = english_parser.parse(commands, lexer=english_lexer)
-            elif configs["app"]["language"] == "kannada":
-                python_program = kannada_parser.parse(commands, lexer=kannada_lexer)
-            elif configs["app"]["language"] == "kanglish":
-                python_program = kanglish_parser.parse(commands, lexer=kanglish_lexer)
         except Exception as exception:
             logging.error(f'Exception occured', exc_info=True)
             return []

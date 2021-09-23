@@ -1,4 +1,97 @@
+import json
+from jsonschema import RefResolver, Draft7Validator
+
 """Common Utilities"""
+
+# Problem Utils
+class DictCompareWrapper:
+    """Comparing dictionaries"""
+    def __init__(self, json):
+        self.json = json
+    def __eq__(self, other):
+        comp = True
+        obj = self.json
+        other_obj = other.json
+        for key in obj.keys():
+            if comp:
+                if key not in other_obj.keys():
+                    return False
+                comp = comp and obj[key] == other_obj[key]
+            else:
+                return False
+        return comp
+
+class ListCompareWrapper:
+    """Comparing lists"""
+    def __init__(self, array, compare_type):
+        self.array = array
+        self.compare_type = compare_type
+    def __eq__(self, other):
+        if self.compare_type == "lenient":
+            comp = True
+            for item in self.array:
+                if comp:
+                    comp = comp and item in other.array
+                else:
+                    return False
+            return comp
+        elif self.compare_type == "strict":
+            if len(self.array) != len(other.array):
+                return False
+            comp = True
+            for item in self.array:
+                comp = comp and item in other.array
+                if comp:
+                    index_self = self.array.index(item)
+                    index_other = other.array.index(item)
+                    self.array.pop(index_self)
+                    other.array.pop(index_other)
+                else:
+                    return False
+            return comp
+        else:
+            return self.array == other.array
+
+def wrap(obj, compare_type):
+    """Wrappers"""
+    if isinstance(obj, dict):
+        for key in obj.keys():
+            obj[key] = wrap(obj[key], compare_type)
+        obj = DictCompareWrapper(obj)
+    elif isinstance(obj, list):
+        for i in range(len(obj)): #pylint: disable=consider-using-enumerate
+            obj[i] = wrap(obj[i], compare_type)
+        obj = ListCompareWrapper(obj, compare_type)
+    return obj
+
+def check_answer(submitted_answer):
+    return True
+
+# Utils
+def build_schema_and_store():
+    """Build the JSON Schema and Store for Resolver and Draft7Validator"""
+    schema_file = open("resources/schema/problem.json")
+    schema = json.loads(schema_file.read())
+    state_schema_file = open("resources/schema/problem_state.json")
+    state_schema = json.loads(state_schema_file.read())
+    position_schema_file = open("resources/schema/position.json")
+    position_schema = json.loads(position_schema_file.read())
+    schema_store = {
+        schema['$id'] : schema,
+        state_schema['$id'] : state_schema,
+        position_schema['$id'] : position_schema
+    }
+    return schema, schema_store
+
+def validate(problem_file_path):
+    """Validate the input problem file"""
+    problem_file = open(problem_file_path)
+    problem = json.loads(problem_file.read())
+    schema, schema_store = build_schema_and_store()
+    resolver = RefResolver.from_schema(schema, store = schema_store)
+    validator = Draft7Validator(schema, resolver = resolver)
+    validator.validate(problem)
+    return problem
 
 def lint_problem_grid(problem_grid):
     """Lint problem grid, returns False if there is an error, else the linted grid on success"""
